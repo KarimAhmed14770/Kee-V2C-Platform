@@ -58,6 +58,14 @@ public class User {
         this.email = email;
     }
 
+    public User(String firstName, String lastName, String email, String address, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
+
     public int getId() {
         return id;
     }
@@ -136,6 +144,9 @@ public class User {
 
     public void setCredential(Credential credential) {
         this.credential = credential;
+        if(credential!=null){
+            credential.setUser(this);
+        }
     }
 
     public void addRole(Role role){
