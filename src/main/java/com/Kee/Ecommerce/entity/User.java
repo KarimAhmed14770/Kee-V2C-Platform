@@ -138,6 +138,11 @@ public class User {
         this.credential = credential;
     }
 
+    public void addRole(Role role){
+        this.roles.add(role);
+        role.setUser(this);
+    }
+
     @Override
     public String toString() {
         return "User{" +
