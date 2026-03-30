@@ -12,7 +12,7 @@ CREATE TABLE `users` (
   `first_name` varchar(45) NOT NULL,
   `last_name` varchar(45) NOT NULL,
   `email`  varchar(45) 	NOT NULL,
-  `Address`  varchar(45) default NULL,
+  `address`  varchar(45) default NULL,
   `phone_number` varchar(13) default Null,  
   `created_at` datetime NOT NULL,
   `updated_at` datetime,
