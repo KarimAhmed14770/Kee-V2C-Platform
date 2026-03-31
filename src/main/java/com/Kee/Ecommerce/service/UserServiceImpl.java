@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService{
 
         //hash the password using the password encoder
         String encodedPassword=passwordEncoder.encode(user.getCredential().getPassword());
-        user.getCredential().setPassword("{bcrypt}"+encodedPassword);
+        user.getCredential().setPassword(encodedPassword);
 
         userRepository.save(user);
         return user;
