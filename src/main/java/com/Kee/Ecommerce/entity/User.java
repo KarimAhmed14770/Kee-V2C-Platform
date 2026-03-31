@@ -43,11 +43,13 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true,
+    fetch = FetchType.LAZY)
     private List<Role> roles=new ArrayList<>();
 
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true,
+    fetch = FetchType.LAZY)
     private Credential credential;
 
     public User(){}
