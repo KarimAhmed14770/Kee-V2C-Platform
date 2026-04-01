@@ -31,7 +31,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests(configurer ->
                 configurer
                         .requestMatchers("/api/auth/**").permitAll()// Make registration public
-                        .requestMatchers("/api/test/securityDBhandShake").hasRole("CUSTOMER")
+                        .requestMatchers("/api/test/securityDBhandShakeCustomer").hasAnyRole("CUSTOMER","ADMIN")
+                        .requestMatchers("/api/test/securityDBhandShakeSeller").hasAnyRole("SELLER","ADMIN")
+                        .requestMatchers("/api/test/securityDBhandShakeAdmin").hasRole("ADMIN")
                         .anyRequest().authenticated()
 
 
