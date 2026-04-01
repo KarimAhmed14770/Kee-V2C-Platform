@@ -3,6 +3,7 @@ package com.Kee.Ecommerce.service;
 
 import com.Kee.Ecommerce.Repository.UserRepository;
 import com.Kee.Ecommerce.entity.User;
+import com.Kee.Ecommerce.security.UserDetailsImpl;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,13 +37,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user=userRepository.findByUserNameWithRoles(username)
                 .orElseThrow(()->new UsernameNotFoundException("User Name not found!"));
 
-        /*convert the roles into a list of strings */
-        List<SimpleGrantedAuthority> roles=user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRole().name())).toList();
-
         /*return the user object that holds the info for spring security*/
-        return new org.springframework.security.core.userdetails.User(user.getCredential().getUserName(),
-                user.getCredential().getPassword(),roles);
+        return new UserDetailsImpl(user);
 
     }
 }
