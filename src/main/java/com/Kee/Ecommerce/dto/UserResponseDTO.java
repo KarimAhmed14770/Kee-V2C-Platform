@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UserResponseDTO {
 
-    private int id;
+    private long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -18,7 +18,7 @@ public class UserResponseDTO {
     private LocalDateTime createdAt;
     private List<String> roles;//return only the role name not the whole object
 
-    public UserResponseDTO(int id, String firstName, String lastName, String email, String address
+    public UserResponseDTO(long id, String firstName, String lastName, String email, String address
             , String phoneNumber, List<String> roles,LocalDateTime createdAt) {
         this.id = id;
         this.firstName = firstName;
@@ -30,7 +30,7 @@ public class UserResponseDTO {
         this.createdAt=createdAt;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
