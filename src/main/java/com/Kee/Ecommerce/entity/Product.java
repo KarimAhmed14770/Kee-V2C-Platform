@@ -157,7 +157,6 @@ public class Product {
     public String toString() {
         return "Product{" +
                 "id=" + id +
-                ", sellerProfile=" + sellerProfile +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
@@ -166,7 +165,6 @@ public class Product {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", active=" + active +
-                ", category=" + category +
                 '}';
     }
 }

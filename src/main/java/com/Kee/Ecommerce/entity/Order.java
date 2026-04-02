@@ -130,8 +130,6 @@ public class Order {
                 ", totalPrice=" + totalPrice +
                 ", orderedAt=" + orderedAt +
                 ", delivered_at=" + delivered_at +
-                ", customerProfile=" + customerProfile +
-                ", orderItems=" + orderItems +
                 '}';
     }
 }

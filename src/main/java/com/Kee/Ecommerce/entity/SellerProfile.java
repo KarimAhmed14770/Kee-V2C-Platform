@@ -57,8 +57,6 @@ public class SellerProfile {
     public String toString() {
         return "SellerProfile{" +
                 "id=" + id +
-                ", user=" + user +
-                ", products=" + products +
                 '}';
     }
 }

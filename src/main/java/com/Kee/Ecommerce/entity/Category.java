@@ -96,7 +96,6 @@ public class Category {
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", active=" + active +
-                ", products=" + products +
                 '}';
     }
 }

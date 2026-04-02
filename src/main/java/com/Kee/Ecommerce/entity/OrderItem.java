@@ -78,7 +78,6 @@ public class OrderItem {
     public String toString() {
         return "OrderItem{" +
                 "id=" + id +
-                ", order=" + order +
                 ", productId=" + productId +
                 ", quantity=" + quantity +
                 ", price=" + price +

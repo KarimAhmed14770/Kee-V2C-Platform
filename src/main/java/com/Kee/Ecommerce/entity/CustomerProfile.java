@@ -59,8 +59,6 @@ public class CustomerProfile {
     public String toString() {
         return "CustomerProfile{" +
                 "id=" + id +
-                ", user=" + user +
-                ", orders=" + orders +
                 '}';
     }
 }
