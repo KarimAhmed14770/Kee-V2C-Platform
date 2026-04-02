@@ -14,10 +14,12 @@ public class CustomerProfile {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch=FetchType.EAGER)//when searching for a customer yes we want the rest of customer
+    //info which will be stored inside this user object
     @JoinColumn(name="user_id")
     private User user;
 
+    //when we search for a customer we don't want the list of orders for that customer unless stated
     @OneToMany(mappedBy = "customerProfile",fetch = FetchType.LAZY)
     private List<Order> orders=new ArrayList<>();
 

@@ -33,6 +33,7 @@ public class Credential {
     @Column(name = "enabled")
     private boolean enabled;
 
+    //when we search for a credential we don't want to fetch the user info unless stated
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;

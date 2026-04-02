@@ -48,14 +48,17 @@ public class User {
     private List<Role> roles=new ArrayList<>();
 
 
+    //when searching for a user we don't want the user credentials unless stated
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true,
     fetch = FetchType.LAZY)
     private Credential credential;
 
-    @OneToOne(mappedBy = "user")
+    //when searching for a user we don't want the customer profile unless stated
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
     private CustomerProfile customerProfile;
 
-    @OneToOne(mappedBy = "user")
+    //when searching for a user we don't want the seller profile unless stated
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
     private SellerProfile sellerProfile;
 
     public User(){}

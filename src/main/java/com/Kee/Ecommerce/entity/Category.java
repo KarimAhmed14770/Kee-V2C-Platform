@@ -26,6 +26,7 @@ public class Category {
     @Column(name = "active")
     private boolean active;
 
+    //when we search for a category we don't want the list of products unless stated
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "category")
     List<Product> products=new ArrayList<>();
 

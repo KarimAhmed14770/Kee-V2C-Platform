@@ -13,10 +13,12 @@ public class SellerProfile {
     @Column(name = "id")
     private long id;
 
-    @OneToOne
+    //when searching for a seller we most probably want all the seller info
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
     private User user;
 
+    //when searching for a seller we don't want the list of products unless stated
     @OneToMany(mappedBy = "sellerProfile",fetch = FetchType.LAZY)
     private List<Product> products=new ArrayList<>();
 

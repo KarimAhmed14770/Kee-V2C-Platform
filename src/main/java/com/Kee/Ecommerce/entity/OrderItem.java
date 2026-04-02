@@ -19,6 +19,7 @@ public class OrderItem {
     @Column(name = "price")
     private double price;
 
+    //if we search about an order item we don't want the whole order info unless stated
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;

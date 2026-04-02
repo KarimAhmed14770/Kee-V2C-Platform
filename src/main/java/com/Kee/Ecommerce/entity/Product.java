@@ -42,10 +42,12 @@ public class Product {
     @Column(name = "active")
     private boolean active;
 
+    //when searching for a product we don't want the category data unless stated
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
+    //when searching for a product we don't want the seller data unless stated
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private SellerProfile sellerProfile;

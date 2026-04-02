@@ -15,6 +15,7 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private UserRoles role;
 
+    //we don't want user info when searching for a role
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;

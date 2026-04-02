@@ -37,11 +37,13 @@ public class Order {
     @LastModifiedDate
     private LocalDateTime delivered_at;
 
-    @ManyToOne
+    //we don't want Customer details when searching for an order unless stated
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private CustomerProfile customerProfile;
 
-    @OneToMany(mappedBy = "order",fetch = FetchType.EAGER)
+    //also when we search for an order we don't  want the order items unless stated
+    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY)
     List<OrderItem> orderItems=new ArrayList<>();
 
 
