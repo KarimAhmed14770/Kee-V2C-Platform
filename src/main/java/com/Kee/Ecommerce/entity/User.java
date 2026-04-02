@@ -18,7 +18,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -52,6 +52,12 @@ public class User {
     fetch = FetchType.LAZY)
     private Credential credential;
 
+    @OneToOne(mappedBy = "user")
+    private CustomerProfile customerProfile;
+
+    @OneToOne(mappedBy = "user")
+    private SellerProfile sellerProfile;
+
     public User(){}
 
     public User(String firstName, String lastName, String email) {
@@ -68,11 +74,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
