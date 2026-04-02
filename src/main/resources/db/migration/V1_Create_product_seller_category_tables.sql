@@ -1,10 +1,6 @@
 Create DATABASE  IF NOT EXISTS `Apex_Cart_Ecommerce`;
 USE `Apex_Cart_Ecommerce`;
 
---
--- Table structure for table `products`
---
-
 
 
 DROP TABLE IF EXISTS `category`;
@@ -17,9 +13,9 @@ CREATE TABLE `category` (
     `active` boolean Not Null DEFAULT TRUE,
 	PRIMARY KEY (`id`),
     constraint `unique_category_name` UNIQUE (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-
+DROP TABLE IF EXISTS `seller`;
 
 CREATE TABLE `seller` (
 	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
@@ -28,8 +24,8 @@ CREATE TABLE `seller` (
     `rating` DECIMAL(2,1) Not Null,
 	PRIMARY KEY (`id`),
     constraint `unique_shop_name` UNIQUE (`shop_name`),
-	constraint `Fk_roles_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+	constraint `fk_seller_userid` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `products`;
@@ -48,14 +44,13 @@ CREATE TABLE `products` (
   `active` boolean NOT NULL DEFAULT TRUE,
   PRIMARY KEY (`id`),
   Constraint `unique_name` UNIQUE (`name`),
-  Key `category_idx` (`category_id`),
-  Key `seller_idx`	(`seller_id`),
   Constraint `product_category_fk` Foreign key (`category_id`) REFERENCES category(`id`),
   Constraint `product_seller_fk` Foreign key (`seller_id`) REFERENCES seller(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-
+CREATE INDEX idx_seller_id ON products(seller_id);
+CREATE INDEX idx_product_category ON products(category_id);
 
 
 

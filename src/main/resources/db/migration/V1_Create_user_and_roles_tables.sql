@@ -12,13 +12,13 @@ CREATE TABLE `users` (
   `first_name` varchar(45) NOT NULL,
   `last_name` varchar(45) NOT NULL,
   `email`  varchar(45) 	NOT NULL,
-  `address`  varchar(45) default NULL,
-  `phone_number` varchar(13) default Null,  
+  `address`  varchar(128) default NULL,
+  `phone_number` varchar(20) default Null,  
   `created_at` datetime NOT NULL,
   `updated_at` datetime,
   PRIMARY KEY (`id`),
   Constraint `unique_email` UNIQUE (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -40,7 +40,7 @@ CREATE TABLE `users_credentials` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-
+Show Index from users;
 
 DROP TABLE IF EXISTS `users_roles`;
 
@@ -50,7 +50,7 @@ CREATE TABLE `users_roles` (
   `user_id` int NOT NULL,
   PRIMARY KEY (`id`),
   constraint `Fk_roles_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
 
