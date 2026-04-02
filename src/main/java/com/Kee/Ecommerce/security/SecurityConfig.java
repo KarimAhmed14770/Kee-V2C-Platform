@@ -46,16 +46,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // Disable CSRF (Cross-Site Request Forgery)
-        // We disable this because we are building a stateless REST API,
-        // and CSRF is primarily for stateful session-based browser apps.
 
-        http.csrf(csrf -> csrf.disable());
+               // Disable CSRF (Cross-Site Request Forgery)
+               // We disable this because we are building a stateless REST API,
+               // and CSRF is primarily for stateful session-based browser apps.
+               http.csrf(customizer->customizer.disable())
 
-        //providing http basic security
-        //http.httpBasic(Customizer.withDefaults());
-
-        http.authorizeHttpRequests(configurer ->
+                //providing http basic security
+                 //http.httpBasic(Customizer.withDefaults());
+               .authorizeHttpRequests(configurer ->
                 configurer
                         .requestMatchers("/api/auth/**").permitAll()// Make registration public
                         .requestMatchers("/api/test/securityDBhandShakeCustomer").hasAnyRole("CUSTOMER","ADMIN")

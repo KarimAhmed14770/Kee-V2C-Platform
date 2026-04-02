@@ -11,7 +11,7 @@ public class OrderItem {
     private Long id;
 
     @Column(name = "product_id")
-    private long productId;
+    private Long productId;
 
     @Column(name = "quantity")
     private int quantity;
@@ -27,18 +27,18 @@ public class OrderItem {
 
     public OrderItem(){}
 
-    public OrderItem(Order order, long productId, int quantity, double price) {
+    public OrderItem(Order order, Long productId, int quantity, double price) {
         this.order = order;
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -50,11 +50,11 @@ public class OrderItem {
         this.order = order;
     }
 
-    public long getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
