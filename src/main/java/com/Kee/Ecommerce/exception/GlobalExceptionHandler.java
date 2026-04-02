@@ -20,6 +20,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error,HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException(Exception exc) {
+        UserErrorResponse error = new UserErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage("An unexpected error occurred. Please try again.");
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 }
 
 /*
