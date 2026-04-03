@@ -19,9 +19,9 @@ DROP TABLE IF EXISTS `seller`;
 
 CREATE TABLE `seller` (
 	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
-	`shop_name` varchar(45) NOT NULL,
+	`shop_name` varchar(45) Default NULL,
     `user_id` int NOT NULL,
-    `rating` DECIMAL(2,1) Not Null,
+    `rating` DECIMAL(2,1) default Null,
 	PRIMARY KEY (`id`),
     constraint `unique_shop_name` UNIQUE (`shop_name`),
 	constraint `fk_seller_userid` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
