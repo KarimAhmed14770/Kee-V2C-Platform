@@ -1,12 +1,8 @@
 package com.Kee.Ecommerce.rest;
 
 
-import com.Kee.Ecommerce.dto.AuthenticationResponse;
-import com.Kee.Ecommerce.dto.LoginRequest;
-import com.Kee.Ecommerce.dto.UserRegistrationDTO;
-import com.Kee.Ecommerce.dto.UserResponseDTO;
+import com.Kee.Ecommerce.dto.*;
 import com.Kee.Ecommerce.entity.Credential;
-import com.Kee.Ecommerce.entity.Role;
 import com.Kee.Ecommerce.entity.User;
 import com.Kee.Ecommerce.security.UserDetailsImpl;
 import com.Kee.Ecommerce.service.JwtService;
@@ -17,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,9 +23,9 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthRestController {
 
-    private UserService userService;
-    private AuthenticationManager authenticationManager;
-    private JwtService jwtService;
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Autowired
     public AuthRestController(UserService userService,AuthenticationManager authenticationManager,
@@ -78,5 +73,5 @@ public class AuthRestController {
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
         }
 
-    }
+}
 
