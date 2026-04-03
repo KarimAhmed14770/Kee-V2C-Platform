@@ -43,10 +43,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     /*searches for a user with this id and this role*/
     boolean existsByIdAndRoles_Role(Long id, UserRoles role);
 
-    @Query("SELECT DISTINCT u FROM User u " +
-            "JOIN FETCH u.roles r " +
-            "WHERE r.role = :userRole")
+    @Query("SELECT u FROM User u " +
+            "JOIN FETCH u.roles " +
+            "WHERE u.id IN (SELECT r2.user.id FROM Role r2 WHERE r2.role = :userRole)")
     Page<User> findUsersByRole(@Param("userRole") UserRoles userRole, Pageable pageable);
-
 
 }
