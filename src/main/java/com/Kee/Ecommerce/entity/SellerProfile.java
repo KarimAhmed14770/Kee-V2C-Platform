@@ -31,7 +31,7 @@ public class SellerProfile {
 
     public SellerProfile(String shopName, User user) {
         this.shopName = shopName;
-        this.rating = rating;
+        this.user=user;
     }
 
     public SellerProfile(String shopName, float rating, User user) {
