@@ -29,6 +29,10 @@ public class SellerProfile {
 
     public SellerProfile(){}
 
+    public SellerProfile(String shopName, User user) {
+        this.shopName = shopName;
+        this.rating = rating;
+    }
 
     public SellerProfile(String shopName, float rating, User user) {
         this.shopName = shopName;
