@@ -58,7 +58,7 @@ public class User {
     private CustomerProfile customerProfile;
 
     //when searching for a user we don't want the seller profile unless stated
-    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
     private SellerProfile sellerProfile;
 
     public User(){}
