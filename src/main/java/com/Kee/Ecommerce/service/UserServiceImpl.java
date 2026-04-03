@@ -1,6 +1,7 @@
 package com.Kee.Ecommerce.service;
 
 import com.Kee.Ecommerce.Repository.UserRepository;
+import com.Kee.Ecommerce.entity.CustomerProfile;
 import com.Kee.Ecommerce.entity.Role;
 import com.Kee.Ecommerce.entity.User;
 import com.Kee.Ecommerce.enums.UserRoles;
@@ -51,6 +52,9 @@ public class UserServiceImpl implements UserService{
         //hash the password using the password encoder
         String encodedPassword=passwordEncoder.encode(user.getCredential().getPassword());
         user.getCredential().setPassword(encodedPassword);
+
+        CustomerProfile customerProfile=new CustomerProfile(user,null);
+        user.setCustomerProfile(customerProfile);
 
         userRepository.save(user);
         return user;
