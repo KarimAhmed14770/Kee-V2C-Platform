@@ -6,6 +6,7 @@ import com.Kee.Ecommerce.entity.Role;
 import com.Kee.Ecommerce.entity.SellerProfile;
 import com.Kee.Ecommerce.entity.User;
 import com.Kee.Ecommerce.enums.UserRoles;
+import com.Kee.Ecommerce.exception.UserAlreadyExistsException;
 import com.Kee.Ecommerce.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,9 @@ public class AdminService {
         Optional<User> optUser=userRepository.findByIdWithRoles(userId);
         if(optUser.isPresent()){
             User user=optUser.get();
+            if(userRepository.existsByIdAndRoles_Role(userId,UserRoles.ROLE_SELLER)){
+                throw new UserAlreadyExistsException("User is Already a seller");
+            }
             user.addRole(new Role(UserRoles.ROLE_SELLER));
             SellerProfile sellerProfile=new SellerProfile(null,user);
             user.setSellerProfile(sellerProfile);

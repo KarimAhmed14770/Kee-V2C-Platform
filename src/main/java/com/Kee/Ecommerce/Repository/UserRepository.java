@@ -1,5 +1,6 @@
 package com.Kee.Ecommerce.Repository;
 
+import com.Kee.Ecommerce.entity.Role;
 import com.Kee.Ecommerce.entity.User;
 import com.Kee.Ecommerce.enums.UserRoles;
 import org.springframework.data.domain.Page;
@@ -29,7 +30,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     +"WHERE u.credential.userName= :username")
     Optional<User> findByUserNameWithRoles(@Param("username") String userName);
 
-    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.role = :roleName")
     Page<User> findAllByRoleName(@Param("roleName") UserRoles roleName, Pageable pageable);
 
     //return all users
@@ -38,6 +39,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     boolean existsByEmail(String email);
 
     boolean existsByCredentialUserName(String userName);
+
+    /*searches for a user with this id and this role*/
+    boolean existsByIdAndRoles_Role(Long id, UserRoles role);
 
     @Query("SELECT DISTINCT u FROM User u " +
             "JOIN FETCH u.roles r " +
