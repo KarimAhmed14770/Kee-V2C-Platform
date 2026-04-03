@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long> {
 
     Optional<User> findByEmail(String email);
+    Optional<User> findByCredentialUserName(String userName);
 
     @Query("SELECT u FROM User u "+
             "JOIN FETCH u.roles "
@@ -27,6 +28,13 @@ public interface UserRepository extends JpaRepository<User,Long> {
     "JOIN FETCH u.roles "
     +"WHERE u.credential.userName= :username")
     Optional<User> findByUserNameWithRoles(@Param("username") String userName);
+
+    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
+    Page<User> findAllByRoleName(@Param("roleName") UserRoles roleName, Pageable pageable);
+
+    //return all users
+
+
     boolean existsByEmail(String email);
 
     boolean existsByCredentialUserName(String userName);

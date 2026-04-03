@@ -2,13 +2,14 @@ package com.Kee.Ecommerce.service;
 
 import com.Kee.Ecommerce.Repository.SellerProfileRepository;
 import com.Kee.Ecommerce.Repository.UserRepository;
-import com.Kee.Ecommerce.dto.UserRegistrationDTO;
 import com.Kee.Ecommerce.entity.Role;
 import com.Kee.Ecommerce.entity.SellerProfile;
 import com.Kee.Ecommerce.entity.User;
 import com.Kee.Ecommerce.enums.UserRoles;
 import com.Kee.Ecommerce.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,30 @@ public class AdminService {
             userRepository.save(user);
         }
         else{
-            throw new UserNotFoundException("user not found");
+            throw new UserNotFoundException("user with id: "+userId+" not  found");
         }
+    }
+    public User getUserById(Long Id){
+        return userRepository.findById(Id)
+                .orElseThrow(()->new UserNotFoundException("user with id: "+ Id +" not  found"));
+    }
+
+    public User getUserByUsername(String userName){
+        return userRepository.findByCredentialUserName(userName)
+                .orElseThrow(()->new UserNotFoundException("user with id: "+ userName +" not  found"));
+    }
+
+    public User getUserByEMail(String email){
+        return userRepository.findByEmail(email)
+                .orElseThrow(()->new UserNotFoundException("user with id: "+ email +" not  found"));
+    }
+
+
+    public Page<User> getAllUsers(Pageable page){
+        return userRepository.findAll(page);
+    }
+
+    public Page<User> getAllUsersByRole(UserRoles role,Pageable page){
+        return  userRepository.findUsersByRole(role,page);
     }
 }
