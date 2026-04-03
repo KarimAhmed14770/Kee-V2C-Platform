@@ -2,6 +2,7 @@ package com.Kee.Ecommerce.service;
 
 import com.Kee.Ecommerce.Repository.SellerProfileRepository;
 import com.Kee.Ecommerce.Repository.UserRepository;
+import com.Kee.Ecommerce.dto.UserResponseDTO;
 import com.Kee.Ecommerce.entity.Role;
 import com.Kee.Ecommerce.entity.SellerProfile;
 import com.Kee.Ecommerce.entity.User;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,27 +48,52 @@ public class AdminService {
             throw new UserNotFoundException("user with id: "+userId+" not  found");
         }
     }
-    public User getUserById(Long Id){
-        return userRepository.findById(Id)
+    public UserResponseDTO getUserById(Long Id){
+        User user= userRepository.findById(Id)
                 .orElseThrow(()->new UserNotFoundException("user with id: "+ Id +" not  found"));
+        return convertToDto(user);
     }
 
-    public User getUserByUsername(String userName){
-        return userRepository.findByCredentialUserName(userName)
+    public UserResponseDTO getUserByUsername(String userName){
+        User user= userRepository.findByCredentialUserName(userName)
                 .orElseThrow(()->new UserNotFoundException("user with id: "+ userName +" not  found"));
+        return convertToDto(user);
     }
 
-    public User getUserByEMail(String email){
-        return userRepository.findByEmail(email)
+    public UserResponseDTO getUserByEmail(String email){
+        User user=  userRepository.findByEmail(email)
                 .orElseThrow(()->new UserNotFoundException("user with id: "+ email +" not  found"));
+        return convertToDto(user);
     }
 
 
-    public Page<User> getAllUsers(Pageable page){
-        return userRepository.findAll(page);
+    public Page<UserResponseDTO> getAllUsers(Pageable page){
+        Page<User> users=userRepository.findAll(page);
+
+        return users.map(user->convertToDto(user));
+
     }
 
-    public Page<User> getAllUsersByRole(UserRoles role,Pageable page){
-        return  userRepository.findUsersByRole(role,page);
+    public Page<UserResponseDTO> getAllUsersByRole(UserRoles role,Pageable page){
+        Page<User> users=userRepository.findUsersByRole(role,page);
+        return users.map(this::convertToDto);
+
+    }
+
+
+    private UserResponseDTO convertToDto(User user) {
+        UserResponseDTO dto = new UserResponseDTO();
+        dto.setId(user.getId());
+        dto.setEmail(user.getEmail());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setAddress(user.getAddress());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        List<String> roles=new ArrayList<>();
+        user.getRoles().forEach(role -> roles.add(role.getRole().name()));
+        dto.setRoles(roles);
+        dto.setCreatedAt(user.getCreatedAt());
+
+        return dto;
     }
 }

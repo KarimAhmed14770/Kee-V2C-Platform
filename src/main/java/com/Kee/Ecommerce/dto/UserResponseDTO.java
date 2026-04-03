@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UserResponseDTO {
 
-    private long id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -17,6 +17,8 @@ public class UserResponseDTO {
     private String phoneNumber;
     private LocalDateTime createdAt;
     private List<String> roles;//return only the role name not the whole object
+
+    public UserResponseDTO(){}
 
     public UserResponseDTO(long id, String firstName, String lastName, String email, String address
             , String phoneNumber, List<String> roles,LocalDateTime createdAt) {
@@ -30,11 +32,11 @@ public class UserResponseDTO {
         this.createdAt=createdAt;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -84,5 +86,13 @@ public class UserResponseDTO {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
