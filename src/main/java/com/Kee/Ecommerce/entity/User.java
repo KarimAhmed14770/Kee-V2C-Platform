@@ -54,11 +54,11 @@ public class User {
     private Credential credential;
 
     //when searching for a user we don't want the customer profile unless stated
-    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private CustomerProfile customerProfile;
 
     //when searching for a user we don't want the seller profile unless stated
-    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private SellerProfile sellerProfile;
 
     public User(){}
@@ -158,6 +158,22 @@ public class User {
         if(credential!=null){
             credential.setUser(this);
         }
+    }
+
+    public CustomerProfile getCustomerProfile() {
+        return customerProfile;
+    }
+
+    public void setCustomerProfile(CustomerProfile customerProfile) {
+        this.customerProfile = customerProfile;
+    }
+
+    public SellerProfile getSellerProfile() {
+        return sellerProfile;
+    }
+
+    public void setSellerProfile(SellerProfile sellerProfile) {
+        this.sellerProfile = sellerProfile;
     }
 
     public void addRole(Role role){
