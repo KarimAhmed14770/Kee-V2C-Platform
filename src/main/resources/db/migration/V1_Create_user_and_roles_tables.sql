@@ -12,13 +12,10 @@ CREATE TABLE `users` (
   `first_name` varchar(45) NOT NULL,
   `last_name` varchar(45) NOT NULL,
   `email`  varchar(45) 	NOT NULL,
-  `address`  varchar(128) default NULL,
   `phone_number` varchar(20) default Null,  
   PRIMARY KEY (`id`),
   Constraint `unique_email` UNIQUE (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-
 
 
 DROP TABLE IF EXISTS `users_credentials`;

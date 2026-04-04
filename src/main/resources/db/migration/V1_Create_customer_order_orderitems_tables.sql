@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `customer` (
 	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
     `user_id` int NOT NULL,
+    `address` VARCHAR(500) DEFAULT NULL,
     `image_url` VARCHAR(255) DEFAULT NULL,
     `created_at` datetime NOT NULL default current_timestamp,
     `updated_at` datetime Not null default current_timestamp On update current_timestamp,
