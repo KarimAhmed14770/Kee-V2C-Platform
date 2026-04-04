@@ -13,12 +13,13 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .components(new Components()
-                        .addSecuritySchemes("bearer-key",
-                                new SecurityScheme()
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer")
-                                        .bearerFormat("JWT")))
-                .addSecurityItem(new SecurityRequirement().addList("bearer-key"));
+                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
+                .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()));
+    }
+
+    private SecurityScheme createAPIKeyScheme() {
+        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .scheme("bearer");
     }
 }
