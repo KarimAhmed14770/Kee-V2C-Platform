@@ -50,9 +50,10 @@ public class SellerProfile {
 
     public SellerProfile(){}
 
-    public SellerProfile(String shopName, User user) {
+    public SellerProfile(String shopName, User user,boolean active) {
         this.shopName = shopName;
         this.user=user;
+        this.active=active;
     }
 
     public SellerProfile(String shopName, float rating, User user) {

@@ -39,7 +39,7 @@ public class AdminServiceImpl implements AdminService {
                 throw new UserAlreadyExistsException("User is Already a seller");
             }
             user.addRole(new Role(UserRoles.ROLE_SELLER));
-            SellerProfile sellerProfile=new SellerProfile(null,user);
+            SellerProfile sellerProfile=new SellerProfile(null,user,true);
             user.setSellerProfile(sellerProfile);
             sellerProfileRepository.save(sellerProfile);
             userRepository.save(user);
