@@ -39,8 +39,10 @@ public class SellerServiceImpl implements SellerService {
                         +userId+"does not exist"));
         seller.setShopName(sellerProfileRequest.shopName());
         seller.setImageUrl(sellerProfileRequest.imageUrl());
+        seller.setShopAddress(sellerProfileRequest.shopAddress());
         sellerProfileRepository.save(seller);
         return new SellerProfileResponse(seller.getShopName(),
+                seller.getShopAddress(),
                 seller.getImageUrl(),
                 seller.getRating());
     }

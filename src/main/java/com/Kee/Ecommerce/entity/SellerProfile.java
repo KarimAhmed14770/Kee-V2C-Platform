@@ -21,6 +21,9 @@ public class SellerProfile {
     @Column(name = "shop_name")
     private String shopName;
 
+    @Column(name = "shop_address")
+    private String shopAddress;
+
     @Column(name="rating")
     private float rating;
 
@@ -132,6 +135,14 @@ public class SellerProfile {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getShopAddress() {
+        return shopAddress;
+    }
+
+    public void setShopAddress(String shopAddress) {
+        this.shopAddress = shopAddress;
     }
 
     public void addProduct(Product product){

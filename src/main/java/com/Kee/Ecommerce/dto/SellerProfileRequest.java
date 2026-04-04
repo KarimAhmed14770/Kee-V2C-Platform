@@ -1,4 +1,4 @@
 package com.Kee.Ecommerce.dto;
 
-public record SellerProfileRequest(String shopName,String imageUrl) {
+public record SellerProfileRequest(String shopName,String imageUrl,String shopAddress) {
 }
