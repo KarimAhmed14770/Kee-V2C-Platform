@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Table(name="users")
-@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -34,14 +33,6 @@ public class User {
 
     @Column(name = "phone_number")
     private String phoneNumber;
-
-    @Column(name = "created_at")
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true,
     fetch = FetchType.LAZY)
@@ -123,22 +114,6 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public List<Role> getRoles() {

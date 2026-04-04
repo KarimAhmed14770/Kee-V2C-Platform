@@ -1,12 +1,17 @@
 package com.Kee.Ecommerce.entity;
 
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "seller")
+@EntityListeners(AuditingEntityListener.class)
 public class SellerProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +26,19 @@ public class SellerProfile {
 
     @Column(name="image_url")
     private String imageUrl;
+
+    @Column(name = "created_at")
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+
+    @Column(name="active")
+    private boolean active;
+
     //when searching for a seller we most probably want all the seller info
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
@@ -89,6 +107,30 @@ public class SellerProfile {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void addProduct(Product product){
