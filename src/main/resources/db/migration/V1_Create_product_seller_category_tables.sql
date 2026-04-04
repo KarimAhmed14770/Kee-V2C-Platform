@@ -23,11 +23,13 @@ CREATE TABLE `seller` (
     `user_id` int NOT NULL,
     `rating` DECIMAL(2,1) default Null,
     `image_url` VARCHAR(255) DEFAULT NULL,
+    `created_at` datetime NOT NULL default current_timestamp,
+    `updated_at` datetime Not null default current_timestamp On update current_timestamp,
+    `active` boolean DEFAULT true,
 	PRIMARY KEY (`id`),
     constraint `unique_shop_name` UNIQUE (`shop_name`),
 	constraint `fk_seller_userid` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
 
 DROP TABLE IF EXISTS `products`;
 

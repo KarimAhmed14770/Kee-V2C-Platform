@@ -14,8 +14,6 @@ CREATE TABLE `users` (
   `email`  varchar(45) 	NOT NULL,
   `address`  varchar(128) default NULL,
   `phone_number` varchar(20) default Null,  
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime,
   PRIMARY KEY (`id`),
   Constraint `unique_email` UNIQUE (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
@@ -29,8 +27,8 @@ CREATE TABLE `users_credentials` (
   `id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
   `user_name` varchar(45) NOT NULL,
   `password` varchar(255) NOT NULL,-- bcrypt just needs 68 char, but we make it 255 to give ourself a space for more complex algo in future
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime,
+  `created_at` datetime NOT NULL default current_timestamp,
+  `updated_at` datetime default current_timestamp On update current_timestamp,
   `enabled` boolean NOT NULL default 1,
   `user_id` int NOT NULL,
   PRIMARY KEY (`id`),
