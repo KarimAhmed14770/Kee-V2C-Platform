@@ -6,13 +6,14 @@ USE `Apex_Cart_Ecommerce`;
 DROP TABLE IF EXISTS `category`;
 
 CREATE TABLE `category` (
-	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
+	`id` int NOT NULL AUTO_INCREMENT,
 	`name` varchar(45) NOT NULL,
     `description` varchar(1000) default Null,  
     `image_url` varchar(1000) default Null, 
     `active` boolean Not Null DEFAULT TRUE,
 	PRIMARY KEY (`id`),
-    constraint `unique_category_name` UNIQUE (`name`)
+    constraint `unique_category_name` UNIQUE (`name`),
+    FULLTEXT idx_category_description (`description`) -- for searching for specific substrings inside the description
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `seller`;
@@ -28,7 +29,8 @@ CREATE TABLE `seller` (
     `active` boolean DEFAULT true,
 	PRIMARY KEY (`seller_id`),
     constraint `unique_shop_name` UNIQUE (`shop_name`),
-	constraint `fk_seller_userid` FOREIGN KEY (`seller_id`) REFERENCES `users`(`id`)
+    FULLTEXT idx_shop_address (`shop_address`), -- for searching for specific substrings inside the description
+	constraint `fk_seller_user_id` FOREIGN KEY (`seller_id`) REFERENCES `users`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
@@ -38,7 +40,7 @@ CREATE TABLE `products` (
   `id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
   `name` varchar(45) NOT NULL,
   `category_id` int NOT NULL,
-  `description` varchar(1000) default Null,  
+  `description` varchar(300) default Null,  
   `price`  DECIMAL(10,2) NOT NULL,
   `stock`  int default NULL,
   `image_url` varchar(1000) default Null, 
@@ -49,12 +51,12 @@ CREATE TABLE `products` (
   PRIMARY KEY (`id`),
   Constraint `unique_name` UNIQUE (`name`),
   Constraint `product_category_fk` Foreign key (`category_id`) REFERENCES category(`id`),
-  Constraint `product_seller_fk` Foreign key (`seller_id`) REFERENCES seller(`seller_id`)
+  Constraint `product_seller_fk` Foreign key (`seller_id`) REFERENCES seller(`seller_id`),
+  INDEX idx_product_price (price),
+  INDEX idx_product_stock (stock),
+  FULLTEXT idx_product_description (`description`) -- The FTS index definition
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-
-CREATE INDEX idx_seller_id ON products(seller_id);
-CREATE INDEX idx_product_category ON products(category_id);
 
 
 
