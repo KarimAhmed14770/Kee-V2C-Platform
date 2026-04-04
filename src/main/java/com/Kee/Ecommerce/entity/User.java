@@ -31,13 +31,13 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true,
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,
     fetch = FetchType.LAZY)
     private List<Role> roles=new ArrayList<>();
 
 
     //when searching for a user we don't want the user credentials unless stated
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true,
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,
     fetch = FetchType.LAZY)
     private Credential credential;
 
@@ -48,6 +48,7 @@ public class User {
     //when searching for a user we don't want the seller profile unless stated
     @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
     private SellerProfile sellerProfile;
+
 
     public User(){}
 

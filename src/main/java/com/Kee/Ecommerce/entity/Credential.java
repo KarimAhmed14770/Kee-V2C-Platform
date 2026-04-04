@@ -14,7 +14,7 @@ public class Credential {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "user_name")
     private String userName;
@@ -35,6 +35,7 @@ public class Credential {
 
     //when we search for a credential we don't want to fetch the user info unless stated
     @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     @JoinColumn(name="user_id")
     private User user;
 
@@ -46,11 +47,11 @@ public class Credential {
         this.enabled = enabled;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

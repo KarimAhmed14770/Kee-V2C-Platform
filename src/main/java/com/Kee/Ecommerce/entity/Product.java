@@ -54,6 +54,9 @@ public class Product {
     @JoinColumn(name = "seller_id")
     private SellerProfile sellerProfile;
 
+    @OneToOne(mappedBy = "product",fetch = FetchType.LAZY)
+    private CartItem cartItem;
+
 
 
     public Product(){}

@@ -15,7 +15,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class CustomerProfile {
     @Id
-    @Column(name = "id")
+    @Column(name = "customer_id")
     private Long id;
 
     @Column(name="image_url")
@@ -38,15 +38,15 @@ public class CustomerProfile {
     @OneToOne(fetch=FetchType.EAGER)//when searching for a customer yes we want the rest of customer
     //info which will be stored inside this user object
     @MapsId //maps the id of the customer to the id of the user
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="customer_id")
     private User user;
 
     //when we search for a customer we don't want the list of orders for that customer unless stated
     @OneToMany(mappedBy = "customerProfile",fetch = FetchType.LAZY)
     private List<Order> orders=new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private CartItem cartItem;
+    @OneToMany(mappedBy = "customerProfile")
+    private List<CartItem> cartItems=new ArrayList<>();
 
 
     public CustomerProfile(){}

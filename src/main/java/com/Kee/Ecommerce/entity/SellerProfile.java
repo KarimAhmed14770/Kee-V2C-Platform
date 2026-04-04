@@ -14,7 +14,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class SellerProfile {
     @Id
-    @Column(name = "id")
+    @Column(name = "seller_id")
     private Long id;
 
     @Column(name = "shop_name")
@@ -44,7 +44,7 @@ public class SellerProfile {
     //when searching for a seller we most probably want all the seller info
     @OneToOne(fetch = FetchType.EAGER)
     @MapsId //maps the id of the seller to the id of the customer
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="seller_id")
     private User user;
 
     //when searching for a seller we don't want the list of products unless stated
