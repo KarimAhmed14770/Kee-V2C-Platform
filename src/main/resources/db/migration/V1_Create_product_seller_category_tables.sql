@@ -22,6 +22,7 @@ CREATE TABLE `seller` (
 	`shop_name` varchar(45) Default NULL,
     `user_id` int NOT NULL,
     `rating` DECIMAL(2,1) default Null,
+    `image_url` VARCHAR(255) DEFAULT NULL,
 	PRIMARY KEY (`id`),
     constraint `unique_shop_name` UNIQUE (`shop_name`),
 	constraint `fk_seller_userid` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)

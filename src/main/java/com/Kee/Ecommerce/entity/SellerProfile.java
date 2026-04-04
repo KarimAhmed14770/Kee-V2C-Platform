@@ -18,6 +18,9 @@ public class SellerProfile {
 
     @Column(name="rating")
     private float rating;
+
+    @Column(name="image_url")
+    private String imageUrl;
     //when searching for a seller we most probably want all the seller info
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
@@ -63,6 +66,12 @@ public class SellerProfile {
     public void setProducts(List<Product> products) {
         this.products = products;
     }
+
+    public void addProduct(Product product){
+        products.add(product);
+        product.setSellerProfile(this);//the bi-directional link
+    }
+
 
     @Override
     public String toString() {

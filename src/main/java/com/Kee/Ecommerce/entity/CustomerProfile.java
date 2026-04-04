@@ -14,6 +14,9 @@ public class CustomerProfile {
     @Column(name = "id")
     private Long id;
 
+    @Column(name="image_url")
+    private String imageUrl;
+
     @OneToOne(fetch=FetchType.EAGER)//when searching for a customer yes we want the rest of customer
     //info which will be stored inside this user object
     @JoinColumn(name="user_id")
