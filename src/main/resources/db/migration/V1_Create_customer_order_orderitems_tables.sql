@@ -10,14 +10,13 @@ DROP TABLE IF EXISTS `customer`;
 
 
 CREATE TABLE `customer` (
-	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
     `user_id` int NOT NULL,
     `address` VARCHAR(500) DEFAULT NULL,
     `image_url` VARCHAR(255) DEFAULT NULL,
     `created_at` datetime NOT NULL default current_timestamp,
     `updated_at` datetime Not null default current_timestamp On update current_timestamp,
     `active` boolean DEFAULT true,
-	PRIMARY KEY (`id`),
+	PRIMARY KEY (`user_id`),
 	constraint `Fk_customer_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 

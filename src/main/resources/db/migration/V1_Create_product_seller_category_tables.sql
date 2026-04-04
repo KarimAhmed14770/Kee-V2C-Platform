@@ -18,7 +18,7 @@ CREATE TABLE `category` (
 DROP TABLE IF EXISTS `seller`;
 
 CREATE TABLE `seller` (
-	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
+	`user_id` int NOT NULL,
 	`shop_name` varchar(45) Default NULL,
     `shop_address` VARCHAR(500) DEFAULT NULL,
     `user_id` int NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE `seller` (
     `created_at` datetime NOT NULL default current_timestamp,
     `updated_at` datetime Not null default current_timestamp On update current_timestamp,
     `active` boolean DEFAULT true,
-	PRIMARY KEY (`id`),
+	PRIMARY KEY (`user_id`),
     constraint `unique_shop_name` UNIQUE (`shop_name`),
 	constraint `fk_seller_userid` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
