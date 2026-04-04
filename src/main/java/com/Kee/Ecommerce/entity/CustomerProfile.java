@@ -33,6 +33,9 @@ public class CustomerProfile {
     @Column(name="active")
     private boolean active;
 
+    @Column(name="address")
+    private String address;
+
     @OneToOne(fetch=FetchType.EAGER)//when searching for a customer yes we want the rest of customer
     //info which will be stored inside this user object
     @JoinColumn(name="user_id")
@@ -45,9 +48,9 @@ public class CustomerProfile {
 
     public CustomerProfile(){}
 
-    public CustomerProfile(User user, List<Order> orders,boolean active) {
+    public CustomerProfile(User user, String address,boolean active) {
         this.user = user;
-        this.orders = orders;
+        this.address = address;
         this.active=active;
     }
 
@@ -105,6 +108,14 @@ public class CustomerProfile {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

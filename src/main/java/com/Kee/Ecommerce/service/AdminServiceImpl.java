@@ -89,7 +89,6 @@ public class AdminServiceImpl implements AdminService {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getAddress(),
                 user.getPhoneNumber(),
                 user.getCustomerProfile().getCreatedAt(),
                 roles

@@ -11,7 +11,6 @@ public record UserResponseDTO( Long id,
          String firstName,
          String lastName,
          String email,
-         String address,
          String phoneNumber,
          LocalDateTime createdAt,
          List<String> roles) {}

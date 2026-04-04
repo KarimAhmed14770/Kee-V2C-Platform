@@ -28,9 +28,6 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "address")
-    private String address;
-
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -60,11 +57,10 @@ public class User {
         this.email = email;
     }
 
-    public User(String firstName, String lastName, String email, String address, String phoneNumber) {
+    public User(String firstName, String lastName, String email, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.address = address;
         this.phoneNumber = phoneNumber;
     }
 
@@ -98,14 +94,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhoneNumber() {
@@ -163,7 +151,6 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }

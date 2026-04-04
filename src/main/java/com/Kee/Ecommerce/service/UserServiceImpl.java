@@ -11,7 +11,6 @@ import com.Kee.Ecommerce.enums.UserRoles;
 import com.Kee.Ecommerce.exception.UserAlreadyExistsException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -65,8 +64,7 @@ public class UserServiceImpl implements UserService{
 
     private User convertToUser(UserRegistrationDTO userRegistrationDTO){
         User registeredUser=new User(userRegistrationDTO.firstName(), userRegistrationDTO.lastName(),
-                userRegistrationDTO.email(),userRegistrationDTO.address()
-                ,userRegistrationDTO.phoneNumber());
+                userRegistrationDTO.email(),userRegistrationDTO.phoneNumber());
         Credential credential=new Credential(userRegistrationDTO.userName(),
                 userRegistrationDTO.password(),true);
 
@@ -81,7 +79,6 @@ public class UserServiceImpl implements UserService{
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getAddress(),
                 user.getPhoneNumber(),
                 user.getCustomerProfile().getCreatedAt(),
                 roles);
