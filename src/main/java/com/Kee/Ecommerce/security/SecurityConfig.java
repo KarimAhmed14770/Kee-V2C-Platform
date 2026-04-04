@@ -62,6 +62,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/test/securityDBhandShakeAdmin").hasRole("ADMIN")
                         .requestMatchers("/api/test/my-profile").hasRole("CUSTOMER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/sellers/**").hasRole("SELLER")
                         .anyRequest().authenticated() //any request of those are protected
         ).sessionManagement(session->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
