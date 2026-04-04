@@ -14,7 +14,6 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class SellerProfile {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -44,6 +43,7 @@ public class SellerProfile {
 
     //when searching for a seller we most probably want all the seller info
     @OneToOne(fetch = FetchType.EAGER)
+    @MapsId //maps the id of the seller to the id of the customer
     @JoinColumn(name="user_id")
     private User user;
 
