@@ -56,7 +56,10 @@ public class SecurityConfig {
                  //http.httpBasic(Customizer.withDefaults());
                .authorizeHttpRequests(configurer ->
                 configurer
-                        .requestMatchers("/api/auth/**").permitAll()// Make registration public
+                        .requestMatchers("/api/auth/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html").permitAll()// Make registration public
                         .requestMatchers("/api/test/securityDBhandShakeCustomer").hasAnyRole("CUSTOMER","ADMIN")
                         .requestMatchers("/api/test/securityDBhandShakeSeller").hasAnyRole("SELLER","ADMIN")
                         .requestMatchers("/api/test/securityDBhandShakeAdmin").hasRole("ADMIN")
