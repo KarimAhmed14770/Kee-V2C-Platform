@@ -18,18 +18,17 @@ CREATE TABLE `category` (
 DROP TABLE IF EXISTS `seller`;
 
 CREATE TABLE `seller` (
-	`user_id` int NOT NULL,
+	`seller_id` int NOT NULL,
 	`shop_name` varchar(45) Default NULL,
     `shop_address` VARCHAR(500) DEFAULT NULL,
-    `user_id` int NOT NULL,
     `rating` DECIMAL(2,1) default Null,
     `image_url` VARCHAR(255) DEFAULT NULL,
     `created_at` datetime NOT NULL default current_timestamp,
     `updated_at` datetime Not null default current_timestamp On update current_timestamp,
     `active` boolean DEFAULT true,
-	PRIMARY KEY (`user_id`),
+	PRIMARY KEY (`seller_id`),
     constraint `unique_shop_name` UNIQUE (`shop_name`),
-	constraint `fk_seller_userid` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+	constraint `fk_seller_userid` FOREIGN KEY (`seller_id`) REFERENCES `users`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
@@ -50,7 +49,7 @@ CREATE TABLE `products` (
   PRIMARY KEY (`id`),
   Constraint `unique_name` UNIQUE (`name`),
   Constraint `product_category_fk` Foreign key (`category_id`) REFERENCES category(`id`),
-  Constraint `product_seller_fk` Foreign key (`seller_id`) REFERENCES seller(`id`)
+  Constraint `product_seller_fk` Foreign key (`seller_id`) REFERENCES seller(`seller_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 

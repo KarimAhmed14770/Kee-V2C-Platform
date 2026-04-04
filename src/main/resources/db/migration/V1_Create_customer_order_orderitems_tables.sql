@@ -10,21 +10,15 @@ DROP TABLE IF EXISTS `customer`;
 
 
 CREATE TABLE `customer` (
-    `user_id` int NOT NULL,
+    `customer_id` int NOT NULL,
     `address` VARCHAR(500) DEFAULT NULL,
     `image_url` VARCHAR(255) DEFAULT NULL,
     `created_at` datetime NOT NULL default current_timestamp,
     `updated_at` datetime Not null default current_timestamp On update current_timestamp,
     `active` boolean DEFAULT true,
-	PRIMARY KEY (`user_id`),
-	constraint `Fk_customer_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+	PRIMARY KEY (`customer_id`),
+	constraint `Fk_customer_user` FOREIGN KEY (`customer_id`) REFERENCES `users`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-
-ALTER TABLE `customer` 
-    ADD COLUMN `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ADD COLUMN `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    ADD COLUMN `active` boolean DEFAULT true;
 
 
 
@@ -40,9 +34,10 @@ CREATE TABLE `orders` (
     `delivered_at` datetime default null,
     
 	PRIMARY KEY (`id`),
-    Key `customer_idx` (`customer_id`),
-    Constraint `customer_order_fk` Foreign key (`customer_id`) REFERENCES customer(`id`)
+    Constraint `customer_order_fk` Foreign key (`customer_id`) REFERENCES customer(`customer_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+CREATE INDEX idx_customer_order_id ON orders(customer_id);
 
 
 
@@ -59,6 +54,7 @@ CREATE TABLE `order_items` (
   Constraint `items_product_fk` Foreign key (`product_id`) REFERENCES products(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+CREATE INDEX idx_order_items_order_id ON order_items(order_id);
 
 
 
