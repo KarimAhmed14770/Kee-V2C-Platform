@@ -2,9 +2,8 @@ package com.Kee.Ecommerce.rest;
 
 import com.Kee.Ecommerce.dto.PromotionRequest;
 import com.Kee.Ecommerce.dto.UserResponseDTO;
-import com.Kee.Ecommerce.entity.User;
 import com.Kee.Ecommerce.enums.UserRoles;
-import com.Kee.Ecommerce.service.AdminService;
+import com.Kee.Ecommerce.service.AdminServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    private final AdminService adminService;
+    private final AdminServiceImpl adminService;
 
     @Autowired
-    public  AdminController( AdminService adminService){
+    public  AdminController( AdminServiceImpl adminService){
         this.adminService=adminService;
     }
 
