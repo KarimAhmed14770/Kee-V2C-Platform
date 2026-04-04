@@ -63,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/test/my-profile").hasRole("CUSTOMER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/sellers/**").hasRole("SELLER")
+                        .requestMatchers("/api/customers/**").hasRole("CUSTOMER")
                         .anyRequest().authenticated() //any request of those are protected
         ).sessionManagement(session->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
