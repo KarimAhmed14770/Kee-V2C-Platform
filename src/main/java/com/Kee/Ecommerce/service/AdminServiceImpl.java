@@ -82,18 +82,18 @@ public class AdminServiceImpl implements AdminService {
 
 
     private UserResponseDTO convertToDto(User user) {
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setId(user.getId());
-        dto.setEmail(user.getEmail());
-        dto.setFirstName(user.getFirstName());
-        dto.setLastName(user.getLastName());
-        dto.setAddress(user.getAddress());
-        dto.setPhoneNumber(user.getPhoneNumber());
         List<String> roles=new ArrayList<>();
         user.getRoles().forEach(role -> roles.add(role.getRole().name()));
-        dto.setRoles(roles);
-        dto.setCreatedAt(user.getCreatedAt());
-
+        UserResponseDTO dto = new UserResponseDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getAddress(),
+                user.getPhoneNumber(),
+                user.getCustomerProfile().getCreatedAt(),
+                roles
+        );
         return dto;
     }
 }
