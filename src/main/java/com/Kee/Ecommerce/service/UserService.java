@@ -1,8 +1,9 @@
 package com.Kee.Ecommerce.service;
 
 
-import com.Kee.Ecommerce.entity.User;
+import com.Kee.Ecommerce.dto.UserRegistrationDTO;
+import com.Kee.Ecommerce.dto.UserResponseDTO;
 
 public interface UserService {
-    User register(User user);
+    UserResponseDTO register(UserRegistrationDTO userRegistrationDTO);
 }

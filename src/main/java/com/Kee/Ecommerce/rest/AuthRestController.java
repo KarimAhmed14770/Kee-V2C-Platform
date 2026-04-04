@@ -36,22 +36,8 @@ public class AuthRestController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRegistrationDTO userRegisterationDTO){
-        User registeredUser=new User(userRegisterationDTO.getFirstName(), userRegisterationDTO.getLastName(),
-                            userRegisterationDTO.getEmail(),userRegisterationDTO.getAddress()
-                            ,userRegisterationDTO.getPhoneNumber());
-        Credential credential=new Credential(userRegisterationDTO.getUserName(),
-                                    userRegisterationDTO.getPassword(),true);
-
-        registeredUser.setCredential(credential);
-
-        registeredUser=userService.register(registeredUser);
-
-        List<String> roles=new ArrayList<>();
-        registeredUser.getRoles().forEach(role -> roles.add(role.getRole().name()));
-        return new ResponseEntity<>(new UserResponseDTO(registeredUser.getId(), registeredUser.getFirstName(),
-                registeredUser.getLastName(), registeredUser.getEmail(), registeredUser.getAddress()
-                ,registeredUser.getPhoneNumber(),roles,registeredUser.getCreatedAt()), HttpStatus.CREATED);
+    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRegistrationDTO userRegistrationDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(userRegistrationDTO));
     }
 
     @PostMapping("/login")

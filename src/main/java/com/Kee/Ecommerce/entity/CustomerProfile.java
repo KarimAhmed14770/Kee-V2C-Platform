@@ -45,9 +45,10 @@ public class CustomerProfile {
 
     public CustomerProfile(){}
 
-    public CustomerProfile(User user, List<Order> orders) {
+    public CustomerProfile(User user, List<Order> orders,boolean active) {
         this.user = user;
         this.orders = orders;
+        this.active=active;
     }
 
     public Long getId() {
