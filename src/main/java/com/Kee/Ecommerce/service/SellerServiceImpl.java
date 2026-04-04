@@ -6,6 +6,7 @@ import com.Kee.Ecommerce.Repository.SellerProfileRepository;
 import com.Kee.Ecommerce.dto.ProductRequest;
 import com.Kee.Ecommerce.dto.ProductResponse;
 import com.Kee.Ecommerce.dto.SellerProfileRequest;
+import com.Kee.Ecommerce.dto.SellerProfileResponse;
 import com.Kee.Ecommerce.entity.Product;
 import com.Kee.Ecommerce.entity.SellerProfile;
 import com.Kee.Ecommerce.exception.CategoryNotFoundException;
@@ -31,8 +32,17 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Transactional
-    public void updateSellerProfile(SellerProfileRequest sellerProfileRequest){
-
+    public SellerProfileResponse updateSellerProfile(SellerProfileRequest sellerProfileRequest){
+        Long userId=securityUtil.getCurrentUserId();
+        SellerProfile seller=sellerProfileRepository.findByUserId(userId)
+                .orElseThrow(()->new UsernameNotFoundException("Seller with id: "
+                        +userId+"does not exist"));
+        seller.setShopName(sellerProfileRequest.shopName());
+        seller.setImageUrl(sellerProfileRequest.imageUrl());
+        sellerProfileRepository.save(seller);
+        return new SellerProfileResponse(seller.getShopName(),
+                seller.getImageUrl(),
+                seller.getRating());
     }
 
     @Transactional

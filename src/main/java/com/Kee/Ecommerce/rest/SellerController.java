@@ -3,13 +3,12 @@ package com.Kee.Ecommerce.rest;
 
 import com.Kee.Ecommerce.dto.ProductRequest;
 import com.Kee.Ecommerce.dto.ProductResponse;
+import com.Kee.Ecommerce.dto.SellerProfileRequest;
+import com.Kee.Ecommerce.dto.SellerProfileResponse;
 import com.Kee.Ecommerce.service.SellerServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/sellers")
@@ -24,6 +23,10 @@ public class SellerController {
         this.sellerService=sellerService;
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<SellerProfileResponse> updateSeller(@RequestBody SellerProfileRequest sellerProfileRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(sellerService.updateSellerProfile(sellerProfileRequest));
+    }
 
 
     @PostMapping("/product")
