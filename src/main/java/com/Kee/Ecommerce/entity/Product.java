@@ -3,11 +3,13 @@ package com.Kee.Ecommerce.entity;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Entity
 @Table(name="products")
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
 
     @Id
@@ -32,7 +34,7 @@ public class Product {
     private String imageUrl;
 
     @Column(name = "created_at")
-    @LastModifiedDate
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
@@ -73,19 +75,19 @@ public class Product {
         this.id = id;
     }
 
-    public Category getCategoryId() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategoryId(Category category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
-    public SellerProfile getSellerId() {
+    public SellerProfile getSellerProfile() {
         return sellerProfile;
     }
 
-    public void setSellerId(SellerProfile sellerProfile) {
+    public void setSellerProfile(SellerProfile sellerProfile) {
         this.sellerProfile = sellerProfile;
     }
 
@@ -145,13 +147,16 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isActive() {
+
+    public boolean getActive() {
         return active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
     }
+
+
 
     @Override
     public String toString() {

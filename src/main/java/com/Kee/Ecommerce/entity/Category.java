@@ -88,6 +88,11 @@ public class Category {
         this.products = products;
     }
 
+    public void addProduct(Product product){
+        products.add(product);
+        product.setCategory(this);//the bi-directional link
+    }
+
     @Override
     public String toString() {
         return "Category{" +
