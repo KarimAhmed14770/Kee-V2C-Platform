@@ -32,6 +32,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException
+            (CategoryNotFoundException categoryNotFoundException){
+        UserErrorResponse error=new UserErrorResponse();
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setMessage(categoryNotFoundException.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<UserErrorResponse> handleException(Exception exc) {
         UserErrorResponse error = new UserErrorResponse();
         error.setStatus(HttpStatus.BAD_REQUEST.value());
