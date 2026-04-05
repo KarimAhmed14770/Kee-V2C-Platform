@@ -8,8 +8,9 @@ public record ProductResponse(Long id,
                               String name,
                               String description,
                               BigDecimal price,
-                              Integer stock
+                              List<Integer> stocks
                             , String imageUrl,
                               String Category,
-                              Boolean active
+                              Boolean active,
+                              List<String> inventoryNames
                               ) { }

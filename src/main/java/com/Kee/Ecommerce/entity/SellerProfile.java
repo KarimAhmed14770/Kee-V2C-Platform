@@ -149,6 +149,14 @@ public class SellerProfile {
         this.shopAddress = shopAddress;
     }
 
+    public List<Inventory> getInventories() {
+        return inventories;
+    }
+
+    public void setInventories(List<Inventory> inventories) {
+        this.inventories = inventories;
+    }
+
     public void addProduct(Product product){
         products.add(product);
         product.setSellerProfile(this);//the bi-directional link
