@@ -8,10 +8,7 @@ import com.Kee.Ecommerce.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -25,5 +22,10 @@ public class CustomerRestController {
     @PutMapping("/update")
     public ResponseEntity<CustomerProfileResponse> updateSeller(@RequestBody CustomerProfileRequest customerProfileRequest){
         return ResponseEntity.status(HttpStatus.OK).body(customerService.updateCustomerProfile(customerProfileRequest));
+    }
+
+    @GetMapping("/my-profile")
+    public ResponseEntity<CustomerProfileResponse> myProfile(){
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.myProfile());
     }
 }

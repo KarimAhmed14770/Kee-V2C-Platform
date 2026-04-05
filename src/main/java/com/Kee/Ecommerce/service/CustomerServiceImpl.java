@@ -34,6 +34,7 @@ public class CustomerServiceImpl implements CustomerService{
         this.userRepository=userRepository;
     }
 
+    @Override
     public CustomerProfileResponse updateCustomerProfile(CustomerProfileRequest customerProfileRequest){
         Long userId=securityUtil.getCurrentUserId();
         CustomerProfile customer=customerProfileRepository.findByUserId(userId)
@@ -44,6 +45,19 @@ public class CustomerServiceImpl implements CustomerService{
                         +userId+"does not exist"));
 
         return updateCustomer(customerProfileRequest,user,customer);
+    }
+
+    @Override
+    public CustomerProfileResponse myProfile(){
+        Long userId=securityUtil.getCurrentUserId();
+        CustomerProfile customer=customerProfileRepository.findByUserId(userId)
+                .orElseThrow(()->new UsernameNotFoundException("Customer with id: "
+                        +userId+"does not exist"));
+        User user=userRepository.findById(userId)
+                .orElseThrow(()->new UsernameNotFoundException("Customer with id: "
+                        +userId+"does not exist"));
+        return new CustomerProfileResponse(user.getFirstName(),user.getLastName(),user.getPhoneNumber()
+                ,customer.getImageUrl(),customer.getAddress(),customer.getUpdatedAt());
     }
 
     private CustomerProfileResponse updateCustomer(CustomerProfileRequest request,User user,CustomerProfile customerProfile){

@@ -96,4 +96,15 @@ public class SellerServiceImpl implements SellerService {
         );
         return response;
     }
+
+    public SellerProfileResponse myProfile(){
+        Long userId=securityUtil.getCurrentUserId();
+        SellerProfile seller=sellerProfileRepository.findByUserId(userId)
+                .orElseThrow(()->new UsernameNotFoundException("Seller with id: "
+                        +userId+"does not exist"));
+        return new SellerProfileResponse(seller.getShopName(),
+                seller.getShopAddress(),
+                seller.getImageUrl(),
+                seller.getRating());
+    }
 }
