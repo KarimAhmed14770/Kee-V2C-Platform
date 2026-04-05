@@ -1,16 +1,22 @@
 package com.Kee.Ecommerce.service;
 
 import com.Kee.Ecommerce.Repository.UserRepository;
+import com.Kee.Ecommerce.dto.AuthenticationResponse;
+import com.Kee.Ecommerce.dto.LoginRequest;
 import com.Kee.Ecommerce.dto.UserRegistrationDTO;
 import com.Kee.Ecommerce.dto.UserResponseDTO;
-import com.Kee.Ecommerce.entity.Credential;
-import com.Kee.Ecommerce.entity.CustomerProfile;
-import com.Kee.Ecommerce.entity.Role;
-import com.Kee.Ecommerce.entity.User;
+import com.Kee.Ecommerce.entity.*;
 import com.Kee.Ecommerce.enums.UserRoles;
 import com.Kee.Ecommerce.exception.UserAlreadyExistsException;
+import com.Kee.Ecommerce.exception.UserNotFoundException;
+import com.Kee.Ecommerce.security.UserDetailsImpl;
+import com.Kee.Ecommerce.utils.SecurityUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +28,22 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService{
 
-    private PasswordEncoder passwordEncoder;
-    private UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final SecurityUtil securityUtil;
+
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder){
+    public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder,
+                           AuthenticationManager authenticationManager,JwtService jwtService,
+                           SecurityUtil securityUtil){
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
+        this.authenticationManager=authenticationManager;
+        this.jwtService=jwtService;
+        this.securityUtil=securityUtil;
     }
 
     @Override
@@ -60,6 +75,39 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
 
         return convertToDto(user);
+    }
+
+
+    public AuthenticationResponse logIn(LoginRequest loginRequest){
+        //first we create an unauthenticated token based on request body
+        UsernamePasswordAuthenticationToken unauthenticatedToken=
+                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(),loginRequest.getPassword());
+
+        //we call authentication manager to authenticate the login
+        Authentication authentication=authenticationManager.authenticate(unauthenticatedToken);
+
+        //if authentication succeeded and didn't throw an exception, we want to get the
+        //data inside the principal UserDetails object and cast it to a UserDetails Impl then
+        //pass it to the jwtService
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        String jwt=jwtService.generateToken(userDetails);
+        boolean isProfileComplete=isProfileComplete(loginRequest.getUserName());
+        return new AuthenticationResponse(jwt,isProfileComplete);
+    }
+
+
+    private boolean isProfileComplete(String userName) {
+        User user=userRepository.findByUserNameWithRoles(userName)
+                .orElseThrow(()->new UserNotFoundException("user not found"));
+        if (user.getRoles().stream().anyMatch(r -> r.getRole() == UserRoles.ROLE_SELLER)) {
+            SellerProfile seller = user.getSellerProfile();
+            return seller != null && seller.getShopName() != null && seller.getShopAddress() != null;
+        } else if (user.getRoles().stream().anyMatch(r -> r.getRole() == UserRoles.ROLE_CUSTOMER)) {
+            CustomerProfile customer = user.getCustomerProfile();
+            return customer != null && customer.getAddress() != null;
+        }
+        return true; // Admins or other roles might not need this check
     }
 
     private User convertToUser(UserRegistrationDTO userRegistrationDTO){
