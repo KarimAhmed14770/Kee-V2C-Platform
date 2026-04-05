@@ -22,17 +22,17 @@ public class CartItem {
     private LocalDateTime addedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="customer_id")
-    private CustomerProfile customerProfile;
+    @JoinColumn(name="user_id")
+    private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
     public CartItem(){}
-    public CartItem(int quantity, CustomerProfile customerProfile, Product product) {
+    public CartItem(int quantity, User user, Product product) {
         this.quantity = quantity;
-        this.customerProfile = customerProfile;
+        this.user = user;
         this.product = product;
     }
 
@@ -60,12 +60,12 @@ public class CartItem {
         this.addedAt = addedAt;
     }
 
-    public CustomerProfile getCustomerProfile() {
-        return customerProfile;
+    public User getUser() {
+        return user;
     }
 
-    public void setCustomerProfile(CustomerProfile customerProfile) {
-        this.customerProfile = customerProfile;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Product getProduct() {

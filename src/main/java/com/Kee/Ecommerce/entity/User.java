@@ -31,6 +31,20 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name="image_url")
+    private String imageUrl;
+
+    @Column(name = "created_at")
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    @Column(name="address")
+    private String address;
+
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,
     fetch = FetchType.LAZY)
     private List<Role> roles=new ArrayList<>();
@@ -41,14 +55,9 @@ public class User {
     fetch = FetchType.LAZY)
     private Credential credential;
 
-    //when searching for a user we don't want the customer profile unless stated
-    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private CustomerProfile customerProfile;
-
     //when searching for a user we don't want the seller profile unless stated
-    @OneToOne(mappedBy = "user",fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user",fetch = FetchType.EAGER)
     private SellerProfile sellerProfile;
-
 
     public User(){}
 
@@ -124,12 +133,36 @@ public class User {
         }
     }
 
-    public CustomerProfile getCustomerProfile() {
-        return customerProfile;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setCustomerProfile(CustomerProfile customerProfile) {
-        this.customerProfile = customerProfile;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public SellerProfile getSellerProfile() {

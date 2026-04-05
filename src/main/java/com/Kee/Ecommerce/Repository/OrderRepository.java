@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order,Long> {
 
-    Page<Order> findByCustomerProfileId(Long id, Pageable pageable);
+    Page<Order> findByUserId(Long id, Pageable pageable);
 
     Page<Order> findByStatus(OrderStatus status, Pageable pageable);
 }

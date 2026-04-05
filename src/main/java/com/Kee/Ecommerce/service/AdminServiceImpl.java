@@ -90,7 +90,7 @@ public class AdminServiceImpl implements AdminService {
                 user.getLastName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
-                user.getCustomerProfile().getCreatedAt(),
+                user.getCreatedAt(),
                 roles
         );
         return dto;

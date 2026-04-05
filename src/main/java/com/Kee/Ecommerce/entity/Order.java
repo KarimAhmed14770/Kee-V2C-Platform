@@ -39,8 +39,8 @@ public class Order {
 
     //we don't want Customer details when searching for an order unless stated
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private CustomerProfile customerProfile;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     //also when we search for an order we don't  want the order items unless stated
     @OneToMany(mappedBy = "order",fetch = FetchType.LAZY)
@@ -49,11 +49,11 @@ public class Order {
 
     public Order(){}
 
-    public Order(String shippingAddress, OrderStatus status, BigDecimal totalPrice, CustomerProfile customerProfile, List<OrderItem> orderItems) {
+    public Order(String shippingAddress, OrderStatus status, BigDecimal totalPrice, User user, List<OrderItem> orderItems) {
         ShippingAddress = shippingAddress;
         this.status = status;
         this.totalPrice = totalPrice;
-        this.customerProfile = customerProfile;
+        this.user = user;
         this.orderItems = orderItems;
     }
 
@@ -105,12 +105,12 @@ public class Order {
         this.delivered_at = delivered_at;
     }
 
-    public CustomerProfile getCustomerId() {
-        return customerProfile;
+    public User getUser() {
+        return user;
     }
 
-    public void setCustomerId(CustomerProfile customerProfile) {
-        this.customerProfile = customerProfile;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public List<OrderItem> getOrderItems() {

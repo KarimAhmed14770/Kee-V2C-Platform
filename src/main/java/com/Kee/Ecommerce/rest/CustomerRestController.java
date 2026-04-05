@@ -1,10 +1,8 @@
 package com.Kee.Ecommerce.rest;
 
-import com.Kee.Ecommerce.dto.CustomerProfileRequest;
-import com.Kee.Ecommerce.dto.CustomerProfileResponse;
-import com.Kee.Ecommerce.dto.SellerProfileRequest;
-import com.Kee.Ecommerce.dto.SellerProfileResponse;
-import com.Kee.Ecommerce.service.CustomerService;
+import com.Kee.Ecommerce.dto.UserProfileRequest;
+import com.Kee.Ecommerce.dto.UserProfileResponse;
+import com.Kee.Ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,19 +11,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerRestController {
-    private final CustomerService customerService;
+    private final UserService userService;
 
     @Autowired
-    public CustomerRestController(CustomerService customerService){
-        this.customerService=customerService;
+    public CustomerRestController(UserService userService){
+        this.userService=userService;
     }
     @PutMapping("/update")
-    public ResponseEntity<CustomerProfileResponse> updateSeller(@RequestBody CustomerProfileRequest customerProfileRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(customerService.updateCustomerProfile(customerProfileRequest));
+    public ResponseEntity<UserProfileResponse> updateSeller(@RequestBody UserProfileRequest userProfileRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateCustomerProfile(userProfileRequest));
     }
 
     @GetMapping("/my-profile")
-    public ResponseEntity<CustomerProfileResponse> myProfile(){
-        return ResponseEntity.status(HttpStatus.OK).body(customerService.myProfile());
+    public ResponseEntity<UserProfileResponse> myProfile(){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.myProfile());
     }
 }

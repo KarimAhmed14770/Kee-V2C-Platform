@@ -1,10 +1,9 @@
 package com.Kee.Ecommerce.service;
 
+import com.Kee.Ecommerce.Repository.CategoryRepository;
+import com.Kee.Ecommerce.Repository.ProductRepository;
 import com.Kee.Ecommerce.Repository.UserRepository;
-import com.Kee.Ecommerce.dto.AuthenticationResponse;
-import com.Kee.Ecommerce.dto.LoginRequest;
-import com.Kee.Ecommerce.dto.UserRegistrationDTO;
-import com.Kee.Ecommerce.dto.UserResponseDTO;
+import com.Kee.Ecommerce.dto.*;
 import com.Kee.Ecommerce.entity.*;
 import com.Kee.Ecommerce.enums.UserRoles;
 import com.Kee.Ecommerce.exception.UserAlreadyExistsException;
@@ -17,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -69,8 +69,6 @@ public class UserServiceImpl implements UserService{
         String encodedPassword=passwordEncoder.encode(user.getCredential().getPassword());
         user.getCredential().setPassword(encodedPassword);
 
-        CustomerProfile customerProfile=new CustomerProfile(user,null,true);
-        user.setCustomerProfile(customerProfile);
 
         userRepository.save(user);
 
@@ -100,12 +98,8 @@ public class UserServiceImpl implements UserService{
     private boolean isProfileComplete(String userName) {
         User user=userRepository.findByUserNameWithRoles(userName)
                 .orElseThrow(()->new UserNotFoundException("user not found"));
-        if (user.getRoles().stream().anyMatch(r -> r.getRole() == UserRoles.ROLE_SELLER)) {
-            SellerProfile seller = user.getSellerProfile();
-            return seller != null && seller.getShopName() != null && seller.getShopAddress() != null;
-        } else if (user.getRoles().stream().anyMatch(r -> r.getRole() == UserRoles.ROLE_CUSTOMER)) {
-            CustomerProfile customer = user.getCustomerProfile();
-            return customer != null && customer.getAddress() != null;
+        if (user.getRoles().stream().anyMatch(r -> r.getRole() == UserRoles.ROLE_CUSTOMER)) {
+            return user != null && user.getAddress() != null;
         }
         return true; // Admins or other roles might not need this check
     }
@@ -120,6 +114,45 @@ public class UserServiceImpl implements UserService{
         return registeredUser;
     }
 
+    @Override
+    public UserProfileResponse updateCustomerProfile(UserProfileRequest userProfileRequest){
+        Long userId=securityUtil.getCurrentUserId();
+        User user=userRepository.findById(userId)
+                .orElseThrow(()->new UsernameNotFoundException("Customer with id: "
+                        +userId+"does not exist"));
+
+        return updateCustomer(userProfileRequest,user);
+    }
+
+    @Override
+    public UserProfileResponse myProfile(){
+        Long userId=securityUtil.getCurrentUserId();
+        User user=userRepository.findById(userId)
+                .orElseThrow(()->new UsernameNotFoundException("Customer with id: "
+                        +userId+"does not exist"));
+        return new UserProfileResponse(user.getFirstName(),user.getLastName(),user.getPhoneNumber()
+                ,user.getImageUrl(),user.getAddress(),user.getUpdatedAt());
+    }
+
+    @Override
+    public UserProfileResponse partialUpdateCustomerProfile(Long id){
+        User user=userRepository.findById(id).
+                orElseThrow(()->new UserNotFoundException("customer not found"));
+        return null;
+    }
+
+    private UserProfileResponse updateCustomer(UserProfileRequest request, User user){
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setPhoneNumber(request.phoneNumber());
+        user.setAddress(request.address());
+        user.setImageUrl(request.imageUrl());
+        userRepository.save(user);
+        return new UserProfileResponse(user.getFirstName(),user.getLastName(),user.getPhoneNumber()
+                ,user.getImageUrl(),user.getAddress(),user.getUpdatedAt());
+    }
+
+
     private UserResponseDTO convertToDto(User user){
         List<String> roles=user.getRoles().stream().map((role)->role.getRole().name()).toList();
         UserResponseDTO responseDTO=new UserResponseDTO(
@@ -128,7 +161,7 @@ public class UserServiceImpl implements UserService{
                 user.getLastName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
-                user.getCustomerProfile().getCreatedAt(),
+                user.getCreatedAt(),
                 roles);
         return responseDTO;
     }
