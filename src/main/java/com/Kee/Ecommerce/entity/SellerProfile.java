@@ -51,6 +51,10 @@ public class SellerProfile {
     @OneToMany(mappedBy = "sellerProfile",fetch = FetchType.LAZY)
     private List<Product> products=new ArrayList<>();
 
+    //when searching for a seller we don't want the list of inventories unless stated
+    @OneToMany(mappedBy = "seller",fetch = FetchType.LAZY)
+    private List<Inventory> inventories=new ArrayList<>();
+
     public SellerProfile(){}
 
     public SellerProfile(String shopName, User user,boolean active) {

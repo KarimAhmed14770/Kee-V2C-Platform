@@ -7,6 +7,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Table(name="products")
 @EntityListeners(AuditingEntityListener.class)
@@ -27,8 +29,6 @@ public class Product {
     @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name = "stock")
-    private int stock;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -54,6 +54,11 @@ public class Product {
     @JoinColumn(name = "seller_id")
     private SellerProfile sellerProfile;
 
+    //removing or saving a product we want to save stock too so cascade all same for removal
+    //each product might have different stocks upon different inventories
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private List<Stock> stock;
+
     @OneToOne(mappedBy = "product",fetch = FetchType.LAZY)
     private CartItem cartItem;
 
@@ -61,12 +66,11 @@ public class Product {
 
     public Product(){}
 
-    public Product(SellerProfile sellerProfile, String name, String description, BigDecimal price, int stock, String imageUrl) {
+    public Product(SellerProfile sellerProfile, String name, String description, BigDecimal price, String imageUrl) {
         this.sellerProfile = sellerProfile;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.stock = stock;
         this.imageUrl = imageUrl;
     }
 
@@ -118,13 +122,6 @@ public class Product {
         this.price = price;
     }
 
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
 
     public String getImageUrl() {
         return imageUrl;
@@ -168,7 +165,6 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", stock=" + stock +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
