@@ -20,19 +20,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:4200")
 public class AuthRestController {
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
 
     @Autowired
     public AuthRestController(UserService userService,AuthenticationManager authenticationManager,
                               JwtService jwtService){
         this.userService=userService;
-        this.authenticationManager=authenticationManager;
-        this.jwtService=jwtService;
     }
 
     @PostMapping("/register")
@@ -42,21 +37,7 @@ public class AuthRestController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> loginProcess(@RequestBody LoginRequest loginRequest){
-        //first we create an unauthenticated token based on request body
-        UsernamePasswordAuthenticationToken unauthenticatedToken=
-                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(),loginRequest.getPassword());
-
-        //we call authentication manager to authenticate the login
-        Authentication authentication=authenticationManager.authenticate(unauthenticatedToken);
-
-        //if authentication succeeded and didn't throw an exception, we want to get the
-        //data inside the principal UserDetails object and cast it to a UserDetails Impl then
-        //pass it to the jwtService
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        String jwt=jwtService.generateToken(userDetails);
-
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(userService.logIn(loginRequest));
         }
 
 }
