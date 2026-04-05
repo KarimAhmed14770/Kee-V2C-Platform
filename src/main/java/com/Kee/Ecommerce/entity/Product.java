@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -57,7 +58,7 @@ public class Product {
     //removing or saving a product we want to save stock too so cascade all same for removal
     //each product might have different stocks upon different inventories
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-    private List<Stock> stock;
+    private List<Stock> stock=new ArrayList<>();
 
     @OneToOne(mappedBy = "product",fetch = FetchType.LAZY)
     private CartItem cartItem;
@@ -147,6 +148,25 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
+    public List<Stock> getStock() {
+        return stock;
+    }
+
+    public void setStock(List<Stock> stock) {
+        this.stock = stock;
+    }
+
+    public CartItem getCartItem() {
+        return cartItem;
+    }
+
+    public void setCartItem(CartItem cartItem) {
+        this.cartItem = cartItem;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
 
     public boolean getActive() {
         return active;
