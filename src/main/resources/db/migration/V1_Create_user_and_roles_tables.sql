@@ -13,11 +13,17 @@ CREATE TABLE `users` (
   `last_name` varchar(45) NOT NULL,
   `email`  varchar(45) 	NOT NULL,
   `phone_number` varchar(20) default Null,  
+  `address` VARCHAR(500) DEFAULT NULL,
+  `image_url` VARCHAR(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL default current_timestamp,
+  `updated_at` datetime Not null default current_timestamp On update current_timestamp,
+  `active` boolean DEFAULT true,
   PRIMARY KEY (`id`),
   Constraint `unique_email` UNIQUE (`email`),
   INDEX idx_user_phone_number (phone_number),
   INDEX idx_user_full_name (first_name, last_name),-- index for first name only or firstname+lastname
-  INDEX idx_user_last_name ( last_name)
+  INDEX idx_user_last_name ( last_name),
+  FULLTEXT idx_customer_address (`address`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
@@ -38,8 +44,6 @@ CREATE TABLE `users_credentials` (
 
 
 
-
-Show Index from users;
 
 DROP TABLE IF EXISTS `users_roles`;
 

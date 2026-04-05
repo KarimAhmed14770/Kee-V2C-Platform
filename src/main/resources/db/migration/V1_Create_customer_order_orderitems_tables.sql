@@ -6,36 +6,19 @@ USE `Apex_Cart_Ecommerce`;
 --
 
 
-DROP TABLE IF EXISTS `customer`;
-
-
-CREATE TABLE `customer` (
-    `customer_id` int NOT NULL,
-    `address` VARCHAR(500) DEFAULT NULL,
-    `image_url` VARCHAR(255) DEFAULT NULL,
-    `created_at` datetime NOT NULL default current_timestamp,
-    `updated_at` datetime Not null default current_timestamp On update current_timestamp,
-    `active` boolean DEFAULT true,
-	PRIMARY KEY (`customer_id`),
-	constraint `Fk_customer_user` FOREIGN KEY (`customer_id`) REFERENCES `users`(`id`),
-    FULLTEXT idx_customer_address (`address`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-
-
 DROP TABLE IF EXISTS `orders`;
 
 CREATE TABLE `orders` (
 	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
-	`customer_id` int NOT NULL,
-    `shipping_address` varchar(128) NOT NULL,
+	`user_id` int NOT NULL,
+    `shipping_address` varchar(128) NOT NULL,-- could be the same as the users address or different
     `status` varchar(20) default 'Pending',  -- CANCELED,PENDING,SHIPPED,DELIVERED
     `total_price` DECIMAL(10,2) NOT NULL,
     `ordered_at` datetime  not null default current_timestamp, 
     `delivered_at` datetime default null,
     
 	PRIMARY KEY (`id`),
-    Constraint `customer_order_fk` Foreign key (`customer_id`) REFERENCES customer(`customer_id`),
+    Constraint `user_order_fk` Foreign key (`user_id`) REFERENCES users(`id`),
 	INDEX idx_order_price (total_price)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
