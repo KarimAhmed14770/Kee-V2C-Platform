@@ -1,9 +1,6 @@
 package com.Kee.Ecommerce.rest;
 
-import com.Kee.Ecommerce.dto.CartItemRequest;
-import com.Kee.Ecommerce.dto.CartResponse;
-import com.Kee.Ecommerce.dto.UserProfileRequest;
-import com.Kee.Ecommerce.dto.UserProfileResponse;
+import com.Kee.Ecommerce.dto.*;
 import com.Kee.Ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,5 +34,10 @@ public class CustomerRestController {
     @GetMapping("/cart")
     public ResponseEntity<CartResponse> viewMyCart(){
         return ResponseEntity.status(HttpStatus.OK).body(userService.viewMyCart());
+    }
+
+    @PostMapping("/cart/checkout")
+    public ResponseEntity<CheckoutResponse> checkout(@RequestBody CheckOutRequest checkOutRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.checkOut(checkOutRequest));
     }
 }
