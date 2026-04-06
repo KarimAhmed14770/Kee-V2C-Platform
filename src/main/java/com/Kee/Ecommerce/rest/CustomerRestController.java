@@ -1,5 +1,7 @@
 package com.Kee.Ecommerce.rest;
 
+import com.Kee.Ecommerce.dto.CartItemRequest;
+import com.Kee.Ecommerce.dto.CartResponse;
 import com.Kee.Ecommerce.dto.UserProfileRequest;
 import com.Kee.Ecommerce.dto.UserProfileResponse;
 import com.Kee.Ecommerce.service.UserService;
@@ -25,5 +27,15 @@ public class CustomerRestController {
     @GetMapping("/my-profile")
     public ResponseEntity<UserProfileResponse> myProfile(){
         return ResponseEntity.status(HttpStatus.OK).body(userService.myProfile());
+    }
+
+    @PostMapping("/cart")
+    public ResponseEntity<CartResponse> addToCart(@RequestBody CartItemRequest cartItemRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.addToCart(cartItemRequest));
+    }
+
+    @GetMapping("/cart")
+    public ResponseEntity<CartResponse> viewMyCart(){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.viewMyCart());
     }
 }
