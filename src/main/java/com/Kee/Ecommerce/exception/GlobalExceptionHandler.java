@@ -91,11 +91,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<UserErrorResponse> handleException
             (CartEmptyException cartEmptyException){
         UserErrorResponse error=new UserErrorResponse();
-        error.setStatus(HttpStatus.NO_CONTENT.value());
+        error.setStatus(HttpStatus.CONFLICT.value());
         error.setMessage(cartEmptyException.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
 
-        return new ResponseEntity<>(error,HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(error,HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler
