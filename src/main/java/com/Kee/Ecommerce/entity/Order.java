@@ -2,7 +2,9 @@ package com.Kee.Ecommerce.entity;
 
 import com.Kee.Ecommerce.enums.OrderStatus;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name="orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +33,10 @@ public class Order {
 
 
     @Column(name = "ordered_at")
-    @LastModifiedDate
+    @CreatedDate
     private LocalDateTime orderedAt;
 
-    @Column(name = "updated_at")
-    @LastModifiedDate
+    @Column(name = "delivered_at")
     private LocalDateTime delivered_at;
 
     //we don't want Customer details when searching for an order unless stated
@@ -43,12 +45,18 @@ public class Order {
     private User user;
 
     //also when we search for an order we don't  want the order items unless stated
-    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY)
+    //when we save or delete an order we want order items to be saved or deleted automatically
+    //so cacade is all
+    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     List<OrderItem> orderItems=new ArrayList<>();
 
 
     public Order(){}
 
+    public Order(String shippingAddress, OrderStatus status) {
+        ShippingAddress = shippingAddress;
+        this.status = status;
+    }
     public Order(String shippingAddress, OrderStatus status, BigDecimal totalPrice, User user, List<OrderItem> orderItems) {
         ShippingAddress = shippingAddress;
         this.status = status;
@@ -121,6 +129,10 @@ public class Order {
         this.orderItems = orderItems;
     }
 
+    public void addOrderItem(OrderItem orderItem){
+        this.orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
     @Override
     public String toString() {
         return "Order{" +
