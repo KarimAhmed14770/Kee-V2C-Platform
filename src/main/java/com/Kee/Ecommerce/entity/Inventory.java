@@ -81,6 +81,14 @@ public class Inventory {
         this.stocks = stocks;
     }
 
+    public SellerProfile getSeller() {
+        return seller;
+    }
+
+    public void setSeller(SellerProfile seller) {
+        this.seller = seller;
+    }
+
     @Override
     public String toString() {
         return "Inventory{" +
