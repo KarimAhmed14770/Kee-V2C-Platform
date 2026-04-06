@@ -3,11 +3,13 @@ package com.Kee.Ecommerce.entity;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="cart_item")
+@EntityListeners(AuditingEntityListener.class)
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +17,7 @@ public class CartItem {
     private Long id;
 
     @Column(name = "quantity")
-    private int quantity;
+    private Integer quantity;
 
     @Column(name = "added_at")
     @LastModifiedDate
@@ -30,7 +32,7 @@ public class CartItem {
     private Product product;
 
     public CartItem(){}
-    public CartItem(int quantity, User user, Product product) {
+    public CartItem(Integer quantity, User user, Product product) {
         this.quantity = quantity;
         this.user = user;
         this.product = product;
@@ -44,11 +46,11 @@ public class CartItem {
         this.id = id;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
