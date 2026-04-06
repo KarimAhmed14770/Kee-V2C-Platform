@@ -1,11 +1,9 @@
 package com.Kee.Ecommerce.service;
 
-import com.Kee.Ecommerce.Repository.CartItemRepository;
-import com.Kee.Ecommerce.Repository.CategoryRepository;
-import com.Kee.Ecommerce.Repository.ProductRepository;
-import com.Kee.Ecommerce.Repository.UserRepository;
+import com.Kee.Ecommerce.Repository.*;
 import com.Kee.Ecommerce.dto.*;
 import com.Kee.Ecommerce.entity.*;
+import com.Kee.Ecommerce.enums.OrderStatus;
 import com.Kee.Ecommerce.enums.UserRoles;
 import com.Kee.Ecommerce.exception.*;
 import com.Kee.Ecommerce.security.UserDetailsImpl;
@@ -37,13 +35,16 @@ public class UserServiceImpl implements UserService{
     private final JwtService jwtService;
     private final SecurityUtil securityUtil;
     private final CartItemRepository cartItemRepository;
+    private final StockRepository stockRepository;
+    private final OrderRepository orderRepository;
 
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder,
                            AuthenticationManager authenticationManager,JwtService jwtService,
                            ProductRepository productRepository, SecurityUtil securityUtil
-                            ,CartItemRepository cartItemRepository){
+                            ,CartItemRepository cartItemRepository,StockRepository stockRepository,
+                           OrderRepository orderRepository){
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
         this.authenticationManager=authenticationManager;
@@ -51,6 +52,8 @@ public class UserServiceImpl implements UserService{
         this.securityUtil=securityUtil;
         this.productRepository=productRepository;
         this.cartItemRepository=cartItemRepository;
+        this.stockRepository=stockRepository;
+        this.orderRepository=orderRepository;
     }
 
     @Override
@@ -179,6 +182,25 @@ public class UserServiceImpl implements UserService{
         return convertCartListToDto(cartItems);
     }
 
+    @Override
+    @Transactional //to roll back if anything occurs
+    public CheckoutResponse checkOut(CheckOutRequest checkOutRequest){
+        //Retrieve: Fetch the Cart from the database using the userId.
+        List<CartItem> cart=getUserCart();
+        //Validate: Check if every item in that cart is still in stock (The Atomic Shield).
+        cartStockValidationAndUpdate(cart);
+        //Convert: Transform the Cart items into Order items and Order
+        Order order=convertCartToOrder(checkOutRequest,cart);
+        orderRepository.save(order);
+
+        //empty the cart of the user on the db , this is better than deleting 1 by 1 in loop
+        cartItemRepository.deleteAllInBatch(cart);
+
+        //Respond: Return an OrderResponse.
+        return new CheckoutResponse(order.getId(),order.getTotalPrice(),order.getStatus().name(),
+                order.getOrderedAt(),order.getShippingAddress());
+    }
+
 
     private UserProfileResponse updateCustomer(UserProfileRequest request, User user){
         user.setFirstName(request.firstName());
@@ -261,5 +283,40 @@ public class UserServiceImpl implements UserService{
             totalPrice=totalPrice.add(cartItemResponse.subtotal());
         }
         return new CartResponse(cartItemResponses,totalPrice);
+    }
+
+    private List<CartItem> getUserCart(){
+        List<CartItem> cart=cartItemRepository.findByUserIdWithDetails(getCurrentUser().getId());
+        if(cart.isEmpty()){
+            throw new CartEmptyException("your shopping cart is currently empty");
+        }
+       return cart;
+    }
+
+    private void cartStockValidationAndUpdate(List<CartItem> cart){
+        int rowsUpdated=0;
+        for(CartItem cartItem:cart){
+            rowsUpdated= stockRepository.decrementProductStock(cartItem.getQuantity(),
+                    cartItem.getProduct().getId(),
+                    cartItem.getProduct().getSellerProfile().getInventories().get(0).getId());
+            if(rowsUpdated==0){
+                throw new InsufficientStockException("Product with id: "+cartItem.getProduct().getId()+
+                        " is out of stock");
+            }
+        }
+    }
+    private Order convertCartToOrder(CheckOutRequest checkOutRequest,List<CartItem> cart){
+        Order order=new Order(checkOutRequest.shippingAddress(), OrderStatus.PENDING);//order first status is pending
+        order.setUser(getCurrentUser());
+        BigDecimal totalPrice=new BigDecimal(0);
+        for(CartItem cartItem:cart){
+            OrderItem orderItem=new OrderItem(order,cartItem.getProduct().getId(),
+                    cartItem.getQuantity(),cartItem.getProduct().getPrice());
+            order.addOrderItem(orderItem);
+            totalPrice=totalPrice.add(cartItem.getProduct().getPrice().
+                    multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+        }
+        order.setTotalPrice(totalPrice);
+        return order;
     }
 }

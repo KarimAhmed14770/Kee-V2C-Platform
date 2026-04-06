@@ -12,4 +12,5 @@ public interface UserService {
     UserProfileResponse partialUpdateCustomerProfile(Long id);
     CartResponse addToCart(CartItemRequest cartItemRequest);
     CartResponse viewMyCart();
+    CheckoutResponse checkOut(CheckOutRequest checkOutRequest);
 }
