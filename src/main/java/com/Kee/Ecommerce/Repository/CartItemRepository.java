@@ -5,6 +5,8 @@ import com.Kee.Ecommerce.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,4 +19,11 @@ public interface CartItemRepository extends JpaRepository<CartItem,Long> {
     boolean existsByUserIdAndProductId(Long userId, Long productId);
 
     List<CartItem> findAllByUserId(Long userId);
+
+    @Query("SELECT ci FROM CartItem ci " +
+            "JOIN FETCH ci.product p " +
+            "JOIN FETCH p.sellerProfile s " +
+            "JOIN FETCH s.inventories " +
+            "WHERE ci.user.id = :userId")
+    List<CartItem> findByUserIdWithDetails(@Param("userId") Long userId);
 }
