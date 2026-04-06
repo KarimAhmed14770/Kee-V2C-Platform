@@ -2,6 +2,8 @@ package com.Kee.Ecommerce.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name="order_items")
 public class OrderItem {
@@ -17,7 +19,7 @@ public class OrderItem {
     private int quantity;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     //if we search about an order item we don't want the whole order info unless stated
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,7 +29,7 @@ public class OrderItem {
 
     public OrderItem(){}
 
-    public OrderItem(Order order, Long productId, int quantity, double price) {
+    public OrderItem(Order order, Long productId, int quantity, BigDecimal price) {
         this.order = order;
         this.productId = productId;
         this.quantity = quantity;
@@ -42,11 +44,11 @@ public class OrderItem {
         this.id = id;
     }
 
-    public Order getOrderId() {
+    public Order getOrder() {
         return order;
     }
 
-    public void setOrderId(Order order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
 
@@ -66,11 +68,11 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
