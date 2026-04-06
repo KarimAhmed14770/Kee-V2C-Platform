@@ -1,12 +1,10 @@
 package com.Kee.Ecommerce.service;
 
-import com.Kee.Ecommerce.dto.ProductRequest;
-import com.Kee.Ecommerce.dto.ProductResponse;
-import com.Kee.Ecommerce.dto.SellerProfileRequest;
-import com.Kee.Ecommerce.dto.SellerProfileResponse;
+import com.Kee.Ecommerce.dto.*;
 
 public interface SellerService {
     SellerProfileResponse updateSellerProfile(SellerProfileRequest sellerProfileRequest);
     ProductResponse addProduct(ProductRequest productRequest);
     SellerProfileResponse myProfile();
+    InventoryResponse addInventory(InventoryRequest inventoryRequest);
 }

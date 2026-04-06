@@ -4,10 +4,7 @@ import com.Kee.Ecommerce.Repository.CategoryRepository;
 import com.Kee.Ecommerce.Repository.InventoryRepository;
 import com.Kee.Ecommerce.Repository.ProductRepository;
 import com.Kee.Ecommerce.Repository.SellerProfileRepository;
-import com.Kee.Ecommerce.dto.ProductRequest;
-import com.Kee.Ecommerce.dto.ProductResponse;
-import com.Kee.Ecommerce.dto.SellerProfileRequest;
-import com.Kee.Ecommerce.dto.SellerProfileResponse;
+import com.Kee.Ecommerce.dto.*;
 import com.Kee.Ecommerce.entity.Inventory;
 import com.Kee.Ecommerce.entity.Product;
 import com.Kee.Ecommerce.entity.SellerProfile;
@@ -61,6 +58,15 @@ public class SellerServiceImpl implements SellerService {
         return convertToDto(product);
     }
 
+    @Transactional
+    public InventoryResponse addInventory(InventoryRequest inventoryRequest){
+        Inventory inventory=new Inventory(inventoryRequest.name(),inventoryRequest.location());
+        SellerProfile seller=getSellerProfile();
+        inventory.setSeller(seller);
+        inventoryRepository.save(inventory);
+        return new InventoryResponse(inventory.getName(),inventory.getLocation(),inventory.getCreatedAt());
+    }
+
     private Product convertToProduct(ProductRequest productRequest){
         Product product=new Product();
         Inventory inventory=inventoryRepository.findById(productRequest.inventoryId())
@@ -73,10 +79,7 @@ public class SellerServiceImpl implements SellerService {
         product.setImageUrl(productRequest.imageUrl());
         product.setActive(productRequest.status());
 
-
-        Long userId=securityUtil.getCurrentUserId();
-        SellerProfile sellerProfile=sellerProfileRepository.findByUserId(userId)
-                .orElseThrow(()->new UsernameNotFoundException("No seller with this ID"));
+        SellerProfile sellerProfile=getSellerProfile();
 
         product.setCategory(categoryRepository.findById(productRequest.categoryId())//bidirectional link
                 .orElseThrow(()->new CategoryNotFoundException("Category with id: "
@@ -104,13 +107,18 @@ public class SellerServiceImpl implements SellerService {
     }
 
     public SellerProfileResponse myProfile(){
-        Long userId=securityUtil.getCurrentUserId();
-        SellerProfile seller=sellerProfileRepository.findByUserId(userId)
-                .orElseThrow(()->new UsernameNotFoundException("Seller with id: "
-                        +userId+"does not exist"));
+        SellerProfile seller=getSellerProfile();
         return new SellerProfileResponse(seller.getShopName(),
                 seller.getShopAddress(),
                 seller.getImageUrl(),
                 seller.getRating());
+    }
+
+    private SellerProfile getSellerProfile(){
+        Long userId=securityUtil.getCurrentUserId();
+        SellerProfile seller=sellerProfileRepository.findByUserId(userId)
+                .orElseThrow(()->new UsernameNotFoundException("Seller with id: "
+                        +userId+"does not exist"));
+        return seller;
     }
 }

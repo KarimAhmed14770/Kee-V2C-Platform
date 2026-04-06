@@ -37,10 +37,6 @@ public class SellerProfile {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-
-    @Column(name="active")
-    private boolean active;
-
     //when searching for a seller we most probably want all the seller info
     @OneToOne(fetch = FetchType.EAGER)
     @MapsId //maps the id of the seller to the id of the customer
@@ -57,10 +53,9 @@ public class SellerProfile {
 
     public SellerProfile(){}
 
-    public SellerProfile(String shopName, User user,boolean active) {
+    public SellerProfile(String shopName, User user) {
         this.shopName = shopName;
         this.user=user;
-        this.active=active;
     }
 
     public SellerProfile(String shopName, float rating, User user) {
@@ -133,13 +128,6 @@ public class SellerProfile {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 
     public String getShopAddress() {
         return shopAddress;
@@ -160,6 +148,11 @@ public class SellerProfile {
     public void addProduct(Product product){
         products.add(product);
         product.setSellerProfile(this);//the bi-directional link
+    }
+
+    public void addInventory(Inventory inventory){
+        inventories.add(inventory);
+        inventory.setSeller(this);
     }
 
 

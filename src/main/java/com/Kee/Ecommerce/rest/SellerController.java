@@ -31,6 +31,11 @@ public class SellerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.addProduct(productRequest));
     }
 
+    @PostMapping("/inventory")
+    public ResponseEntity<InventoryResponse> addInventory(@RequestBody InventoryRequest inventoryRequest){
+        return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.addInventory(inventoryRequest));
+    }
+
     @GetMapping("/my-profile")
     public ResponseEntity<SellerProfileResponse> myProfile(){
         return ResponseEntity.status(HttpStatus.OK).body(sellerService.myProfile());
