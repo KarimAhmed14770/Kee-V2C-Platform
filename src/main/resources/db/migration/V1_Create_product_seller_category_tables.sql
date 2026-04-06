@@ -3,7 +3,6 @@ USE `Apex_Cart_Ecommerce`;
 
 
 
-DROP TABLE IF EXISTS `category`;
 
 CREATE TABLE `category` (
 	`id` int NOT NULL AUTO_INCREMENT,
@@ -16,7 +15,6 @@ CREATE TABLE `category` (
     FULLTEXT idx_category_description (`description`) -- for searching for specific substrings inside the description
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `seller`;
 
 CREATE TABLE `seller` (
 	`seller_id` int NOT NULL,
@@ -26,7 +24,6 @@ CREATE TABLE `seller` (
     `image_url` VARCHAR(255) DEFAULT NULL,
     `created_at` datetime NOT NULL default current_timestamp,
     `updated_at` datetime Not null default current_timestamp On update current_timestamp,
-    `active` boolean DEFAULT true,
 	PRIMARY KEY (`seller_id`),
     constraint `unique_shop_name` UNIQUE (`shop_name`),
     FULLTEXT idx_shop_address (`shop_address`), -- for searching for specific substrings inside the description
@@ -34,7 +31,6 @@ CREATE TABLE `seller` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-DROP TABLE IF EXISTS `products`;
 
 CREATE TABLE `products` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -56,7 +52,6 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-DROP TABLE IF EXISTS `inventory`;
 
 CREATE TABLE `inventory` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -69,7 +64,6 @@ CREATE TABLE `inventory` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-DROP TABLE IF EXISTS `stock`;
 
 CREATE TABLE `stock` (
   `id` int NOT NULL AUTO_INCREMENT,

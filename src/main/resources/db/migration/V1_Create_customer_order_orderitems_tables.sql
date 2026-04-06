@@ -6,7 +6,6 @@ USE `Apex_Cart_Ecommerce`;
 --
 
 
-DROP TABLE IF EXISTS `orders`;
 
 CREATE TABLE `orders` (
 	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
@@ -24,7 +23,6 @@ CREATE TABLE `orders` (
 
 
 
-DROP TABLE IF EXISTS `order_items`;
 
 CREATE TABLE `order_items` (
   `id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search

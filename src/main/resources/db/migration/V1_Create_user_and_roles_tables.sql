@@ -5,7 +5,6 @@ USE `Apex_Cart_Ecommerce`;
 -- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -17,7 +16,6 @@ CREATE TABLE `users` (
   `image_url` VARCHAR(255) DEFAULT NULL,
   `created_at` datetime NOT NULL default current_timestamp,
   `updated_at` datetime Not null default current_timestamp On update current_timestamp,
-  `active` boolean DEFAULT true,
   PRIMARY KEY (`id`),
   Constraint `unique_email` UNIQUE (`email`),
   INDEX idx_user_phone_number (phone_number),
@@ -28,7 +26,6 @@ CREATE TABLE `users` (
 
 
 
-DROP TABLE IF EXISTS `users_credentials`;
 
 CREATE TABLE `users_credentials` (
   `user_id` int NOT NULL,
@@ -45,8 +42,6 @@ CREATE TABLE `users_credentials` (
 
 
 
-DROP TABLE IF EXISTS `users_roles`;
-
 CREATE TABLE `users_roles` (
   `id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
   `role` varchar(45) NOT NULL,
@@ -55,12 +50,3 @@ CREATE TABLE `users_roles` (
   constraint `Fk_roles_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
   CONSTRAINT unique_user_role UNIQUE (user_id, role) -- prevents the bug where a user might be assigned the same role twice 
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-
-
-
-
-
-
-
-
