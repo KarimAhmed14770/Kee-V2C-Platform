@@ -1,17 +1,18 @@
 package com.Kee.Ecommerce.service;
 
+import com.Kee.Ecommerce.Repository.CartItemRepository;
 import com.Kee.Ecommerce.Repository.CategoryRepository;
 import com.Kee.Ecommerce.Repository.ProductRepository;
 import com.Kee.Ecommerce.Repository.UserRepository;
 import com.Kee.Ecommerce.dto.*;
 import com.Kee.Ecommerce.entity.*;
 import com.Kee.Ecommerce.enums.UserRoles;
-import com.Kee.Ecommerce.exception.UserAlreadyExistsException;
-import com.Kee.Ecommerce.exception.UserNotFoundException;
+import com.Kee.Ecommerce.exception.*;
 import com.Kee.Ecommerce.security.UserDetailsImpl;
 import com.Kee.Ecommerce.utils.SecurityUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,20 +32,25 @@ public class UserServiceImpl implements UserService{
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final SecurityUtil securityUtil;
+    private final CartItemRepository cartItemRepository;
 
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder,
                            AuthenticationManager authenticationManager,JwtService jwtService,
-                           SecurityUtil securityUtil){
+                           ProductRepository productRepository, SecurityUtil securityUtil
+                            ,CartItemRepository cartItemRepository){
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
         this.authenticationManager=authenticationManager;
         this.jwtService=jwtService;
         this.securityUtil=securityUtil;
+        this.productRepository=productRepository;
+        this.cartItemRepository=cartItemRepository;
     }
 
     @Override
@@ -136,10 +143,39 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserProfileResponse partialUpdateCustomerProfile(Long id){
-        User user=userRepository.findById(id).
-                orElseThrow(()->new UserNotFoundException("customer not found"));
+
         return null;
     }
+
+
+    @Transactional
+    public CartResponse addToCart(CartItemRequest cartItemRequest){
+        User user=getCurrentUser();
+        Product product=getProductById(cartItemRequest.productId());
+        int requiredQuantity=0;
+
+        if(cartItemRepository.existsByUserIdAndProductId(user.getId(),product.getId())){
+            CartItem cartItem=cartItemRepository.findByUserIdAndProductId(user.getId(),product.getId())
+                    .orElseThrow(()->new CartItemNotFoundException("cartItem not found"));
+            requiredQuantity=cartItem.getQuantity()+cartItemRequest.quantity();
+            cartItemHandling(product,cartItem,requiredQuantity);
+        }
+        else{
+            requiredQuantity=cartItemRequest.quantity();
+            CartItem newcartItem=new CartItem(requiredQuantity,user,product);
+            cartItemHandling(product,newcartItem,requiredQuantity);
+
+        }
+
+        List<CartItem> cartItems=cartItemRepository.findAllByUserId(user.getId());
+        if(cartItems.isEmpty()){
+            throw new CartEmptyException("your shopping cart is currently empty");
+        }
+
+
+    return convertCartListToDto(cartItems);
+    }
+
 
     private UserProfileResponse updateCustomer(UserProfileRequest request, User user){
         user.setFirstName(request.firstName());
@@ -164,5 +200,63 @@ public class UserServiceImpl implements UserService{
                 user.getCreatedAt(),
                 roles);
         return responseDTO;
+    }
+
+    private User getCurrentUser(){
+        Long id=securityUtil.getCurrentUserId();
+         return userRepository.findById(id).
+                orElseThrow(()->new UserNotFoundException("customer not found"));
+    }
+
+    private Product getProductById(Long id){
+        return productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException("product with id: "+id+" not found."));
+    }
+
+    private void cartItemHandling(Product product,CartItem cartItem,int requiredQuantity){
+        if(requiredQuantity>0){
+            //this if condition is hardcoded now for testing only 1 inventory
+            //in future updates there will be multiple inventories and the inventory choice will
+            //be dependent on user location ,aldo is stock isn't sufficient at one inventory we can
+            //use the stock from another inventory
+            if(requiredQuantity<=product.getStock().get(0).getQuantity()){
+                cartItem.setQuantity(requiredQuantity);
+                cartItemRepository.save(cartItem);
+            }
+            else{
+                throw new InsufficientStockException("Insufficient stock for product with id: " +
+                        product.getId() +" ." +
+                        "Requested quantity= "+requiredQuantity+
+                        "          Available Stock= "
+                        +product.getStock().get(0).getQuantity());
+            }
+        }
+        else{
+            cartItemRepository.delete(cartItem);
+            cartItemRepository.flush(); // Forces the delete to happen immediatly
+        }
+
+    }
+
+    private CartItemResponse convertCartItemtoDto(CartItem cartItem){
+        CartItemResponse cartItemResponse=new CartItemResponse(
+                cartItem.getProduct().getId(),
+                cartItem.getProduct().getName(),
+                cartItem.getQuantity(),
+                cartItem.getProduct().getPrice(),
+                cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()))
+        );
+        return cartItemResponse;
+    }
+
+    private CartResponse convertCartListToDto(List<CartItem> cartItems){
+        BigDecimal totalPrice=new BigDecimal(0);
+        List<CartItemResponse> cartItemResponses=new ArrayList<>();
+        for(CartItem cartItem:cartItems){
+            CartItemResponse cartItemResponse=convertCartItemtoDto(cartItem);
+            cartItemResponses.add(cartItemResponse);
+            totalPrice=totalPrice.add(cartItemResponse.subtotal());
+        }
+        return new CartResponse(cartItemResponses,totalPrice);
     }
 }

@@ -9,4 +9,5 @@ public interface UserService {
     UserProfileResponse updateCustomerProfile(UserProfileRequest userProfileRequest);
     UserProfileResponse myProfile();
     UserProfileResponse partialUpdateCustomerProfile(Long id);
+    CartResponse addToCart(CartItemRequest cartItemRequest);
 }
