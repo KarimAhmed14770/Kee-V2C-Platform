@@ -2,6 +2,7 @@ package com.Kee.Ecommerce.service;
 
 
 import com.Kee.Ecommerce.dto.*;
+import com.Kee.Ecommerce.entity.User;
 
 public interface UserService {
     UserResponseDTO register(UserRegistrationDTO userRegistrationDTO);
@@ -10,4 +11,5 @@ public interface UserService {
     UserProfileResponse myProfile();
     UserProfileResponse partialUpdateCustomerProfile(Long id);
     CartResponse addToCart(CartItemRequest cartItemRequest);
+    CartResponse viewMyCart();
 }

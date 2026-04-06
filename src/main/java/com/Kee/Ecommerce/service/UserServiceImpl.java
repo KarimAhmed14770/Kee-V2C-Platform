@@ -167,13 +167,16 @@ public class UserServiceImpl implements UserService{
 
         }
 
-        List<CartItem> cartItems=cartItemRepository.findAllByUserId(user.getId());
+        return viewMyCart();
+    }
+
+    @Override
+    public CartResponse viewMyCart(){
+        List<CartItem> cartItems=cartItemRepository.findAllByUserId(getCurrentUser().getId());
         if(cartItems.isEmpty()){
             throw new CartEmptyException("your shopping cart is currently empty");
         }
-
-
-    return convertCartListToDto(cartItems);
+        return convertCartListToDto(cartItems);
     }
 
 
