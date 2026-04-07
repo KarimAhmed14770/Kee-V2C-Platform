@@ -34,4 +34,7 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     //returning only active products  by name containing
     Page<Product> findByNameContainingIgnoreCaseAndActiveTrue(String name, Pageable pageable);
 
+    //returning only active products  by description containing
+    Page<Product> findByDescriptionContainingIgnoreCaseAndActiveTrue(String name, Pageable pageable);
+
 }
