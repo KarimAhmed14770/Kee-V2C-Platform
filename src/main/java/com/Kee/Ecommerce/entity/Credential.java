@@ -47,9 +47,10 @@ public class Credential {
 
     public Credential(){}
 
-    public Credential(String userName, String password, boolean enabled) {
+    public Credential(String userName, String password, String email,boolean enabled) {
         this.userName = userName;
         this.password = password;
+        this.email=email;
         this.enabled = enabled;
     }
 
@@ -101,6 +102,37 @@ public class Credential {
         this.enabled = enabled;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Vendor getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     @Override
     public String toString() {
