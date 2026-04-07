@@ -1,15 +1,12 @@
-Create DATABASE  IF NOT EXISTS `Apex_Cart_Ecommerce`;
-USE `Apex_Cart_Ecommerce`;
+USE `Kee_V2C_Platform`;
 
---
--- Table structure for table `customer`
---
 
+Drop table if exists `orders`;
 
 
 CREATE TABLE `orders` (
 	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
-	`user_id` int NOT NULL,
+	`customer_id` int NOT NULL,
     `shipping_address` varchar(128) NOT NULL,-- could be the same as the users address or different
     `status` varchar(20) default 'Pending',  -- CANCELED,PENDING,SHIPPED,DELIVERED
     `total_price` DECIMAL(10,2) NOT NULL,
@@ -17,11 +14,12 @@ CREATE TABLE `orders` (
     `delivered_at` datetime default null,
     
 	PRIMARY KEY (`id`),
-    Constraint `user_order_fk` Foreign key (`user_id`) REFERENCES users(`id`),
+    Constraint `customer_order_fk` Foreign key (`customer_id`) REFERENCES customers(`id`),
 	INDEX idx_order_price (total_price)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
+Drop table if exists `order_items`;
 
 
 CREATE TABLE `order_items` (
@@ -31,8 +29,8 @@ CREATE TABLE `order_items` (
   `quantity` int not null,
   `price` DECIMAL(10,2) NOT NULL,
   PRIMARY KEY (`id`),
-  Constraint `items_orderid_fk` Foreign key (`order_id`) REFERENCES orders(`id`),
-  Constraint `items_product_fk` Foreign key (`product_id`) REFERENCES products(`id`)
+  Constraint `orderitems_orderid_fk` Foreign key (`order_id`) REFERENCES orders(`id`),
+  Constraint `orderitems_product_fk` Foreign key (`product_id`) REFERENCES products(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
