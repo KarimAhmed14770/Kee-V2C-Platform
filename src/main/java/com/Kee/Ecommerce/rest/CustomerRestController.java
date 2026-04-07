@@ -1,8 +1,10 @@
 package com.Kee.Ecommerce.rest;
 
 import com.Kee.Ecommerce.dto.*;
+import com.Kee.Ecommerce.entity.Product;
 import com.Kee.Ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +18,15 @@ public class CustomerRestController {
     public CustomerRestController(UserService userService){
         this.userService=userService;
     }
-    @PutMapping("/update")
-    public ResponseEntity<UserProfileResponse> updateSeller(@RequestBody UserProfileRequest userProfileRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.updateCustomerProfile(userProfileRequest));
-    }
 
     @GetMapping("/my-profile")
     public ResponseEntity<UserProfileResponse> myProfile(){
         return ResponseEntity.status(HttpStatus.OK).body(userService.myProfile());
     }
-
+    @PatchMapping("/my-profile")
+    public ResponseEntity<UserProfileResponse> myProfileUpdate(@RequestBody UserProfileRequest updateRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.partialUpdateCustomerProfile(updateRequest));
+    }
     @PostMapping("/cart")
     public ResponseEntity<CartResponse> addToCart(@RequestBody CartItemRequest cartItemRequest){
         return ResponseEntity.status(HttpStatus.OK).body(userService.addToCart(cartItemRequest));
