@@ -29,7 +29,7 @@ CREATE TABLE `customers` (
   `shipping_Address` VARCHAR(500) DEFAULT NULL,
   `image_url` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  Constraint fk_customer_user_id foreign key (`id`) references users_credentials(`id`),
+  Constraint fk_customer_credential_id foreign key (`id`) references users_credentials(`id`),
   INDEX idx_user_phone_number (phone_number),
   INDEX idx_user_full_name (first_name, last_name),-- index for first name only or firstname+lastname
   INDEX idx_user_last_name ( last_name),
@@ -52,7 +52,7 @@ CREATE TABLE `vendors` (
 	PRIMARY KEY (`id`),
     constraint unique_vendor_name UNIQUE (`vendor_name`),
     FULLTEXT idx_vendor_description (`description`), -- for searching for specific vendors based on description
-	constraint `fk_vendor_user_id` FOREIGN KEY (`id`) REFERENCES `users_credentials`(`id`)
+	constraint `fk_vendor_credential_id` FOREIGN KEY (`id`) REFERENCES `users_credentials`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 Drop table if exists `users_roles`;
@@ -61,5 +61,5 @@ CREATE TABLE `users_roles` (
   `user_id` int NOT NULL,
   `role` varchar(45) NOT NULL,
   PRIMARY KEY (`user_id`),
-  constraint `Fk_roles_userid` FOREIGN KEY (`user_id`) REFERENCES `users_credentials`(`id`)
+  constraint `fk_role_credential_id` FOREIGN KEY (`user_id`) REFERENCES `users_credentials`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
