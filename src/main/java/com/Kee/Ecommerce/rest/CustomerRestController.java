@@ -41,4 +41,9 @@ public class CustomerRestController {
     public ResponseEntity<CheckoutResponse> checkout(@RequestBody CheckOutRequest checkOutRequest){
         return ResponseEntity.status(HttpStatus.OK).body(userService.checkOut(checkOutRequest));
     }
+
+    @GetMapping("invoice/{orderId}")
+   public ResponseEntity<InvoiceResponse> getInvoice(@PathVariable Long orderId){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.generateInvoice(orderId));
+    }
 }
