@@ -3,14 +3,14 @@ USE `Kee_V2C_Platform`;
 Drop table if exists `customers`;
 
 CREATE TABLE `customers` (
-  `customer_id` int NOT NULL,
+  `id` int NOT NULL,
   `first_name` varchar(45) NOT NULL,
   `last_name` varchar(45) NOT NULL,
   `phone_number` varchar(20) default Null,  
   `shipping_Address` VARCHAR(500) DEFAULT NULL,
   `image_url` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
-  Constraint fk_customer_user_id foreign key (`customer_id`) references users_credentials(`id`),
+  Constraint fk_customer_user_id foreign key (`id`) references users_credentials(`id`),
   INDEX idx_user_phone_number (phone_number),
   INDEX idx_user_full_name (first_name, last_name),-- index for first name only or firstname+lastname
   INDEX idx_user_last_name ( last_name),
@@ -40,8 +40,8 @@ CREATE TABLE `users_credentials` (
 Drop table if exists `vendor`;
 
 
-CREATE TABLE `vendor` (
-	`vendor_id` int NOT NULL,
+CREATE TABLE `vendors` (
+	`id` int NOT NULL,
 	`vendor_name` varchar(45) Default NULL,
     `description` varchar(500) NOT NULL, -- description what type of products, what categories ...etc
     `business_address` VARCHAR(500) NOT NULL,-- the address of the main branch for the vendor 
@@ -51,7 +51,7 @@ CREATE TABLE `vendor` (
     constraint unique_vendor_name UNIQUE (`vendor_name`),
     FULLTEXT idx_vendor_description (`description`), -- for searching for specific shops based on description
     FULLTEXT idx_vendor_address (`vendor_address`), -- for searching for specific substrings inside the description
-	constraint `fk_vendor_user_id` FOREIGN KEY (`vendor_id`) REFERENCES `users_credentials`(`id`)
+	constraint `fk_vendor_user_id` FOREIGN KEY (`id`) REFERENCES `users_credentials`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 Drop table if exists `users_roles`;
