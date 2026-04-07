@@ -63,6 +63,9 @@ public class Product {
     @OneToOne(mappedBy = "product",fetch = FetchType.LAZY)
     private CartItem cartItem;
 
+    @OneToMany(mappedBy = "product")
+    private List<OrderItem> orderItems=new ArrayList<>();
+
 
 
     public Product(){}
@@ -176,7 +179,13 @@ public class Product {
         this.active = active;
     }
 
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
 
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 
     @Override
     public String toString() {

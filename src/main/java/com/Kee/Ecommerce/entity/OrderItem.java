@@ -1,5 +1,6 @@
 package com.Kee.Ecommerce.entity;
 
+import com.Kee.Ecommerce.rest.ProductController;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -12,14 +13,15 @@ public class OrderItem {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(name = "quantity")
     private int quantity;
 
     @Column(name = "price")
-    private BigDecimal price;
+    private BigDecimal priceAtPurchase;
 
     //if we search about an order item we don't want the whole order info unless stated
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,11 +31,11 @@ public class OrderItem {
 
     public OrderItem(){}
 
-    public OrderItem(Order order, Long productId, int quantity, BigDecimal price) {
+    public OrderItem(Order order, Product product, int quantity, BigDecimal priceAtPurchase) {
         this.order = order;
-        this.productId = productId;
+        this.product = product;
         this.quantity = quantity;
-        this.price = price;
+        this.priceAtPurchase = priceAtPurchase;
     }
 
     public Long getId() {
@@ -52,12 +54,12 @@ public class OrderItem {
         this.order = order;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProductId(Product product) {
+        this.product = product;
     }
 
     public int getQuantity() {
@@ -68,21 +70,21 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getPriceAtPurchase() {
+        return priceAtPurchase;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setPriceAtPurchase(BigDecimal priceAtPurchase) {
+        this.priceAtPurchase = priceAtPurchase;
     }
 
     @Override
     public String toString() {
         return "OrderItem{" +
                 "id=" + id +
-                ", productId=" + productId +
+                "Product id:" +getProduct().getId()+
                 ", quantity=" + quantity +
-                ", price=" + price +
+                ", price=" + priceAtPurchase +
                 '}';
     }
 }
