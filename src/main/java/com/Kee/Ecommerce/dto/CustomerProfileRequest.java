@@ -1,6 +1,6 @@
 package com.Kee.Ecommerce.dto;
 
-public record UserProfileRequest(String firstName,
+public record CustomerProfileRequest(String firstName,
                                  String lastName,
                                  String phoneNumber,
                                  String imageUrl,
