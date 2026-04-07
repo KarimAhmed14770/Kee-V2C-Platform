@@ -42,6 +42,14 @@ public class Role {
         this.role = role;
     }
 
+    public Credential getCredential() {
+        return credential;
+    }
+
+    public void setCredential(Credential credential) {
+        this.credential = credential;
+    }
+
     @Override
     public String toString() {
         return "Role{" +
