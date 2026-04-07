@@ -15,4 +15,5 @@ public interface UserService {
     CartResponse addToCart(CartItemRequest cartItemRequest);
     CartResponse viewMyCart();
     CheckoutResponse checkOut(CheckOutRequest checkOutRequest);
+    InvoiceResponse generateInvoice(long orderId);
 }

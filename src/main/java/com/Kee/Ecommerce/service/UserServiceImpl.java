@@ -9,7 +9,7 @@ import com.Kee.Ecommerce.exception.*;
 import com.Kee.Ecommerce.mapper.UserMapper;
 import com.Kee.Ecommerce.security.UserDetailsImpl;
 import com.Kee.Ecommerce.utils.SecurityUtil;
-import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +20,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -128,15 +130,6 @@ public class UserServiceImpl implements UserService{
         return registeredUser;
     }
 
-    @Override
-    public UserProfileResponse updateCustomerProfile(UserProfileRequest userProfileRequest){
-        Long userId=securityUtil.getCurrentUserId();
-        User user=userRepository.findById(userId)
-                .orElseThrow(()->new UsernameNotFoundException("Customer with id: "
-                        +userId+"does not exist"));
-
-        return updateCustomer(userProfileRequest,user);
-    }
 
     @Override
     public UserProfileResponse myProfile(){
@@ -211,6 +204,36 @@ public class UserServiceImpl implements UserService{
                 order.getOrderedAt(),order.getShippingAddress());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public InvoiceResponse generateInvoice(long orderId){
+        User user=getCurrentUser();
+        Order order=orderRepository.findByIdWithItemsDetails(orderId).orElseThrow(
+                ()->new OrderNotFoundException("you don't have an order with id: "+orderId)
+        );
+        if(!(order.getUser().equals(user))){
+            throw new UserAccessDeniedException ("you can't access this order");
+        }
+        List<OrderItemResponse> orderItemsResponse=new ArrayList<>();
+        for(OrderItem orderItem:order.getOrderItems()){
+            OrderItemResponse response=new OrderItemResponse(
+                    orderItem.getProduct().getId(),
+                    orderItem.getProduct().getName(),
+                    orderItem.getProduct().getImageUrl(),
+                    orderItem.getQuantity(),
+                    orderItem.getPriceAtPurchase(),
+                    orderItem.getPriceAtPurchase().multiply(BigDecimal.valueOf(orderItem.getQuantity()))
+            );
+            orderItemsResponse.add(response);
+        }
+
+        return new InvoiceResponse(
+                order.getId(),
+                order.getOrderedAt(),
+                orderItemsResponse,
+                order.getTotalPrice()
+        );
+    }
 
     private UserProfileResponse updateCustomer(UserProfileRequest request, User user){
         user.setFirstName(request.firstName());
@@ -320,7 +343,7 @@ public class UserServiceImpl implements UserService{
         order.setUser(getCurrentUser());
         BigDecimal totalPrice=new BigDecimal(0);
         for(CartItem cartItem:cart){
-            OrderItem orderItem=new OrderItem(order,cartItem.getProduct().getId(),
+            OrderItem orderItem=new OrderItem(order,cartItem.getProduct(),
                     cartItem.getQuantity(),cartItem.getProduct().getPrice());
             order.addOrderItem(orderItem);
             totalPrice=totalPrice.add(cartItem.getProduct().getPrice().
