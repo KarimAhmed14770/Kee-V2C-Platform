@@ -1,9 +1,9 @@
 package com.Kee.Ecommerce.Repository;
 
-import com.Kee.Ecommerce.entity.Inventory;
+import com.Kee.Ecommerce.entity.ProductModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface InventoryRepository extends JpaRepository<Inventory,Long> {
+public interface ProductModelRepository extends JpaRepository<ProductModel,Long> {
 }
