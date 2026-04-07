@@ -6,11 +6,13 @@ import com.Kee.Ecommerce.entity.*;
 import com.Kee.Ecommerce.enums.OrderStatus;
 import com.Kee.Ecommerce.enums.UserRoles;
 import com.Kee.Ecommerce.exception.*;
+import com.Kee.Ecommerce.mapper.UserMapper;
 import com.Kee.Ecommerce.security.UserDetailsImpl;
 import com.Kee.Ecommerce.utils.SecurityUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService{
     private final CartItemRepository cartItemRepository;
     private final StockRepository stockRepository;
     private final OrderRepository orderRepository;
+    private final UserMapper userMapper;
 
 
     @Autowired
@@ -44,7 +47,7 @@ public class UserServiceImpl implements UserService{
                            AuthenticationManager authenticationManager,JwtService jwtService,
                            ProductRepository productRepository, SecurityUtil securityUtil
                             ,CartItemRepository cartItemRepository,StockRepository stockRepository,
-                           OrderRepository orderRepository){
+                           OrderRepository orderRepository,UserMapper userMapper){
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
         this.authenticationManager=authenticationManager;
@@ -54,6 +57,7 @@ public class UserServiceImpl implements UserService{
         this.cartItemRepository=cartItemRepository;
         this.stockRepository=stockRepository;
         this.orderRepository=orderRepository;
+        this.userMapper=userMapper;
     }
 
     @Override
@@ -145,9 +149,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserProfileResponse partialUpdateCustomerProfile(Long id){
-
-        return null;
+    @Transactional
+    public UserProfileResponse partialUpdateCustomerProfile(UserProfileRequest updateRequest){
+        User user=getCurrentUser();
+        userMapper.updateProductFromDto(updateRequest,user);
+        userRepository.save(user);
+        return new UserProfileResponse(
+                user.getFirstName(),user.getLastName(),user.getPhoneNumber(),user.getImageUrl(),
+                user.getAddress(),user.getUpdatedAt()
+        );
     }
 
 
