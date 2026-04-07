@@ -1,4 +1,3 @@
-drop DATABASE  IF  EXISTS `Kee_V2C_Platform`;
 USE `Kee_V2C_Platform`;
 
 Drop table if exists `customers`;
