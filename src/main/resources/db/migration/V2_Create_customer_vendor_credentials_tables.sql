@@ -9,7 +9,7 @@ CREATE TABLE `customers` (
   `phone_number` varchar(20) default Null,  
   `shipping_Address` VARCHAR(500) DEFAULT NULL,
   `image_url` VARCHAR(255) DEFAULT NULL,
-  PRIMARY KEY (`customer_id`),
+  PRIMARY KEY (`id`),
   Constraint fk_customer_user_id foreign key (`id`) references users_credentials(`id`),
   INDEX idx_user_phone_number (phone_number),
   INDEX idx_user_full_name (first_name, last_name),-- index for first name only or firstname+lastname
@@ -47,7 +47,7 @@ CREATE TABLE `vendors` (
     `business_address` VARCHAR(500) NOT NULL,-- the address of the main branch for the vendor 
     `rating` DECIMAL(2,1) default 2.5, -- a vendor should start with a default rating of 2.5 , it increases or decreases based on customer review
     `image_url` VARCHAR(255) DEFAULT NULL,
-	PRIMARY KEY (`vendor_id`),
+	PRIMARY KEY (`id`),
     constraint unique_vendor_name UNIQUE (`vendor_name`),
     FULLTEXT idx_vendor_description (`description`), -- for searching for specific shops based on description
     FULLTEXT idx_vendor_address (`vendor_address`), -- for searching for specific substrings inside the description
