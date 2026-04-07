@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "inventory")
+@Table(name = "shops")
 @EntityListeners(AuditingEntityListener.class)
-public class Inventory {
+public class Shop {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -20,8 +20,8 @@ public class Inventory {
     @Column(name = "name")
     private String name;
 
-    @Column(name="location")
-    private String location;
+    @Column(name="address")
+    private String address;
 
     @Column(name = "created_at")
     @CreatedDate
@@ -31,14 +31,14 @@ public class Inventory {
     private List<Stock> stocks=new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name="seller_id")
-    private SellerProfile seller;
+    @JoinColumn(name="vendor_id")
+    private Vendor vendor;
 
-    public Inventory(){}
+    public Shop(){}
 
-    public Inventory(String name, String location) {
+    public Shop(String name, String address) {
         this.name = name;
-        this.location = location;
+        this.address = address;
     }
 
     public Long getId() {
@@ -57,12 +57,12 @@ public class Inventory {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
+    public String getAddress() {
+        return address;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -81,20 +81,22 @@ public class Inventory {
         this.stocks = stocks;
     }
 
-    public SellerProfile getSeller() {
-        return seller;
+    public Vendor getVendor() {
+        return vendor;
     }
 
-    public void setSeller(SellerProfile seller) {
-        this.seller = seller;
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
     }
+
+
 
     @Override
     public String toString() {
         return "Inventory{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", location='" + location + '\'' +
+                ", address='" + address + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }

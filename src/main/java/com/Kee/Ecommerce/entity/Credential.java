@@ -22,6 +22,9 @@ public class Credential {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
@@ -33,11 +36,14 @@ public class Credential {
     @Column(name = "enabled")
     private boolean enabled;
 
-    //when we search for a credential we don't want to fetch the user info unless stated
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name="user_id")
-    private User user;
+    @OneToOne(mappedBy = "credential",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Customer customer;
+
+    @OneToOne(mappedBy = "credential",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Vendor vendor;
+
+    @OneToOne(mappedBy = "credential",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Role role;
 
     public Credential(){}
 
@@ -96,14 +102,6 @@ public class Credential {
     }
 
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public String toString() {
         return "Credential{" +
@@ -114,22 +112,3 @@ public class Credential {
                 '}';
     }
 }
-
-
-/*
-CREATE TABLE `users_credentials` (
-        `id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
-  `user_name` varchar(45) NOT NULL,
-  `password` varchar(255) NOT NULL,-- bcrypt just needs 68 char, but we make it 255 to give ourself a space for more complex algo in future
-  `created_at` datetime NOT NULL,
-        `updated_at` datetime,
-        `enabled` boolean NOT NULL default 1,
-        `user_id` int NOT NULL,
-PRIMARY KEY (`id`),
-key `user_name_idx` (`user_name`),
-constraint `Fk_credentials_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-constraint `unique_user_name` UNIQUE (`user_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-
- */

@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="categories")
-public class Category {
+@Table(name="brands")
+public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,20 +22,11 @@ public class Category {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "active")
-    private boolean active;
+    @OneToMany(mappedBy = "brand",fetch = FetchType.LAZY)
+    private List<ProductModel> productModels=new ArrayList<>();
 
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "parentCategory")
-    List<SubCategory> subCategories=new ArrayList<>();
-    public Category(){}
-
-    public Category(String name, String description, String imageUrl, boolean active) {
-        this.name = name;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.active = active;
-    }
+    public Brand(){}
 
     public Long getId() {
         return id;
@@ -69,23 +60,13 @@ public class Category {
         this.imageUrl = imageUrl;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-
     @Override
     public String toString() {
-        return "Category{" +
+        return "Brand{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", active=" + active +
                 '}';
     }
 }

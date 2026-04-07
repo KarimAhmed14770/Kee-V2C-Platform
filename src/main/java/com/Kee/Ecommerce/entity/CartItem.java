@@ -24,17 +24,17 @@ public class CartItem {
     private LocalDateTime addedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    private User user;
+    @JoinColumn(name="customer_id")
+    private Customer customer;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
     public CartItem(){}
-    public CartItem(Integer quantity, User user, Product product) {
+        public CartItem(Integer quantity, Customer customer, Product product) {
         this.quantity = quantity;
-        this.user = user;
+        this.customer = customer;
         this.product = product;
     }
 
@@ -62,12 +62,12 @@ public class CartItem {
         this.addedAt = addedAt;
     }
 
-    public User getUser() {
-        return user;
+    public Customer getUser() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Customer customer) {
+        this.customer = customer;
     }
 
     public Product getProduct() {
@@ -78,21 +78,3 @@ public class CartItem {
         this.product = product;
     }
 }
-
-/*
-
-CREATE TABLE `cart_item` (
-	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
-    `user_id` int NOT NULL,
-    `product_id` int NOT NULL,
-    `quantity` int NOT NULL,
-    `added_at` datetime Not null default current_timestamp On update current_timestamp,
-	PRIMARY KEY (`id`),
-	constraint `Fk_customer_cart` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-	constraint `Fk_product_cart` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`)
-
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-CREATE INDEX idx_customerCart_id ON cart_item(user_id);
-
- */

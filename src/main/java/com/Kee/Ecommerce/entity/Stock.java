@@ -28,21 +28,17 @@ public class Stock {
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "inventory_id")
-    private Inventory inventory;
-
-
-
-
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 
     public Stock(){
     }
 
 
-    public Stock(int quantity, Product product, Inventory inventory) {
+    public Stock(int quantity, Product product, Shop shop) {
         this.quantity = quantity;
         this.product = product;
-        this.inventory = inventory;
+        this.shop = shop;
     }
 
     public Long getId() {
@@ -77,12 +73,12 @@ public class Stock {
         this.product = product;
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    public Shop getShop() {
+        return shop;
     }
 
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     @Override
@@ -92,7 +88,7 @@ public class Stock {
                 ", quantity=" + quantity +
                 ", updatedAt=" + updatedAt +
                 ", product=" + product +
-                ", inventory=" + inventory +
+                ", shop=" + shop +
                 '}';
     }
 }

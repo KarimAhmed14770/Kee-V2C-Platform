@@ -41,8 +41,8 @@ public class Order {
 
     //we don't want Customer details when searching for an order unless stated
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     //also when we search for an order we don't  want the order items unless stated
     //when we save or delete an order we want order items to be saved or deleted automatically
@@ -57,11 +57,11 @@ public class Order {
         ShippingAddress = shippingAddress;
         this.status = status;
     }
-    public Order(String shippingAddress, OrderStatus status, BigDecimal totalPrice, User user, List<OrderItem> orderItems) {
+    public Order(String shippingAddress, OrderStatus status, BigDecimal totalPrice, Customer customer, List<OrderItem> orderItems) {
         ShippingAddress = shippingAddress;
         this.status = status;
         this.totalPrice = totalPrice;
-        this.user = user;
+        this.customer = customer;
         this.orderItems = orderItems;
     }
 
@@ -113,12 +113,12 @@ public class Order {
         this.delivered_at = delivered_at;
     }
 
-    public User getUser() {
-        return user;
+    public Customer getUser() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Customer customer) {
+        this.customer = customer;
     }
 
     public List<OrderItem> getOrderItems() {

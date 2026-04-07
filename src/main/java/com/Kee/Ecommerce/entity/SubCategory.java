@@ -1,13 +1,11 @@
 package com.Kee.Ecommerce.entity;
 
+
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-@Table(name="categories")
-public class Category {
+@Table(name="sub_categories")
+public class SubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,17 +23,11 @@ public class Category {
     @Column(name = "active")
     private boolean active;
 
+    @ManyToOne
+    @JoinColumn(name = "parent_category_id")
+    private Category parentCategory;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "parentCategory")
-    List<SubCategory> subCategories=new ArrayList<>();
-    public Category(){}
-
-    public Category(String name, String description, String imageUrl, boolean active) {
-        this.name = name;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.active = active;
-    }
+    public SubCategory(){}
 
     public Long getId() {
         return id;
@@ -53,20 +45,20 @@ public class Category {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isActive() {
@@ -77,10 +69,17 @@ public class Category {
         this.active = active;
     }
 
+    public Category getParentCategory() {
+        return parentCategory;
+    }
+
+    public void setParentCategory(Category parentCategory) {
+        this.parentCategory = parentCategory;
+    }
 
     @Override
     public String toString() {
-        return "Category{" +
+        return "SubCategory{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

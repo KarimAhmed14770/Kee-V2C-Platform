@@ -1,13 +1,14 @@
 package com.Kee.Ecommerce.entity;
 
+
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="categories")
-public class Category {
+@Table(name="product_models")
+public class ProductModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,17 +26,14 @@ public class Category {
     @Column(name = "active")
     private boolean active;
 
+    @ManyToOne
+    @JoinColumn(name = "Brand_id")
+    private Brand brand;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "parentCategory")
-    List<SubCategory> subCategories=new ArrayList<>();
-    public Category(){}
+    @OneToMany(mappedBy = "productModel")
+    private List<Product> products=new ArrayList<>();
 
-    public Category(String name, String description, String imageUrl, boolean active) {
-        this.name = name;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.active = active;
-    }
+    public ProductModel(){}
 
     public Long getId() {
         return id;
@@ -77,10 +75,17 @@ public class Category {
         this.active = active;
     }
 
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
+    }
 
     @Override
     public String toString() {
-        return "Category{" +
+        return "ProductModel{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

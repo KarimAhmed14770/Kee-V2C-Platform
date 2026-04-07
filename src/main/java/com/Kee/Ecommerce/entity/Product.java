@@ -30,10 +30,6 @@ public class Product {
     @Column(name = "price")
     private BigDecimal price;
 
-
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
@@ -45,15 +41,15 @@ public class Product {
     @Column(name = "active")
     private boolean active;
 
-    //when searching for a product we don't want the category data unless stated
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    //when we get a product we want the model also
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="model_id")
+    private ProductModel productModel;
 
     //when searching for a product we don't want the seller data unless stated
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id")
-    private SellerProfile sellerProfile;
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
 
     //removing or saving a product we want to save stock too so cascade all same for removal
     //each product might have different stocks upon different inventories
@@ -66,16 +62,13 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<OrderItem> orderItems=new ArrayList<>();
 
-
-
     public Product(){}
 
-    public Product(SellerProfile sellerProfile, String name, String description, BigDecimal price, String imageUrl) {
-        this.sellerProfile = sellerProfile;
+    public Product(Vendor vendor, String name, String description, BigDecimal price) {
+        this.vendor = vendor;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -86,20 +79,13 @@ public class Product {
         this.id = id;
     }
 
-    public Category getCategory() {
-        return category;
+
+    public Vendor getVendor() {
+        return vendor;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public SellerProfile getSellerProfile() {
-        return sellerProfile;
-    }
-
-    public void setSellerProfile(SellerProfile sellerProfile) {
-        this.sellerProfile = sellerProfile;
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
     }
 
     public String getName() {
@@ -126,14 +112,6 @@ public class Product {
         this.price = price;
     }
 
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -187,6 +165,14 @@ public class Product {
         this.orderItems = orderItems;
     }
 
+    public ProductModel getProductModel() {
+        return productModel;
+    }
+
+    public void setProductModel(ProductModel productModel) {
+        this.productModel = productModel;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -194,7 +180,6 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", imageUrl='" + imageUrl + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", active=" + active +
