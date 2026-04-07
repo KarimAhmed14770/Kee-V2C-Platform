@@ -2,13 +2,10 @@ package com.Kee.Ecommerce.service;
 
 
 import com.Kee.Ecommerce.dto.*;
-import com.Kee.Ecommerce.entity.Product;
 import com.Kee.Ecommerce.entity.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-public interface UserService {
-    UserResponseDTO register(UserRegistrationDTO userRegistrationDTO);
+public interface CustomerService {
+    CustomerRegistrationResponse registerCustomer(CustomerRegistrationDTO customerRegistrationDTO);
     AuthenticationResponse logIn(LoginRequest loginRequest);
     UserProfileResponse myProfile();
     UserProfileResponse partialUpdateCustomerProfile(UserProfileRequest updateRequest);
