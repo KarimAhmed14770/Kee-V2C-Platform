@@ -11,9 +11,6 @@ import com.Kee.Ecommerce.security.UserDetailsImpl;
 import com.Kee.Ecommerce.utils.SecurityUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,17 +20,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.nio.file.AccessDeniedException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class CustomerServiceImpl implements CustomerService {
 
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
+    private final CredentialRepository credentialRepository;
     private final ProductRepository productRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -45,13 +40,15 @@ public class UserServiceImpl implements UserService{
 
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder,
-                           AuthenticationManager authenticationManager,JwtService jwtService,
-                           ProductRepository productRepository, SecurityUtil securityUtil
-                            ,CartItemRepository cartItemRepository,StockRepository stockRepository,
-                           OrderRepository orderRepository,UserMapper userMapper){
-        this.userRepository=userRepository;
+    public CustomerServiceImpl(CustomerRepository customerRepository, PasswordEncoder passwordEncoder,
+                               AuthenticationManager authenticationManager, JwtService jwtService,
+                               ProductRepository productRepository, SecurityUtil securityUtil
+                            , CartItemRepository cartItemRepository, StockRepository stockRepository,
+                               OrderRepository orderRepository, UserMapper userMapper,
+                               CredentialRepository credentialRepository){
+        this.customerRepository = customerRepository;
         this.passwordEncoder=passwordEncoder;
+        this.credentialRepository=credentialRepository;
         this.authenticationManager=authenticationManager;
         this.jwtService=jwtService;
         this.securityUtil=securityUtil;
@@ -64,31 +61,27 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public UserResponseDTO register(UserRegistrationDTO userRegistrationDTO){
-        User user=convertToUser(userRegistrationDTO);
-        if(userRepository.existsByEmail(user.getEmail())){
+    public CustomerRegistrationResponse registerCustomer(CustomerRegistrationDTO customerRegistrationDTO){
+        if(credentialRepository.existsByEmail(customerRegistrationDTO.email())){
             //throw a runtime exception, this mail is already listed
             throw new UserAlreadyExistsException("Email Already exists");
         }
-        if(userRepository.existsByCredentialUserName(user.getCredential().getUserName()))
+        if(credentialRepository.existsByUserName(customerRegistrationDTO.userName())
         {
             //throw a runtime exception, this username is already listed
             throw new UserAlreadyExistsException("User name Already exists");
         }
-        //hardcode the role, each user is set to customer regardless the request
-        //the addRole method ensures the bi-directional link
-        user.addRole(new Role(UserRoles.ROLE_CUSTOMER));
-        //ensure the bidirectional link between user and credential
-        user.getCredential().setUser(user);
+
+        Customer customer=convertToCustomer(customerRegistrationDTO);
 
         //hash the password using the password encoder
-        String encodedPassword=passwordEncoder.encode(user.getCredential().getPassword());
-        user.getCredential().setPassword(encodedPassword);
+        String encodedPassword=passwordEncoder.encode(customerRegistrationDTO.password());
+        customer.getCredential().setPassword(encodedPassword);
 
 
-        userRepository.save(user);
+        customerRepository.save(customer);
 
-        return convertToDto(user);
+        return convertToDto(customer);
     }
 
 
@@ -112,7 +105,7 @@ public class UserServiceImpl implements UserService{
 
 
     private boolean isProfileComplete(String userName) {
-        User user=userRepository.findByUserNameWithRoles(userName)
+        User user= customerRepository.findByUserNameWithRoles(userName)
                 .orElseThrow(()->new UserNotFoundException("user not found"));
         if (user.getRoles().stream().anyMatch(r -> r.getRole() == UserRoles.ROLE_CUSTOMER)) {
             return user != null && user.getAddress() != null;
@@ -120,21 +113,26 @@ public class UserServiceImpl implements UserService{
         return true; // Admins or other roles might not need this check
     }
 
-    private User convertToUser(UserRegistrationDTO userRegistrationDTO){
-        User registeredUser=new User(userRegistrationDTO.firstName(), userRegistrationDTO.lastName(),
-                userRegistrationDTO.email(),userRegistrationDTO.phoneNumber());
-        Credential credential=new Credential(userRegistrationDTO.userName(),
-                userRegistrationDTO.password(),true);
+    private Customer convertToCustomer(CustomerRegistrationDTO customerRegistrationDTO){
+        Customer registeredCustomer=new Customer(customerRegistrationDTO.firstName(), customerRegistrationDTO.lastName(),
+                 customerRegistrationDTO.phoneNumber());
+        Credential credential=new Credential(customerRegistrationDTO.userName(),
+                customerRegistrationDTO.password(),customerRegistrationDTO.email(),true);
 
-        registeredUser.setCredential(credential);
-        return registeredUser;
+        //attaching the credential to the customer
+        registeredCustomer.setCredential(credential);
+        //hardcoding the role to be customer
+        Role customerRole=new Role(UserRoles.ROLE_CUSTOMER);
+        credential.setRole(customerRole );
+        customerRole.setCredential(credential);//bi directional link between role and credential
+        return registeredCustomer;
     }
 
 
     @Override
     public UserProfileResponse myProfile(){
         Long userId=securityUtil.getCurrentUserId();
-        User user=userRepository.findById(userId)
+        User user= customerRepository.findById(userId)
                 .orElseThrow(()->new UsernameNotFoundException("Customer with id: "
                         +userId+"does not exist"));
         return new UserProfileResponse(user.getFirstName(),user.getLastName(),user.getPhoneNumber()
@@ -146,7 +144,7 @@ public class UserServiceImpl implements UserService{
     public UserProfileResponse partialUpdateCustomerProfile(UserProfileRequest updateRequest){
         User user=getCurrentUser();
         userMapper.updateProductFromDto(updateRequest,user);
-        userRepository.save(user);
+        customerRepository.save(user);
         return new UserProfileResponse(
                 user.getFirstName(),user.getLastName(),user.getPhoneNumber(),user.getImageUrl(),
                 user.getAddress(),user.getUpdatedAt()
@@ -241,28 +239,27 @@ public class UserServiceImpl implements UserService{
         user.setPhoneNumber(request.phoneNumber());
         user.setAddress(request.address());
         user.setImageUrl(request.imageUrl());
-        userRepository.save(user);
+        customerRepository.save(user);
         return new UserProfileResponse(user.getFirstName(),user.getLastName(),user.getPhoneNumber()
                 ,user.getImageUrl(),user.getAddress(),user.getUpdatedAt());
     }
 
 
-    private UserResponseDTO convertToDto(User user){
-        List<String> roles=user.getRoles().stream().map((role)->role.getRole().name()).toList();
-        UserResponseDTO responseDTO=new UserResponseDTO(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPhoneNumber(),
-                user.getCreatedAt(),
-                roles);
+    private CustomerRegistrationResponse convertToDto(Customer customer){
+        CustomerRegistrationResponse responseDTO=new CustomerRegistrationResponse(
+                customer.getId(),
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getCredential().getEmail(),
+                customer.getPhoneNumber(),
+                customer.getCredential().getCreatedAt(),
+                customer.getCredential().getRole().getRole().name());
         return responseDTO;
     }
 
     private User getCurrentUser(){
         Long id=securityUtil.getCurrentUserId();
-         return userRepository.findById(id).
+         return customerRepository.findById(id).
                 orElseThrow(()->new UserNotFoundException("customer not found"));
     }
 
