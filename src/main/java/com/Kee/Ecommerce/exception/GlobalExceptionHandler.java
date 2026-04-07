@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -96,6 +98,28 @@ public class GlobalExceptionHandler {
         error.setTimeStamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error,HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException
+            (OrderNotFoundException orderNotFoundException){
+        UserErrorResponse error=new UserErrorResponse();
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setMessage(orderNotFoundException.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException
+            (UserAccessDeniedException userAccessDeniedException){
+        UserErrorResponse error=new UserErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(userAccessDeniedException.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
