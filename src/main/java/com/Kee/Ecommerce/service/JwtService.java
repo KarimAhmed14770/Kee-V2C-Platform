@@ -1,25 +1,22 @@
 package com.Kee.Ecommerce.service;
 
-import com.Kee.Ecommerce.Repository.UserRepository;
-import com.Kee.Ecommerce.entity.User;
+import com.Kee.Ecommerce.Repository.CustomerRepository;
 import com.Kee.Ecommerce.security.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private UserRepository userRepository;
+    private CustomerRepository customerRepository;
 
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
@@ -28,8 +25,8 @@ public class JwtService {
     private long jwtExpiration;
 
     @Autowired
-    public JwtService(UserRepository userRepository){
-        this.userRepository=userRepository;
+    public JwtService(CustomerRepository customerRepository){
+        this.customerRepository = customerRepository;
     }
 
 
