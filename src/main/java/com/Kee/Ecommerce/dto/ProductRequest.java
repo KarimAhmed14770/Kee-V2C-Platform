@@ -9,7 +9,7 @@ public record ProductRequest(
         String description,
         BigDecimal price ,
         Integer stock,
-        Long inventoryId,
+        Long shopId,
         String imageUrl,
         Boolean status,
         Long categoryId
