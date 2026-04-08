@@ -2,7 +2,7 @@ package com.Kee.Ecommerce.rest;
 
 
 import com.Kee.Ecommerce.dto.*;
-import com.Kee.Ecommerce.service.SellerServiceImpl;
+import com.Kee.Ecommerce.service.VendorServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/sellers")
 public class SellerController {
 
-    private final SellerServiceImpl sellerService;
+    private final VendorServiceImpl sellerService;
 
 
 
 
-    public SellerController(SellerServiceImpl sellerService){
+    public SellerController(VendorServiceImpl sellerService){
         this.sellerService=sellerService;
     }
 
     @PutMapping("/update")
-    public ResponseEntity<SellerProfileResponse> updateSeller(@RequestBody SellerProfileRequest sellerProfileRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(sellerService.updateSellerProfile(sellerProfileRequest));
+    public ResponseEntity<VendorProfileResponse> updateSeller(@RequestBody VendorProfileRequest vendorProfileRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(sellerService.updateSellerProfile(vendorProfileRequest));
     }
 
-
+/*
     @PostMapping("/product")
     public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.addProduct(productRequest));
@@ -35,9 +35,9 @@ public class SellerController {
     public ResponseEntity<InventoryResponse> addInventory(@RequestBody InventoryRequest inventoryRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.addInventory(inventoryRequest));
     }
-
+*/
     @GetMapping("/my-profile")
-    public ResponseEntity<SellerProfileResponse> myProfile(){
+    public ResponseEntity<VendorProfileResponse> myProfile(){
         return ResponseEntity.status(HttpStatus.OK).body(sellerService.myProfile());
     }
 }
