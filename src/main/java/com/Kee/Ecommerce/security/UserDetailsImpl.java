@@ -1,11 +1,13 @@
 package com.Kee.Ecommerce.security;
 
-import com.Kee.Ecommerce.entity.User;
+import com.Kee.Ecommerce.entity.Credential;
+import com.Kee.Ecommerce.entity.Customer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 
 
 /*a wrapper class around the UserDetails to minimize db queries*/
@@ -15,13 +17,13 @@ public class UserDetailsImpl implements UserDetails {
         private final String password;
         private final Collection<? extends GrantedAuthority> authorities;
 
-        public UserDetailsImpl(User user) {
-            this.id = user.getId();
-            this.username = user.getCredential().getUserName();
-            this.password = user.getCredential().getPassword();
-            this.authorities = user.getRoles().stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getRole().name()))
-                    .toList();
+        public UserDetailsImpl(Credential credential) {
+            this.id = credential.getId();
+            this.username = credential.getUserName();
+            this.password = credential.getPassword();
+            this.authorities = Collections.singletonList(
+                    new SimpleGrantedAuthority(credential.getRole().getRole().name())
+            );
         }
 
         public Long getId() {
