@@ -123,6 +123,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException
+            (RoleNotAvailableException roleNotAvailableException){
+        UserErrorResponse error=new UserErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(roleNotAvailableException.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<UserErrorResponse> handleException(Exception exc) {
         UserErrorResponse error = new UserErrorResponse();
         error.setStatus(HttpStatus.BAD_REQUEST.value());
