@@ -1,5 +1,6 @@
 package com.Kee.Ecommerce.entity;
 
+import com.Kee.Ecommerce.enums.UserStatus;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -33,8 +34,9 @@ public class Credential {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Column(name = "enabled")
-    private boolean enabled;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
 
     @OneToOne(mappedBy = "credential",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Customer customer;
@@ -47,11 +49,11 @@ public class Credential {
 
     public Credential(){}
 
-    public Credential(String userName, String password, String email,boolean enabled) {
+    public Credential(String userName, String password, String email,UserStatus userStatus) {
         this.userName = userName;
         this.password = password;
         this.email=email;
-        this.enabled = enabled;
+        this.userStatus = userStatus;
     }
 
     public Long getId() {
@@ -94,12 +96,12 @@ public class Credential {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     public String getEmail() {
@@ -140,7 +142,7 @@ public class Credential {
                 "userName='" + userName + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", enabled=" + enabled +
+                ", userStatus=" + userStatus +
                 '}';
     }
 }
