@@ -17,19 +17,19 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     Optional<Product> findByName(String name);
 
     //find by strict category name
-    Page<Product> findByCategoryName(String name, Pageable pageable);
+    Page<Product> findByProductModelCategoryName(String name, Pageable pageable);
 
     //find by categoryID
-    Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
+    Page<Product> findByProductModelCategoryId(Long categoryId, Pageable pageable);
 
     //find by name that is not strict
     Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
     //finding by seller id
-    Page<Product> findBySellerProfileId(Long id,Pageable pageable);
+    Page<Product> findByVendorId(Long id,Pageable pageable);
 
     //returning only active products by category id
-    Page<Product> findByCategoryIdAndActiveTrue(Long categoryId, Pageable pageable);
+    Page<Product> findByProductModelCategoryIdAndActiveTrue(Long categoryId, Pageable pageable);
 
     //returning only active products  by name containing
     Page<Product> findByNameContainingIgnoreCaseAndActiveTrue(String name, Pageable pageable);
