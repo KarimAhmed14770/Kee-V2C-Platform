@@ -20,8 +20,11 @@ public class Vendor {
     private String name;
 
     @Column(name = "description")
-
     private String description;
+
+    @Column(name = "address")
+    private String address;
+
     @Column(name="rating")
     private float rating;
 
@@ -40,18 +43,18 @@ public class Vendor {
 
     //when searching for a vendor we don't want the list of shops unless stated
     @OneToMany(mappedBy = "vendor",fetch = FetchType.LAZY)
-    private List<Shop> inventories=new ArrayList<>();
+    private List<Shop> shops=new ArrayList<>();
 
     public Vendor(){}
 
-    public Vendor(String name) {
+    public Vendor(String name,String description, String imageUrl, String address) {
         this.name = name;
+        this.description=description;
+        this.imageUrl=imageUrl;
+        this.address=address;
+        this.rating=2.5f;//hardcode this for every new vendor
     }
 
-    public Vendor(String name, float rating){
-        this.name = name;
-        this.rating = rating;
-    }
 
     public Long getId() {
         return id;
@@ -67,6 +70,34 @@ public class Vendor {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Credential getCredential() {
+        return credential;
+    }
+
+    public void setCredential(Credential credential) {
+        this.credential = credential;
+    }
+
+    public void setShops(List<Shop> shops) {
+        this.shops = shops;
     }
 
     public float getRating() {
@@ -94,12 +125,12 @@ public class Vendor {
     }
 
 
-    public List<Inventory> getInventories() {
-        return inventories;
+    public List<Shop> getShops() {
+        return shops;
     }
 
-    public void setInventories(List<Inventory> inventories) {
-        this.inventories = inventories;
+    public void setInventories(List<Shop> shops) {
+        this.shops = shops;
     }
 
     public void addProduct(Product product){
@@ -107,9 +138,9 @@ public class Vendor {
         product.setVendor(this);//the bi-directional link
     }
 
-    public void addInventory(Inventory inventory){
-        inventories.add(inventory);
-        inventory.setVendor(this);
+    public void addShop(Shop shop){
+        shops.add(shop);
+        shop.setVendor(this);
     }
 
 
