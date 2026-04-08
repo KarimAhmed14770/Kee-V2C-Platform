@@ -3,6 +3,8 @@ package com.Kee.Ecommerce.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="sub_categories")
 public class SubCategory {
@@ -26,6 +28,9 @@ public class SubCategory {
     @ManyToOne
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
+
+    @OneToMany(mappedBy = "category")
+    private List<ProductModel> productModels;
 
     public SubCategory(){}
 
@@ -75,6 +80,14 @@ public class SubCategory {
 
     public void setParentCategory(Category parentCategory) {
         this.parentCategory = parentCategory;
+    }
+
+    public List<ProductModel> getProductModel() {
+        return productModels;
+    }
+
+    public void setProductModel(List<ProductModel> productModels) {
+        this.productModels = productModels;
     }
 
     @Override
