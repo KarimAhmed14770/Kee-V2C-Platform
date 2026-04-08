@@ -5,8 +5,9 @@ import com.Kee.Ecommerce.dto.*;
 import com.Kee.Ecommerce.entity.*;
 import com.Kee.Ecommerce.enums.OrderStatus;
 import com.Kee.Ecommerce.enums.UserRoles;
+import com.Kee.Ecommerce.enums.UserStatus;
 import com.Kee.Ecommerce.exception.*;
-import com.Kee.Ecommerce.mapper.UserMapper;
+import com.Kee.Ecommerce.mapper.CustomerMapper;
 import com.Kee.Ecommerce.security.UserDetailsImpl;
 import com.Kee.Ecommerce.utils.SecurityUtil;
 
@@ -36,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CartItemRepository cartItemRepository;
     private final StockRepository stockRepository;
     private final OrderRepository orderRepository;
-    private final UserMapper userMapper;
+    private final CustomerMapper customerMapper;
 
 
     @Autowired
@@ -44,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
                                AuthenticationManager authenticationManager, JwtService jwtService,
                                ProductRepository productRepository, SecurityUtil securityUtil
                             , CartItemRepository cartItemRepository, StockRepository stockRepository,
-                               OrderRepository orderRepository, UserMapper userMapper,
+                               OrderRepository orderRepository, CustomerMapper customerMapper,
                                CredentialRepository credentialRepository){
         this.customerRepository = customerRepository;
         this.passwordEncoder=passwordEncoder;
@@ -56,117 +57,45 @@ public class CustomerServiceImpl implements CustomerService {
         this.cartItemRepository=cartItemRepository;
         this.stockRepository=stockRepository;
         this.orderRepository=orderRepository;
-        this.userMapper=userMapper;
+        this.customerMapper=customerMapper;
+    }
+
+
+    @Override
+    public CustomerProfileResponse myProfile(){
+        Customer customer=getCurrentCustomer();
+        return new CustomerProfileResponse(customer.getId(), customer.getFirstName(),customer.getLastName(),customer.getPhoneNumber()
+                ,customer.getImageUrl(),customer.getShippingAddress());
     }
 
     @Override
     @Transactional
-    public CustomerRegistrationResponse registerCustomer(CustomerRegistrationDTO customerRegistrationDTO){
-        if(credentialRepository.existsByEmail(customerRegistrationDTO.email())){
-            //throw a runtime exception, this mail is already listed
-            throw new UserAlreadyExistsException("Email Already exists");
-        }
-        if(credentialRepository.existsByUserName(customerRegistrationDTO.userName())
-        {
-            //throw a runtime exception, this username is already listed
-            throw new UserAlreadyExistsException("User name Already exists");
-        }
-
-        Customer customer=convertToCustomer(customerRegistrationDTO);
-
-        //hash the password using the password encoder
-        String encodedPassword=passwordEncoder.encode(customerRegistrationDTO.password());
-        customer.getCredential().setPassword(encodedPassword);
-
-
+    public CustomerProfileResponse partialUpdateCustomerProfile(CustomerProfileRequest updateRequest){
+        Customer customer=getCurrentCustomer();
+        customerMapper.updateProductFromDto(updateRequest,customer);
         customerRepository.save(customer);
-
-        return convertToDto(customer);
-    }
-
-
-    public AuthenticationResponse logIn(LoginRequest loginRequest){
-        //first we create an unauthenticated token based on request body
-        UsernamePasswordAuthenticationToken unauthenticatedToken=
-                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(),loginRequest.getPassword());
-
-        //we call authentication manager to authenticate the login
-        Authentication authentication=authenticationManager.authenticate(unauthenticatedToken);
-
-        //if authentication succeeded and didn't throw an exception, we want to get the
-        //data inside the principal UserDetails object and cast it to a UserDetails Impl then
-        //pass it to the jwtService
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        String jwt=jwtService.generateToken(userDetails);
-        boolean isProfileComplete=isProfileComplete(loginRequest.getUserName());
-        return new AuthenticationResponse(jwt,isProfileComplete);
-    }
-
-
-    private boolean isProfileComplete(String userName) {
-        User user= customerRepository.findByUserNameWithRoles(userName)
-                .orElseThrow(()->new UserNotFoundException("user not found"));
-        if (user.getRoles().stream().anyMatch(r -> r.getRole() == UserRoles.ROLE_CUSTOMER)) {
-            return user != null && user.getAddress() != null;
-        }
-        return true; // Admins or other roles might not need this check
-    }
-
-    private Customer convertToCustomer(CustomerRegistrationDTO customerRegistrationDTO){
-        Customer registeredCustomer=new Customer(customerRegistrationDTO.firstName(), customerRegistrationDTO.lastName(),
-                 customerRegistrationDTO.phoneNumber());
-        Credential credential=new Credential(customerRegistrationDTO.userName(),
-                customerRegistrationDTO.password(),customerRegistrationDTO.email(),true);
-
-        //attaching the credential to the customer
-        registeredCustomer.setCredential(credential);
-        //hardcoding the role to be customer
-        Role customerRole=new Role(UserRoles.ROLE_CUSTOMER);
-        credential.setRole(customerRole );
-        customerRole.setCredential(credential);//bi directional link between role and credential
-        return registeredCustomer;
-    }
-
-
-    @Override
-    public UserProfileResponse myProfile(){
-        Long userId=securityUtil.getCurrentUserId();
-        User user= customerRepository.findById(userId)
-                .orElseThrow(()->new UsernameNotFoundException("Customer with id: "
-                        +userId+"does not exist"));
-        return new UserProfileResponse(user.getFirstName(),user.getLastName(),user.getPhoneNumber()
-                ,user.getImageUrl(),user.getAddress(),user.getUpdatedAt());
-    }
-
-    @Override
-    @Transactional
-    public UserProfileResponse partialUpdateCustomerProfile(UserProfileRequest updateRequest){
-        User user=getCurrentUser();
-        userMapper.updateProductFromDto(updateRequest,user);
-        customerRepository.save(user);
-        return new UserProfileResponse(
-                user.getFirstName(),user.getLastName(),user.getPhoneNumber(),user.getImageUrl(),
-                user.getAddress(),user.getUpdatedAt()
+        return new CustomerProfileResponse(customer.getId(),
+                customer.getFirstName(),customer.getLastName(),customer.getPhoneNumber(),customer.getImageUrl(),
+                customer.getShippingAddress()
         );
     }
 
 
     @Transactional
     public CartResponse addToCart(CartItemRequest cartItemRequest){
-        User user=getCurrentUser();
+        Customer customer=getCurrentCustomer();
         Product product=getProductById(cartItemRequest.productId());
         int requiredQuantity=0;
 
-        if(cartItemRepository.existsByUserIdAndProductId(user.getId(),product.getId())){
-            CartItem cartItem=cartItemRepository.findByUserIdAndProductId(user.getId(),product.getId())
+        if(cartItemRepository.existsByCustomerIdAndProductId(customer.getId(),product.getId())){
+            CartItem cartItem=cartItemRepository.findByCustomerIdAndProductId(customer.getId(),product.getId())
                     .orElseThrow(()->new CartItemNotFoundException("cartItem not found"));
             requiredQuantity=cartItem.getQuantity()+cartItemRequest.quantity();
             cartItemHandling(product,cartItem,requiredQuantity);
         }
         else{
             requiredQuantity=cartItemRequest.quantity();
-            CartItem newcartItem=new CartItem(requiredQuantity,user,product);
+            CartItem newcartItem=new CartItem(requiredQuantity,customer,product);
             cartItemHandling(product,newcartItem,requiredQuantity);
 
         }
@@ -176,7 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CartResponse viewMyCart(){
-        List<CartItem> cartItems=cartItemRepository.findAllByUserId(getCurrentUser().getId());
+        List<CartItem> cartItems=cartItemRepository.findAllByUserId(getCurrentCustomer().getId());
         if(cartItems.isEmpty()){
             throw new CartEmptyException("your shopping cart is currently empty");
         }
@@ -187,7 +116,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional //to roll back if anything occurs
     public CheckoutResponse checkOut(CheckOutRequest checkOutRequest){
         //Retrieve: Fetch the Cart from the database using the userId.
-        List<CartItem> cart=getUserCart();
+        List<CartItem> cart=getCustomerCart();
         //Validate: Check if every item in that cart is still in stock (The Atomic Shield).
         cartStockValidationAndUpdate(cart);
         //Convert: Transform the Cart items into Order items and Order
@@ -205,11 +134,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(readOnly = true)
     public InvoiceResponse generateInvoice(long orderId){
-        User user=getCurrentUser();
+        Customer customer=getCurrentCustomer();
         Order order=orderRepository.findByIdWithItemsDetails(orderId).orElseThrow(
                 ()->new OrderNotFoundException("you don't have an order with id: "+orderId)
         );
-        if(!(order.getUser().equals(user))){
+        if(!(order.getCustomer().equals(customer))){
             throw new UserAccessDeniedException ("you can't access this order");
         }
         List<OrderItemResponse> orderItemsResponse=new ArrayList<>();
@@ -217,7 +146,7 @@ public class CustomerServiceImpl implements CustomerService {
             OrderItemResponse response=new OrderItemResponse(
                     orderItem.getProduct().getId(),
                     orderItem.getProduct().getName(),
-                    orderItem.getProduct().getImageUrl(),
+                    orderItem.getProduct().getProductModel().getImageUrl(),
                     orderItem.getQuantity(),
                     orderItem.getPriceAtPurchase(),
                     orderItem.getPriceAtPurchase().multiply(BigDecimal.valueOf(orderItem.getQuantity()))
@@ -233,15 +162,35 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
-    private UserProfileResponse updateCustomer(UserProfileRequest request, User user){
-        user.setFirstName(request.firstName());
-        user.setLastName(request.lastName());
-        user.setPhoneNumber(request.phoneNumber());
-        user.setAddress(request.address());
-        user.setImageUrl(request.imageUrl());
-        customerRepository.save(user);
-        return new UserProfileResponse(user.getFirstName(),user.getLastName(),user.getPhoneNumber()
-                ,user.getImageUrl(),user.getAddress(),user.getUpdatedAt());
+
+
+    /*Helper Methods*/
+
+
+    private Customer convertToCustomer(CustomerRegistrationDTO customerRegistrationDTO){
+        Customer registeredCustomer=new Customer(customerRegistrationDTO.firstName(), customerRegistrationDTO.lastName(),
+                customerRegistrationDTO.phoneNumber());
+        Credential credential=new Credential(customerRegistrationDTO.userName(),
+                customerRegistrationDTO.password(),customerRegistrationDTO.email(), UserStatus.ACTIVE);
+
+        //attaching the credential to the customer
+        registeredCustomer.setCredential(credential);
+        //hardcoding the role to be customer
+        Role customerRole=new Role(UserRoles.ROLE_CUSTOMER);
+        credential.setRole(customerRole );
+        customerRole.setCredential(credential);//bi directional link between role and credential
+        return registeredCustomer;
+    }
+
+    private CustomerProfileResponse updateCustomer(CustomerProfileRequest request, Customer customer){
+        customer.setFirstName(request.firstName());
+        customer.setLastName(request.lastName());
+        customer.setPhoneNumber(request.phoneNumber());
+        customer.setShippingAddress(request.address());
+        customer.setImageUrl(request.imageUrl());
+        customerRepository.save(customer);
+        return new CustomerProfileResponse(customer.getId(),customer.getFirstName(),customer.getLastName(),customer.getPhoneNumber()
+                ,customer.getImageUrl(),customer.getShippingAddress());
     }
 
 
@@ -257,7 +206,7 @@ public class CustomerServiceImpl implements CustomerService {
         return responseDTO;
     }
 
-    private User getCurrentUser(){
+    private Customer getCurrentCustomer(){
         Long id=securityUtil.getCurrentUserId();
          return customerRepository.findById(id).
                 orElseThrow(()->new UserNotFoundException("customer not found"));
@@ -293,7 +242,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-    private CartItemResponse convertCartItemtoDto(CartItem cartItem){
+    private CartItemResponse convertCartItemToDto(CartItem cartItem){
         CartItemResponse cartItemResponse=new CartItemResponse(
                 cartItem.getProduct().getId(),
                 cartItem.getProduct().getName(),
@@ -308,15 +257,15 @@ public class CustomerServiceImpl implements CustomerService {
         BigDecimal totalPrice=new BigDecimal(0);
         List<CartItemResponse> cartItemResponses=new ArrayList<>();
         for(CartItem cartItem:cartItems){
-            CartItemResponse cartItemResponse=convertCartItemtoDto(cartItem);
+            CartItemResponse cartItemResponse=convertCartItemToDto(cartItem);
             cartItemResponses.add(cartItemResponse);
             totalPrice=totalPrice.add(cartItemResponse.subtotal());
         }
         return new CartResponse(cartItemResponses,totalPrice);
     }
 
-    private List<CartItem> getUserCart(){
-        List<CartItem> cart=cartItemRepository.findByUserIdWithDetails(getCurrentUser().getId());
+    private List<CartItem> getCustomerCart(){
+        List<CartItem> cart=cartItemRepository.findByCustomerIdWithDetails(getCurrentCustomer().getId());
         if(cart.isEmpty()){
             throw new CartEmptyException("your shopping cart is currently empty");
         }
@@ -328,7 +277,7 @@ public class CustomerServiceImpl implements CustomerService {
         for(CartItem cartItem:cart){
             rowsUpdated= stockRepository.decrementProductStock(cartItem.getQuantity(),
                     cartItem.getProduct().getId(),
-                    cartItem.getProduct().getSellerProfile().getInventories().get(0).getId());
+                    cartItem.getProduct().getVendor().getShops().get(0).getId());
             if(rowsUpdated==0){
                 throw new InsufficientStockException("Product with id: "+cartItem.getProduct().getId()+
                         " is out of stock");
@@ -337,7 +286,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
     private Order convertCartToOrder(CheckOutRequest checkOutRequest,List<CartItem> cart){
         Order order=new Order(checkOutRequest.shippingAddress(), OrderStatus.PENDING);//order first status is pending
-        order.setUser(getCurrentUser());
+        order.setCustomer(getCurrentCustomer());
         BigDecimal totalPrice=new BigDecimal(0);
         for(CartItem cartItem:cart){
             OrderItem orderItem=new OrderItem(order,cartItem.getProduct(),
