@@ -34,6 +34,14 @@ public class SubCategory {
 
     public SubCategory(){}
 
+    public SubCategory(Category parentCategory,String name, String description,String imageUrl, boolean active){
+        this.parentCategory=parentCategory;
+        this.name=name;
+        this.description=description;
+        this.imageUrl=imageUrl;
+        this.active=active;
+    }
+
     public Long getId() {
         return id;
     }
