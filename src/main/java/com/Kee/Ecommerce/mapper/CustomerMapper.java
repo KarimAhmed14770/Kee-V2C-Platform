@@ -9,5 +9,5 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface CustomerMapper {
-    void updateProductFromDto(CustomerProfileRequest updateRequest, @MappingTarget Customer customer);
+    void updateCustomerFromDto(CustomerProfileRequest updateRequest, @MappingTarget Customer customer);
 }

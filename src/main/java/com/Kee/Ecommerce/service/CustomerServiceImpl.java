@@ -72,7 +72,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public CustomerProfileResponse partialUpdateCustomerProfile(CustomerProfileRequest updateRequest){
         Customer customer=getCurrentCustomer();
-        customerMapper.updateProductFromDto(updateRequest,customer);
+        customerMapper.updateCustomerFromDto(updateRequest,customer);
         customerRepository.save(customer);
         return new CustomerProfileResponse(customer.getId(),
                 customer.getFirstName(),customer.getLastName(),customer.getPhoneNumber(),customer.getImageUrl(),
