@@ -14,16 +14,16 @@ import java.util.Optional;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem,Long> {
-    Optional<CartItem> findByUserIdAndProductId(Long userId, Long productId);
+    Optional<CartItem> findByCustomerIdAndProductId(Long userId, Long productId);
 
-    boolean existsByUserIdAndProductId(Long userId, Long productId);
+    boolean existsByCustomerIdAndProductId(Long userId, Long productId);
 
     List<CartItem> findAllByUserId(Long userId);
 
     @Query("SELECT ci FROM CartItem ci " +
             "JOIN FETCH ci.product p " +
-            "JOIN FETCH p.sellerProfile s " +
-            "JOIN FETCH s.inventories " +
-            "WHERE ci.user.id = :userId")
-    List<CartItem> findByUserIdWithDetails(@Param("userId") Long userId);
+            "JOIN FETCH p.vendor v " +
+            "JOIN FETCH v.shops " +
+            "WHERE ci.customer.id = :customerId")
+    List<CartItem> findByCustomerIdWithDetails(@Param("customerId") Long customerId);
 }
