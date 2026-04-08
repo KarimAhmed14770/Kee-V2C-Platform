@@ -45,6 +45,9 @@ public class Vendor {
     @OneToMany(mappedBy = "vendor",fetch = FetchType.LAZY)
     private List<Shop> shops=new ArrayList<>();
 
+    @OneToMany(mappedBy = "vendor",fetch = FetchType.LAZY)
+    private List<ProductModel> productModels=new ArrayList<>();//for products created by this vendor
+
     public Vendor(){}
 
     public Vendor(String name,String description, String imageUrl, String address) {
@@ -143,6 +146,13 @@ public class Vendor {
         shop.setVendor(this);
     }
 
+    public List<ProductModel> getProductModels() {
+        return productModels;
+    }
+
+    public void setProductModels(List<ProductModel> productModels) {
+        this.productModels = productModels;
+    }
 
     @Override
     public String toString() {

@@ -1,6 +1,7 @@
 package com.Kee.Ecommerce.entity;
 
 
+import com.Kee.Ecommerce.enums.ProductModelStatus;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -23,8 +24,16 @@ public class ProductModel {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "active")
-    private boolean active;
+    @ManyToOne
+    @JoinColumn(name = "owner_vendor_id")
+    private Vendor vendor;
+
+    @Column(name = "is_global")
+    private boolean isGlobal;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private ProductModelStatus status;
 
     @ManyToOne
     @JoinColumn(name = "Brand_id")
@@ -71,12 +80,28 @@ public class ProductModel {
         this.imageUrl = imageUrl;
     }
 
-    public boolean isActive() {
-        return active;
+    public Vendor getVendor() {
+        return vendor;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
+    }
+
+    public boolean isGlobal() {
+        return isGlobal;
+    }
+
+    public void setGlobal(boolean global) {
+        isGlobal = global;
+    }
+
+    public ProductModelStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProductModelStatus status) {
+        this.status = status;
     }
 
     public Brand getBrand() {
@@ -110,7 +135,7 @@ public class ProductModel {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", active=" + active +
+                ", status=" + status +
                 '}';
     }
 }
