@@ -2,6 +2,7 @@ package com.Kee.Ecommerce.service;
 
 import com.Kee.Ecommerce.Repository.CategoryRepository;
 import com.Kee.Ecommerce.dto.CategoryAddRequest;
+import com.Kee.Ecommerce.dto.CategoryResponse;
 import com.Kee.Ecommerce.dto.CategoryUpdateRequest;
 import com.Kee.Ecommerce.entity.Category;
 import com.Kee.Ecommerce.exception.CategoryNotFoundException;
@@ -30,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category addCategory(CategoryAddRequest categoryRequest) {
+    public CategoryResponse addCategory(CategoryAddRequest categoryRequest) {
         if(categoryRepository.existsByNameIgnoreCase(categoryRequest.name())){
             throw new ResourceAlreadyExistsException("category Already exists ");
         }
@@ -38,66 +39,86 @@ public class CategoryServiceImpl implements CategoryService {
                 categoryRequest.active());
         categoryRepository.save(category);
 
-        return category;
+        return convertCategoryToDto(category);
     }
 
     /*read and create implemented , remaining update, delete*/
 
     @Override
-    public Category getByID(Long id){
-        return  categoryRepository.findById(id).orElseThrow(
-                ()->new CategoryNotFoundException("Category with id: "+id+" Not found.")
+    public CategoryResponse getCategoryById(Long id){
+        return  convertCategoryToDto(categoryRepository.findById(id).orElseThrow(
+                ()->new CategoryNotFoundException("Category with id: "+id+" Not found."))
         );
     }
     @Override
-    public Category getByName(String name){
-        return  categoryRepository.findByName(name).orElseThrow(
-                ()->new CategoryNotFoundException("Category: "+name+" Not found.")
+    public CategoryResponse getCategoryByName(String name){
+        return  convertCategoryToDto(categoryRepository.findByName(name).orElseThrow(
+                ()->new CategoryNotFoundException("Category: "+name+" Not found."))
         );
     }
     @Override
-    public Page<Category> getAll(Pageable page){
-        return categoryRepository.findAll(page);
+    public Page<CategoryResponse> getAllCategories(Pageable page){
+        Page<Category> categoryPage= categoryRepository.findAll(page);
+        return categoryPage.map(this::convertCategoryToDto);
     }
 
 
     @Override
-    public Page<Category> getAllActive(Pageable page) {
+    public Page<CategoryResponse> getAllActiveCategories(Pageable page) {
 
-        return categoryRepository.findAllByActiveTrue(page);
+        Page<Category> categoryPage= categoryRepository.findAllByActiveTrue(page);
+        return categoryPage.map(this::convertCategoryToDto);
     }
     @Override
-    public Page<Category> getAllInactive(Pageable page) {
+    public Page<CategoryResponse> getAllInactiveCategories(Pageable page) {
 
-        return categoryRepository.findAllByActiveFalse(page);
-    }
-
-    @Override
-    public Page<Category> getByNameContains(String search,Pageable page){
-        return categoryRepository.findByDescriptionContainingIgnoreCase(search,page);
+        Page<Category> categoryPage= categoryRepository.findAllByActiveFalse(page);
+        return categoryPage.map(this::convertCategoryToDto);
     }
 
     @Override
-    public Page<Category> getByDescriptionContains(String search,Pageable page){
-        return categoryRepository.findByDescriptionContainingIgnoreCase(search,page);
+    public Page<CategoryResponse> getCategoryByNameContains(String search,Pageable page){
+        Page<Category> categoryPage= categoryRepository.findByDescriptionContainingIgnoreCase(search,page);
+        return categoryPage.map(this::convertCategoryToDto);
+    }
+
+    @Override
+    public Page<CategoryResponse> getCategoryByDescriptionContains(String search,Pageable page){
+        Page<Category> categoryPage=categoryRepository.findByDescriptionContainingIgnoreCase(search,page);
+        return categoryPage.map(this::convertCategoryToDto);
     }
 
     @Override
     @Transactional
-    public Category updateCategory(Long id, CategoryUpdateRequest categoryRequest){
-        Category updatedCategory=getByID(id);
+    public CategoryResponse updateCategory(Long id, CategoryUpdateRequest categoryRequest){
+        Category updatedCategory=getById(id);
         categoryMapper.updateCategoryFromDto(categoryRequest,updatedCategory);
         categoryRepository.save(updatedCategory);
 
-        return updatedCategory;
+        return convertCategoryToDto(updatedCategory);
     }
     @Override
     @Transactional
-    public Category softDelete(Long id){
-        Category category=getByID(id);
+    public CategoryResponse softDeleteCategory(Long id){
+        Category category=getById(id);
         category.setActive(false);
         categoryRepository.save(category);
-        return category;
+        return convertCategoryToDto(category);
+    }
+
+    private Category getById(Long id){
+        return categoryRepository.findById(id).orElseThrow(
+                ()-> new CategoryNotFoundException("Category not found")
+        );
+    }
+    private CategoryResponse convertCategoryToDto(Category category){
+        return new CategoryResponse(
+                category.getId(),
+                category.getName(),
+                category.getDescription(),
+                category.getImageUrl(),
+                category.isActive()
+        );
     }
 }
 
