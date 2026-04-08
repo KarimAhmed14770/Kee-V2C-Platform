@@ -77,6 +77,13 @@ public class Category {
         this.active = active;
     }
 
+    public List<SubCategory> getSubCategories() {
+        return subCategories;
+    }
+
+    public void setSubCategories(List<SubCategory> subCategories) {
+        this.subCategories = subCategories;
+    }
 
     @Override
     public String toString() {
