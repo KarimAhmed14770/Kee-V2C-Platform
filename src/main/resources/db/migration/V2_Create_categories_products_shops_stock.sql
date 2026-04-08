@@ -49,12 +49,17 @@ CREATE TABLE `product_models` (
   `name` varchar(45) NOT NULL,
   `description` varchar(300) default Null,-- for official factory specs
   `image_url` varchar(1000) default Null, -- the clean image that will be shown to the user
-  `active` boolean NOT NULL DEFAULT TRUE,
-  PRIMARY KEY (`id`),
-  Constraint `model_category_id_fk` Foreign key (`category_id`) REFERENCES sub_categories(`id`),
-  Constraint `model_brand_id_fk` Foreign key (`Brand_id`) REFERENCES brands(`id`),
-  FULLTEXT idx_model_description (`description`) -- The FTS index definition
+  `is_global` BOOLEAN DEFAULT TRUE,
+  `owner_vendor_id` INT DEFAULT NULL,
+   `status` varchar(30) default 'PENDING_APPROVAL',
+   PRIMARY KEY (`id`),
+   Constraint `model_category_id_fk` Foreign key (`category_id`) REFERENCES sub_categories(`id`),
+   Constraint `model_brand_id_fk` Foreign key (`Brand_id`) REFERENCES brands(`id`),
+   CONSTRAINT fk_model_owner FOREIGN KEY (owner_vendor_id) REFERENCES vendors(id),
+   FULLTEXT idx_model_description (`description`) -- The FTS index definition
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
 
 
 Drop table if exists `products`;
@@ -85,7 +90,7 @@ CREATE TABLE `shops` (
   `id` int NOT NULL AUTO_INCREMENT,
   `vendor_id` int not null,
   `name` varchar(100) NOT NULL,
-  `location` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp,
   Primary key(`id`),
   Constraint `shop_vendor_id_fk` Foreign key (`vendor_id`) REFERENCES vendors(`id`),
