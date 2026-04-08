@@ -27,6 +27,9 @@ public class Shop {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Column(name = "active")
+    private boolean active;
+
     @OneToMany(mappedBy = "shop")
     private List<Stock> stocks=new ArrayList<>();
 
@@ -89,6 +92,13 @@ public class Shop {
         this.vendor = vendor;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
 
     @Override

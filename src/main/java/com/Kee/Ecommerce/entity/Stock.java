@@ -23,6 +23,9 @@ public class Stock {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @Column(name = "active")
+    private boolean active;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
@@ -79,6 +82,14 @@ public class Stock {
 
     public void setShop(Shop shop) {
         this.shop = shop;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override
