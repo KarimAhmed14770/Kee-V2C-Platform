@@ -11,19 +11,19 @@ import java.util.Optional;
 
 @Repository
 public interface StockRepository extends JpaRepository<Stock,Long> {
-    Optional<Stock> findByProductIdAndInventoryId(Long productId,Long inventoryId);
+    Optional<Stock> findByProductIdAndShopId(Long productId,Long inventoryId);
     @Modifying // REQUIRED for UPDATE/DELETE queries
     @Transactional // Ensures the update is committed correctly
     @Query(value =
             "UPDATE stock "+
             "SET quantity= quantity- :requiredQty "+
                     "WHERE quantity>= :requiredQty AND product_id= :productId "+
-                    "AND inventory_id= :inventoryId",
+                    "AND shop_id= :shopId",
             nativeQuery = true /*basically it tells spring to use raw SQL
             so that SQL uses table names (stock) and column names (product_id).
             JPQL (default) uses Class names (Stock) and Variable names (productId).
             For an atomic math operation like quantity = quantity - X, it's much safer to use Native SQL.
             */
     )
-    int decrementProductStock(int requiredQty,Long productId,Long inventoryId);
+    int decrementProductStock(int requiredQty,Long productId,Long shopId);
 }
