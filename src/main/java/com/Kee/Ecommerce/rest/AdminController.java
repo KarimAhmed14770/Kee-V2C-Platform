@@ -1,7 +1,9 @@
 package com.Kee.Ecommerce.rest;
 
+import com.Kee.Ecommerce.dto.CustomerProfileResponse;
 import com.Kee.Ecommerce.dto.PromotionRequest;
-import com.Kee.Ecommerce.dto.UserResponseDTO;
+import com.Kee.Ecommerce.dto.CustomerRegistrationResponse;
+import com.Kee.Ecommerce.dto.VendorProfileResponse;
 import com.Kee.Ecommerce.enums.UserRoles;
 import com.Kee.Ecommerce.service.AdminServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ public class AdminController {
     public  AdminController( AdminServiceImpl adminService){
         this.adminService=adminService;
     }
-
+/*
     @PostMapping("/users/promote")
     public ResponseEntity<String> promoteToSeller(@RequestBody PromotionRequest promotionRequest){
 
@@ -29,30 +31,45 @@ public class AdminController {
 
         return ResponseEntity.ok("Promotion successfull for user with id:"+promotionRequest.userId());
     }
-
-    @GetMapping("/users")
-    public ResponseEntity<Page<UserResponseDTO>> getAllUsers(Pageable page){
-        return ResponseEntity.ok(adminService.getAllUsers(page));
+*/
+    @GetMapping("/customers")
+    public ResponseEntity<Page<CustomerProfileResponse>> getAllUsers(Pageable page){
+        return ResponseEntity.ok(adminService.getAllCustomers(page));
     }
 
-    @GetMapping("/users/sellers")
-    public ResponseEntity<Page<UserResponseDTO>> getAllSellers(Pageable page){
-        return ResponseEntity.ok(adminService.getAllUsersByRole(UserRoles.ROLE_SELLER,page));
+    @GetMapping("/vendors")
+    public ResponseEntity<Page<VendorProfileResponse>> getAllSellers(Pageable page){
+        return ResponseEntity.ok(adminService.getAllVendors(page));
     }
 
-    @GetMapping("/users/email/{email}")
-    public ResponseEntity<UserResponseDTO> getUserByMail(@PathVariable("email")String email){
-        return ResponseEntity.ok(adminService.getUserByEmail(email));
+    @GetMapping("/customers/email/{email}")
+    public ResponseEntity<CustomerProfileResponse> getUserByMail(@PathVariable("email")String email){
+        return ResponseEntity.ok(adminService.getCustomerByEmail(email));
     }
 
-    @GetMapping("/users/id/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable("id") Long id){
-        return ResponseEntity.ok(adminService.getUserById(id));
+    @GetMapping("/customers/id/{id}")
+    public ResponseEntity<CustomerProfileResponse> getUserById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(adminService.getCustomerById(id));
     }
 
-    @GetMapping("/users/user_name/{userName}")
-    public ResponseEntity<UserResponseDTO> getUserByUserName(@PathVariable("userName") String userName){
-        return ResponseEntity.ok(adminService.getUserByUsername(userName));
+    @GetMapping("/customers/user_name/{userName}")
+    public ResponseEntity<CustomerProfileResponse> getUserByUserName(@PathVariable("userName") String userName){
+        return ResponseEntity.ok(adminService.getCustomerByUsername(userName));
+    }
+
+    @GetMapping("/vendors/email/{email}")
+    public ResponseEntity<VendorProfileResponse> getVendorByMail(@PathVariable("email")String email){
+        return ResponseEntity.ok(adminService.getVendorByEmail(email));
+    }
+
+    @GetMapping("/vendors/id/{id}")
+    public ResponseEntity<VendorProfileResponse> getVendorById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(adminService.getVendorById(id));
+    }
+
+    @GetMapping("/vendors/user_name/{userName}")
+    public ResponseEntity<VendorProfileResponse> getVendorByUserName(@PathVariable("userName") String userName){
+        return ResponseEntity.ok(adminService.getVendorByUsername(userName));
     }
 
     //admin may also want to get seller info
