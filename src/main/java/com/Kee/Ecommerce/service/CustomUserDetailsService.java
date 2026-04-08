@@ -1,44 +1,39 @@
 package com.Kee.Ecommerce.service;
 
 
-import com.Kee.Ecommerce.Repository.UserRepository;
-import com.Kee.Ecommerce.entity.User;
+import com.Kee.Ecommerce.Repository.CredentialRepository;
+import com.Kee.Ecommerce.Repository.CustomerRepository;
+import com.Kee.Ecommerce.entity.Credential;
+import com.Kee.Ecommerce.entity.Customer;
+import com.Kee.Ecommerce.exception.UserNotFoundException;
 import com.Kee.Ecommerce.security.UserDetailsImpl;
-import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private UserRepository userRepository;
+    private CredentialRepository credentialRepository;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository){
-        this.userRepository=userRepository;
+    public CustomUserDetailsService(CredentialRepository credentialRepository){
+        this.credentialRepository = credentialRepository;
     }
 
     @Override
     @Transactional(readOnly = true) //this is
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 
         /*fetch all userinfo from the db*/
-        User user=userRepository.findByUserNameWithRoles(username)
-                .orElseThrow(()->new UsernameNotFoundException("User Name not found!"));
+        Credential credential=credentialRepository.findByUserName(userName)
+                .orElseThrow(()->new UserNotFoundException("user with username: "+userName+" not found."));
 
         /*return the user object that holds the info for spring security*/
-        return new UserDetailsImpl(user);
+        return new UserDetailsImpl(credential);
 
     }
 }
