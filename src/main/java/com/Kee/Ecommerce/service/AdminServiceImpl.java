@@ -1,11 +1,13 @@
 package com.Kee.Ecommerce.service;
 
-import com.Kee.Ecommerce.Repository.SellerProfileRepository;
-import com.Kee.Ecommerce.Repository.UserRepository;
-import com.Kee.Ecommerce.dto.UserResponseDTO;
+import com.Kee.Ecommerce.Repository.VendorRepository;
+import com.Kee.Ecommerce.Repository.CustomerRepository;
+import com.Kee.Ecommerce.dto.CustomerProfileResponse;
+import com.Kee.Ecommerce.dto.CustomerRegistrationResponse;
+import com.Kee.Ecommerce.dto.VendorProfileResponse;
+import com.Kee.Ecommerce.entity.Customer;
 import com.Kee.Ecommerce.entity.Role;
-import com.Kee.Ecommerce.entity.SellerProfile;
-import com.Kee.Ecommerce.entity.User;
+import com.Kee.Ecommerce.entity.Vendor;
 import com.Kee.Ecommerce.enums.UserRoles;
 import com.Kee.Ecommerce.exception.UserAlreadyExistsException;
 import com.Kee.Ecommerce.exception.UserNotFoundException;
@@ -21,77 +23,93 @@ import java.util.Optional;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-    private final UserRepository userRepository;
-    private final SellerProfileRepository sellerProfileRepository;
+    private final CustomerRepository customerRepository;
+    private final VendorRepository vendorRepository;
 
     @Autowired
-    public AdminServiceImpl(UserRepository userRepository, SellerProfileRepository sellerProfileRepository){
-        this.userRepository=userRepository;
-        this.sellerProfileRepository=sellerProfileRepository;
+    public AdminServiceImpl(CustomerRepository customerRepository, VendorRepository vendorRepository){
+        this.customerRepository = customerRepository;
+        this.vendorRepository = vendorRepository;
     }
 
-    @Transactional
-    public void promoteToSeller(Long userId){
-        Optional<User> optUser=userRepository.findByIdWithRoles(userId);
-        if(optUser.isPresent()){
-            User user=optUser.get();
-            if(userRepository.existsByIdAndRoles_Role(userId,UserRoles.ROLE_SELLER)){
-                throw new UserAlreadyExistsException("User is Already a seller");
-            }
-            user.addRole(new Role(UserRoles.ROLE_SELLER));
-            SellerProfile sellerProfile=new SellerProfile(null,user);
-            user.setSellerProfile(sellerProfile);
-            sellerProfileRepository.save(sellerProfile);
-            userRepository.save(user);
-        }
-        else{
-            throw new UserNotFoundException("user with id: "+userId+" not  found");
-        }
-    }
-    public UserResponseDTO getUserById(Long Id){
-        User user= userRepository.findById(Id)
-                .orElseThrow(()->new UserNotFoundException("user with id: "+ Id +" not  found"));
-        return convertToDto(user);
+    @Override
+    public CustomerProfileResponse getCustomerById(Long id){
+        Customer customer= customerRepository.findById(id)
+                .orElseThrow(()->new UserNotFoundException("user with id: "+ id +" not  found"));
+        return convertCustomerToDto(customer);
     }
 
-    public UserResponseDTO getUserByUsername(String userName){
-        User user= userRepository.findByCredentialUserName(userName)
-                .orElseThrow(()->new UserNotFoundException("user with id: "+ userName +" not  found"));
-        return convertToDto(user);
+    @Override
+    public CustomerProfileResponse getCustomerByUsername(String userName){
+        Customer customer= customerRepository.findByCredentialUserName(userName)
+                .orElseThrow(()->new UserNotFoundException("user with user_name: "+ userName +" not  found"));
+        return convertCustomerToDto(customer);
     }
 
-    public UserResponseDTO getUserByEmail(String email){
-        User user=  userRepository.findByEmail(email)
-                .orElseThrow(()->new UserNotFoundException("user with id: "+ email +" not  found"));
-        return convertToDto(user);
+    @Override
+    public CustomerProfileResponse getCustomerByEmail(String email){
+        Customer customer=  customerRepository.findByCredentialEmail(email)
+                .orElseThrow(()->new UserNotFoundException("customer with email: "+ email +" not  found"));
+        return convertCustomerToDto(customer);
+    }
+
+    @Override
+    public VendorProfileResponse getVendorById(Long id){
+        Vendor vendor=vendorRepository.findById(id)
+                .orElseThrow(()->new UserNotFoundException("user with id: "+ id +" not  found"));
+        return convertVendorToDto(vendor);
+    }
+
+    @Override
+    public VendorProfileResponse getVendorByUsername(String userName){
+        Vendor vendor=vendorRepository.findByCredentialUserName(userName)
+                .orElseThrow(()->new UserNotFoundException("user with user_name: "+ userName +" not  found"));
+        return convertVendorToDto(vendor);
+    }
+
+    @Override
+    public VendorProfileResponse getVendorByEmail(String email){
+        Vendor vendor=vendorRepository.findByCredentialEmail(email)
+                .orElseThrow(()->new UserNotFoundException("user with email: "+ email +" not  found"));
+        return convertVendorToDto(vendor);
+    }
+
+    @Override
+    public Page<CustomerProfileResponse> getAllCustomers(Pageable page){
+        Page<Customer> customers= customerRepository.findAll(page);
+
+        return customers.map(this::convertCustomerToDto);
+
+    }
+
+    @Override
+    public Page<VendorProfileResponse> getAllVendors( Pageable page){
+        Page<Vendor> vendors= vendorRepository.findAll(page);
+        return vendors.map(this::convertVendorToDto);
+
     }
 
 
-    public Page<UserResponseDTO> getAllUsers(Pageable page){
-        Page<User> users=userRepository.findAll(page);
+    /*Helper methods*/
 
-        return users.map(user->convertToDto(user));
-
+    private CustomerProfileResponse convertCustomerToDto(Customer customer) {
+        CustomerProfileResponse dto = new CustomerProfileResponse(
+                customer.getId(),
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getPhoneNumber(),
+                customer.getImageUrl(),
+                customer.getShippingAddress()
+        );
+        return dto;
     }
 
-    public Page<UserResponseDTO> getAllUsersByRole(UserRoles role,Pageable page){
-        Page<User> users=userRepository.findUsersByRole(role,page);
-        return users.map(this::convertToDto);
-
-    }
-
-
-    private UserResponseDTO convertToDto(User user) {
-        List<String> roles=new ArrayList<>();
-        user.getRoles().forEach(role -> roles.add(role.getRole().name()));
-        UserResponseDTO dto = new UserResponseDTO(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPhoneNumber(),
-                user.getCreatedAt(),
-                roles
+    private VendorProfileResponse convertVendorToDto(Vendor vendor) {
+        VendorProfileResponse dto = new VendorProfileResponse(
+              vendor.getName(),
+                vendor.getAddress(),
+                vendor.getImageUrl(),
+                vendor.getRating()
         );
         return dto;
     }
