@@ -32,8 +32,8 @@ public class ProductServiceImpl implements ProductService{
                 product.getDescription(),
                 product.getPrice(),
                 product.getStock().get(0).getQuantity(),
-                product.getImageUrl(),
-                product.getCategory().getName()
+                product.getProductModel().getImageUrl(),
+                product.getProductModel().getCategory().getName()
         );
         return productViewResponse;
     }
