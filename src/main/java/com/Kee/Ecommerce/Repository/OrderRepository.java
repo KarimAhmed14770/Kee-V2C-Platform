@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order,Long> {
 
-    Page<Order> findByUserId(Long id, Pageable pageable);
+    Page<Order> findByCustomerId(Long id, Pageable pageable);
 
     Page<Order> findByStatus(OrderStatus status, Pageable pageable);
 

@@ -113,11 +113,11 @@ public class Order {
         this.delivered_at = delivered_at;
     }
 
-    public Customer getUser() {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setUser(Customer customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
