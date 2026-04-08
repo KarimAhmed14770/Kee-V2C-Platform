@@ -85,6 +85,11 @@ public class Category {
         this.subCategories = subCategories;
     }
 
+    public void addSubcategory(SubCategory subCategory){
+        subCategories.add(subCategory);
+        subCategory.setParentCategory(this);
+    }
+
     @Override
     public String toString() {
         return "Category{" +
