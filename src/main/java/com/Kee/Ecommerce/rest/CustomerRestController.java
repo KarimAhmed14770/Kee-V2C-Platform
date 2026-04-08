@@ -1,10 +1,8 @@
 package com.Kee.Ecommerce.rest;
 
 import com.Kee.Ecommerce.dto.*;
-import com.Kee.Ecommerce.entity.Product;
-import com.Kee.Ecommerce.service.UserService;
+import com.Kee.Ecommerce.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,38 +10,38 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerRestController {
-    private final UserService userService;
+    private final CustomerService customerService;
 
     @Autowired
-    public CustomerRestController(UserService userService){
-        this.userService=userService;
+    public CustomerRestController(CustomerService customerService){
+        this.customerService = customerService;
     }
 
     @GetMapping("/my-profile")
-    public ResponseEntity<UserProfileResponse> myProfile(){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.myProfile());
+    public ResponseEntity<CustomerProfileResponse> myProfile(){
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.myProfile());
     }
     @PatchMapping("/my-profile")
-    public ResponseEntity<UserProfileResponse> myProfileUpdate(@RequestBody UserProfileRequest updateRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.partialUpdateCustomerProfile(updateRequest));
+    public ResponseEntity<CustomerProfileResponse> myProfileUpdate(@RequestBody CustomerProfileRequest updateRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.partialUpdateCustomerProfile(updateRequest));
     }
     @PostMapping("/cart")
     public ResponseEntity<CartResponse> addToCart(@RequestBody CartItemRequest cartItemRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.addToCart(cartItemRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.addToCart(cartItemRequest));
     }
 
     @GetMapping("/cart")
     public ResponseEntity<CartResponse> viewMyCart(){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.viewMyCart());
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.viewMyCart());
     }
 
     @PostMapping("/cart/checkout")
     public ResponseEntity<CheckoutResponse> checkout(@RequestBody CheckOutRequest checkOutRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.checkOut(checkOutRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.checkOut(checkOutRequest));
     }
 
     @GetMapping("invoice/{orderId}")
    public ResponseEntity<InvoiceResponse> getInvoice(@PathVariable Long orderId){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.generateInvoice(orderId));
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.generateInvoice(orderId));
     }
 }
