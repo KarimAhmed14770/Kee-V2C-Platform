@@ -1,14 +1,14 @@
 package com.Kee.Ecommerce.service;
 
 import com.Kee.Ecommerce.Repository.CategoryRepository;
-import com.Kee.Ecommerce.Repository.InventoryRepository;
+import com.Kee.Ecommerce.Repository.ShopRepository;
 import com.Kee.Ecommerce.Repository.ProductRepository;
-import com.Kee.Ecommerce.Repository.SellerProfileRepository;
+import com.Kee.Ecommerce.Repository.VendorRepository;
 import com.Kee.Ecommerce.dto.*;
-import com.Kee.Ecommerce.entity.Inventory;
 import com.Kee.Ecommerce.entity.Product;
-import com.Kee.Ecommerce.entity.SellerProfile;
+import com.Kee.Ecommerce.entity.Shop;
 import com.Kee.Ecommerce.entity.Stock;
+import com.Kee.Ecommerce.entity.Vendor;
 import com.Kee.Ecommerce.exception.CategoryNotFoundException;
 import com.Kee.Ecommerce.exception.InventoryNotFoundException;
 import com.Kee.Ecommerce.utils.SecurityUtil;
@@ -17,61 +17,61 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class SellerServiceImpl implements SellerService {
+public class VendorServiceImpl implements VendorService {
     private final SecurityUtil securityUtil;
-    private final SellerProfileRepository sellerProfileRepository;
+    private final VendorRepository vendorRepository;
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
-    private final InventoryRepository inventoryRepository;
+    private final ShopRepository shopRepository;
 
 
-    public SellerServiceImpl(SecurityUtil securityUtil, SellerProfileRepository sellerProfileRepository,
+    public VendorServiceImpl(SecurityUtil securityUtil, VendorRepository vendorRepository,
                              CategoryRepository categoryRepository, ProductRepository productRepository,
-                             InventoryRepository inventoryRepository){
+                             ShopRepository shopRepository){
         this.securityUtil=securityUtil;
-        this.sellerProfileRepository=sellerProfileRepository;
+        this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
         this.productRepository=productRepository;
-        this.inventoryRepository=inventoryRepository;
+        this.shopRepository = shopRepository;
     }
 
     @Transactional
-    public SellerProfileResponse updateSellerProfile(SellerProfileRequest sellerProfileRequest){
-        Long userId=securityUtil.getCurrentUserId();
-        SellerProfile seller=sellerProfileRepository.findByUserId(userId)
-                .orElseThrow(()->new UsernameNotFoundException("Seller with id: "
-                        +userId+"does not exist"));
-        seller.setShopName(sellerProfileRequest.shopName());
-        seller.setImageUrl(sellerProfileRequest.imageUrl());
-        seller.setShopAddress(sellerProfileRequest.shopAddress());
-        sellerProfileRepository.save(seller);
-        return new SellerProfileResponse(seller.getShopName(),
-                seller.getShopAddress(),
-                seller.getImageUrl(),
-                seller.getRating());
+    public VendorProfileResponse updateSellerProfile(VendorProfileRequest vendorProfileRequest){
+        Vendor vendor=getCurrentVendor();
+        vendor.setName(vendorProfileRequest.vendorName());
+        vendor.setImageUrl(vendorProfileRequest.imageUrl());
+        vendor.setAddress(vendorProfileRequest.address());
+        vendorRepository.save(vendor);
+        return new VendorProfileResponse(vendor.getName(),
+                vendor.getAddress(),
+                vendor.getImageUrl(),
+                vendor.getRating());
     }
 
+    /*
     @Transactional
     public ProductResponse addProduct(ProductRequest productRequest){
         Product product=convertToProduct(productRequest);
         productRepository.save(product);
         return convertToDto(product);
     }
+    */
 
+    /*
     @Transactional
-    public InventoryResponse addInventory(InventoryRequest inventoryRequest){
+    public InventoryResponse addShop(InventoryRequest inventoryRequest){
         Inventory inventory=new Inventory(inventoryRequest.name(),inventoryRequest.location());
         SellerProfile seller=getSellerProfile();
         inventory.setSeller(seller);
-        inventoryRepository.save(inventory);
+        shopRepository.save(inventory);
         return new InventoryResponse(inventory.getName(),inventory.getLocation(),inventory.getCreatedAt());
-    }
-
+    }*/
+/*
     private Product convertToProduct(ProductRequest productRequest){
         Product product=new Product();
-        Inventory inventory=inventoryRepository.findById(productRequest.inventoryId())
-                .orElseThrow(()->new InventoryNotFoundException("wrong inventory Id"));
-        Stock stock=new Stock(productRequest.stock(),product,inventory);
+        Shop shop= shopRepository.findById(productRequest.shopId())
+                .orElseThrow(()->new InventoryNotFoundException("wrong shop Id"));
+        Stock stock=new Stock(productRequest.stock(),product,shop);
         product.setName(productRequest.name());
         product.setDescription(productRequest.description());
         product.setPrice(productRequest.price());
@@ -89,6 +89,8 @@ public class SellerServiceImpl implements SellerService {
         sellerProfile.addProduct(product);//bi-directional link is handled inside
         return product;
     }
+    */
+ /*
 
     private ProductResponse convertToDto(Product product){
         ProductResponse response=new ProductResponse(
@@ -105,20 +107,20 @@ public class SellerServiceImpl implements SellerService {
         );
         return response;
     }
-
-    public SellerProfileResponse myProfile(){
-        SellerProfile seller=getSellerProfile();
-        return new SellerProfileResponse(seller.getShopName(),
-                seller.getShopAddress(),
-                seller.getImageUrl(),
-                seller.getRating());
+*/
+    public VendorProfileResponse myProfile(){
+        Vendor vendor=getCurrentVendor();
+        return new VendorProfileResponse(vendor.getName(),
+                vendor.getAddress(),
+                vendor.getImageUrl(),
+                vendor.getRating());
     }
 
-    private SellerProfile getSellerProfile(){
+    private Vendor getCurrentVendor(){
         Long userId=securityUtil.getCurrentUserId();
-        SellerProfile seller=sellerProfileRepository.findByUserId(userId)
+        Vendor vendor= vendorRepository.findById(userId)
                 .orElseThrow(()->new UsernameNotFoundException("Seller with id: "
                         +userId+"does not exist"));
-        return seller;
+        return vendor;
     }
 }
