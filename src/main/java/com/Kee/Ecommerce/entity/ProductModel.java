@@ -30,6 +30,10 @@ public class ProductModel {
     @JoinColumn(name = "Brand_id")
     private Brand brand;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private SubCategory category;
+
     @OneToMany(mappedBy = "productModel")
     private List<Product> products=new ArrayList<>();
 
@@ -81,6 +85,22 @@ public class ProductModel {
 
     public void setBrand(Brand brand) {
         this.brand = brand;
+    }
+
+    public SubCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(SubCategory category) {
+        this.category = category;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     @Override
