@@ -92,6 +92,7 @@ CREATE TABLE `shops` (
   `name` varchar(100) NOT NULL,
   `address` varchar(255) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp,
+  `active` boolean NOT NULL DEFAULT TRUE,
   Primary key(`id`),
   Constraint `shop_vendor_id_fk` Foreign key (`vendor_id`) REFERENCES vendors(`id`),
   Constraint `unique_shop_vendor_fk` Unique (`vendor_id`) -- allowing one vendor to have only 1 shop for now 
@@ -106,6 +107,7 @@ CREATE TABLE `stock` (
   `product_id` int NOT NULL,
   `quantity` int NOT NULL,
   `updated_at` datetime not null default current_timestamp on update current_timestamp,
+  `active` boolean NOT NULL DEFAULT TRUE,
   Primary key(`id`),
   CONSTRAINT `unique_product_stock_per_shop` UNIQUE (`product_id`, `shop_id`), -- only 1 stock allowed for a product in 1 shop
   Constraint `stock_product_id_fk` Foreign key (`product_id`) REFERENCES products(`id`),
