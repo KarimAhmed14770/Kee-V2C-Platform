@@ -27,7 +27,7 @@ public class Shop {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "inventory")
+    @OneToMany(mappedBy = "shop")
     private List<Stock> stocks=new ArrayList<>();
 
     @ManyToOne
