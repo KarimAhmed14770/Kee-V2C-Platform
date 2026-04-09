@@ -1,6 +1,6 @@
 package com.Kee.V2C.dto;
 
-public record SubCategoryRequest(Long parentId,
+public record SubCategoryRequest(
                                  String name,
                                  String description,
                                  String imageUrl,
