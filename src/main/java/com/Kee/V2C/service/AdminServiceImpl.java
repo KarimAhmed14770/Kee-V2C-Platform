@@ -3,6 +3,7 @@ package com.Kee.V2C.service;
 import com.Kee.V2C.Repository.*;
 import com.Kee.V2C.dto.*;
 import com.Kee.V2C.entity.*;
+import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.UserStatus;
 import com.Kee.V2C.exception.CategoryNotFoundException;
 import com.Kee.V2C.exception.ResourceAlreadyExistsException;
@@ -34,6 +35,8 @@ public class AdminServiceImpl implements AdminService {
     private final SubCategoryMapper subCategoryMapper;
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
+    private final ProductModelRepository productModelRepository;
+
 
 
     @Autowired
@@ -41,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
                             CategoryRepository categoryRepository,CategoryMapper categoryMapper,
                             CategoryService categoryService,SubCategoryRepository subCategoryRepository
                             ,SubCategoryMapper subCategoryMapper,BrandRepository brandRepository,
-                            BrandMapper brandMapper){
+                            BrandMapper brandMapper,ProductModelRepository productModelRepository){
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
@@ -51,6 +54,7 @@ public class AdminServiceImpl implements AdminService {
         this.subCategoryMapper=subCategoryMapper;
         this.brandRepository=brandRepository;
         this.brandMapper=brandMapper;
+        this.productModelRepository=productModelRepository;
     }
 
     @Override
@@ -289,6 +293,15 @@ public class AdminServiceImpl implements AdminService {
         return convertBrandToDto(brand);
     }
 
+    @Override
+    @Transactional
+    public  ProductModelResponse addProductModel(ProductModelRequest productModelRequest){
+        ProductModel productModel=convertProductModelRequestToProductModel(productModelRequest);
+        productModelRepository.save(productModel);
+        return convertProductModelToDto(productModel);
+    }
+
+
 
 
     /*Helper methods*/
@@ -366,5 +379,53 @@ public class AdminServiceImpl implements AdminService {
 
     private BrandResponse convertBrandToDto(Brand brand){
         return new BrandResponse(brand.getId(), brand.getName(), brand.getDescription(), brand.getImageUrl(),brand.getActive());
+    }
+
+    ProductModel convertProductModelRequestToProductModel(ProductModelRequest productModelRequest){
+        Brand brand=brandRepository.findById(productModelRequest.brandId()).orElseThrow(
+                ()-> new ResourceNotFoundException("Brand with id: "+productModelRequest.brandId()+
+                        " not found.")
+        );
+        SubCategory category=subCategoryRepository.findById(productModelRequest.subCategoryId()).orElseThrow(
+                ()->new ResourceNotFoundException("category with id: "+productModelRequest.subCategoryId()+
+                        " is not found.")
+        );
+        Vendor vendor=null;
+        if(!productModelRequest.isGlobal()){
+            vendor=vendorRepository.findById(productModelRequest.vendorId()).orElseThrow(
+                    ()->new ResourceNotFoundException("vendor with id: "+productModelRequest.vendorId()+
+                            " is not found.")
+            );
+        }
+        ProductModel productModel = new ProductModel(
+                productModelRequest.name(),
+                productModelRequest.description(),
+                productModelRequest.imageUrl(),
+                vendor,
+                productModelRequest.isGlobal(),
+                ProductModelStatus.ACTIVE,
+                brand,
+                category
+        );
+        brand.addProductModel(productModel);
+        category.addProductModel(productModel);
+        if(vendor!=null){
+            vendor.addProductModel(productModel);
+        }
+        return productModel;
+    }
+
+    private ProductModelResponse convertProductModelToDto(ProductModel productModel){
+        return new ProductModelResponse(
+                productModel.getId(),
+                productModel.getBrand().getId(),
+                productModel.getCategory().getId(),
+                (productModel.getVendor()==null)?null:productModel.getVendor().getId(),
+                productModel.isGlobal(),
+                productModel.getName(),
+                productModel.getDescription(),
+                productModel.getImageUrl(),
+                productModel.getStatus()
+        );
     }
 }

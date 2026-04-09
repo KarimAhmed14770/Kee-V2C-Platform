@@ -44,4 +44,7 @@ public interface AdminService {
     Page<BrandResponse> getAllBrands(Pageable page);
     BrandResponse updateBrand(Long id, BrandRequest brandRequest);
     BrandResponse softDeleteBrand(Long id);
+
+
+    ProductModelResponse addProductModel(ProductModelRequest productModelRequest);
 }

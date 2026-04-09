@@ -9,8 +9,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 
 @RestController
@@ -162,31 +166,45 @@ public class AdminController {
 
 
     @PostMapping("/brands")
-    public BrandResponse addBrand(@RequestBody BrandRequest brandRequest){
-        return adminService.addBrand(brandRequest);
+    public ResponseEntity<BrandResponse> addBrand(@RequestBody BrandRequest brandRequest){
+        BrandResponse brandResponse=adminService.addBrand(brandRequest);
+
+        URI location= ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(brandResponse.id())
+                .toUri();
+        //returning also the url path to find the created source to make it available for the frontend
+        //so they don't have to reconstruct it
+        return ResponseEntity.created(location).body(adminService.addBrand(brandRequest));
     }
 
     @GetMapping("/brands")
-    public Page<BrandResponse> getBrands(Pageable page){
-        return adminService.getAllBrands(page);
+    public ResponseEntity<Page<BrandResponse>> getBrands(Pageable page){
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllBrands(page));
     }
 
     @GetMapping("/brands/{id}")
-    public BrandResponse getBrandById(@PathVariable("id") Long id){
-        return adminService.getBrandById(id);
+    public ResponseEntity<BrandResponse> getBrandById(@PathVariable("id") Long id){
+        return ResponseEntity.status(HttpStatus.OK).body( adminService.getBrandById(id));
     }
 
     @PatchMapping("/brands/{id}")
-    public BrandResponse updateBrand(@PathVariable("id") Long id,@RequestBody BrandRequest brandRequest){
-        return adminService.updateBrand(id,brandRequest);
+    public ResponseEntity<BrandResponse> updateBrand(@PathVariable("id") Long id,@RequestBody BrandRequest brandRequest){
+        return ResponseEntity.ok(adminService.updateBrand(id,brandRequest));
     }
 
     @PatchMapping("/brands/delete/{id}")
-    public BrandResponse updateBrand(@PathVariable("id")Long id){
-        return adminService.softDeleteBrand(id);
+    public ResponseEntity<BrandResponse> updateBrand(@PathVariable("id")Long id){
+        return ResponseEntity.ok(adminService.softDeleteBrand(id));
     }
 
 
+    @PostMapping("/product-models")
+    public ResponseEntity<ProductModelResponse> addProductModel(@RequestBody ProductModelRequest productModelRequest){
+        ProductModelResponse response=adminService.addProductModel(productModelRequest);
+        URI location=ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(response.id()).toUri();
+        return ResponseEntity.created(location).body(response);
+    }
 
 
 
