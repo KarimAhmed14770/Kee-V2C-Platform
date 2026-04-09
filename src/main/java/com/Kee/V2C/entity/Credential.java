@@ -36,7 +36,7 @@ public class Credential {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private UserStatus status;
 
     @OneToOne(mappedBy = "credential",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Customer customer;
@@ -49,11 +49,11 @@ public class Credential {
 
     public Credential(){}
 
-    public Credential(String userName, String password, String email,UserStatus userStatus) {
+    public Credential(String userName, String password, String email,UserStatus status) {
         this.userName = userName;
         this.password = password;
         this.email=email;
-        this.userStatus = userStatus;
+        this.status = status;
     }
 
     public Long getId() {
@@ -97,11 +97,11 @@ public class Credential {
     }
 
     public UserStatus getUserStatus() {
-        return userStatus;
+        return status;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setUserStatus(UserStatus status) {
+        this.status = status;
     }
 
     public String getEmail() {
@@ -142,7 +142,7 @@ public class Credential {
                 "userName='" + userName + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", userStatus=" + userStatus +
+                ", status=" + status +
                 '}';
     }
 }

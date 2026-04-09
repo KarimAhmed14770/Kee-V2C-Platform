@@ -9,6 +9,7 @@ import com.Kee.V2C.entity.Vendor;
 import com.Kee.V2C.enums.UserRoles;
 import com.Kee.V2C.enums.UserStatus;
 import com.Kee.V2C.exception.RoleNotAvailableException;
+import com.Kee.V2C.exception.UserAccessDeniedException;
 import com.Kee.V2C.exception.UserAlreadyExistsException;
 import com.Kee.V2C.exception.UserNotFoundException;
 import com.Kee.V2C.security.UserDetailsImpl;
@@ -114,7 +115,7 @@ public class AuthServiceImpl implements AuthService{
         //data inside the principal UserDetails object and cast it to a UserDetails Impl then
         //pass it to the jwtService
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
+        handleAccessBasedOnStatus(userDetails.getStatus());
         String jwt = jwtService.generateToken(userDetails);
         boolean  isProfileComplete = isProfileComplete(loginRequest.getUserName());
 
@@ -175,6 +176,19 @@ public class AuthServiceImpl implements AuthService{
             isProfileComplete=true;//hardcoded true currently
         }
         return isProfileComplete;
+    }
+
+    private void handleAccessBasedOnStatus(UserStatus status){
+        if(status==UserStatus.VENDOR_APPROVAL_PENDING){
+            throw new UserAccessDeniedException("Please wait while an admin review your register request" +
+                    "before you can sell your products on KeeConnect");
+        }
+
+        if(status==UserStatus.SUSPENDED){
+            throw new UserAccessDeniedException("Your account is currently suspended, " +
+                    "contact an admin for more info");
+        }
+
     }
 }
 
