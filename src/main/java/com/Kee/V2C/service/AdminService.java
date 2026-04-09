@@ -39,4 +39,9 @@ public interface AdminService {
     Page<SubCategoryResponse> getSubCategoriesOfParent(Long parentId,Pageable page);
 
 
+    BrandResponse addBrand(BrandRequest brandRequest);
+    BrandResponse getBrandById(Long id);
+    Page<BrandResponse> getAllBrands(Pageable page);
+    BrandResponse updateBrand(Long id, BrandRequest brandRequest);
+    BrandResponse softDeleteBrand(Long id);
 }

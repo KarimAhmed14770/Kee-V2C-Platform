@@ -1,19 +1,14 @@
 package com.Kee.V2C.service;
 
-import com.Kee.V2C.Repository.CategoryRepository;
-import com.Kee.V2C.Repository.SubCategoryRepository;
-import com.Kee.V2C.Repository.VendorRepository;
-import com.Kee.V2C.Repository.CustomerRepository;
+import com.Kee.V2C.Repository.*;
 import com.Kee.V2C.dto.*;
-import com.Kee.V2C.entity.Category;
-import com.Kee.V2C.entity.Customer;
-import com.Kee.V2C.entity.SubCategory;
-import com.Kee.V2C.entity.Vendor;
+import com.Kee.V2C.entity.*;
 import com.Kee.V2C.enums.UserStatus;
 import com.Kee.V2C.exception.CategoryNotFoundException;
 import com.Kee.V2C.exception.ResourceAlreadyExistsException;
 import com.Kee.V2C.exception.ResourceNotFoundException;
 import com.Kee.V2C.exception.UserNotFoundException;
+import com.Kee.V2C.mapper.BrandMapper;
 import com.Kee.V2C.mapper.CategoryMapper;
 import com.Kee.V2C.mapper.SubCategoryMapper;
 import com.Kee.V2C.specifications.CustomerSpecs;
@@ -37,12 +32,16 @@ public class AdminServiceImpl implements AdminService {
     private final CategoryService categoryService;
     private final SubCategoryRepository subCategoryRepository;
     private final SubCategoryMapper subCategoryMapper;
+    private final BrandRepository brandRepository;
+    private final BrandMapper brandMapper;
+
 
     @Autowired
     public AdminServiceImpl(CustomerRepository customerRepository, VendorRepository vendorRepository,
                             CategoryRepository categoryRepository,CategoryMapper categoryMapper,
                             CategoryService categoryService,SubCategoryRepository subCategoryRepository
-                            ,SubCategoryMapper subCategoryMapper){
+                            ,SubCategoryMapper subCategoryMapper,BrandRepository brandRepository,
+                            BrandMapper brandMapper){
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
@@ -50,6 +49,8 @@ public class AdminServiceImpl implements AdminService {
         this.categoryService=categoryService;
         this.subCategoryRepository=subCategoryRepository;
         this.subCategoryMapper=subCategoryMapper;
+        this.brandRepository=brandRepository;
+        this.brandMapper=brandMapper;
     }
 
     @Override
@@ -243,8 +244,49 @@ public class AdminServiceImpl implements AdminService {
         return convertSubCategoryToDto(updatedCategory);
     }
 
+    @Override
+    @Transactional
+    public BrandResponse addBrand(BrandRequest brandRequest){
+        if(brandRepository.existsByNameIgnoreCase(brandRequest.name())){
+            throw new ResourceAlreadyExistsException("Brand already exists");
+        }
+        Brand brand=new Brand(brandRequest.name(),brandRequest.description(),brandRequest.imageUrl());
+        brandRepository.save(brand);
+        return convertBrandToDto(brand);
+    }
 
+    @Override
+    public BrandResponse getBrandById(Long id){
+        return convertBrandToDto(brandRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Brand not found")));
+    }
 
+    @Override
+    public Page<BrandResponse> getAllBrands(Pageable page){
+        Page<Brand> brands=brandRepository.findAll(page);
+        return brands.map(this::convertBrandToDto);
+    }
+
+    @Override
+    @Transactional
+    public BrandResponse updateBrand(Long id, BrandRequest brandRequest){
+        Brand brand=brandRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("Brand not found")
+        );
+        brandMapper.updateBrandFromDto(brandRequest,brand);
+        brandRepository.save(brand);
+        return convertBrandToDto(brand);
+    }
+    @Override
+    @Transactional
+    public BrandResponse softDeleteBrand(Long id){
+        Brand brand=brandRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("Brand not found")
+        );
+        brand.setActive(false);
+        brandRepository.save(brand);
+        return convertBrandToDto(brand);
+    }
 
 
 
@@ -319,5 +361,9 @@ public class AdminServiceImpl implements AdminService {
         return subCategoryRepository.findById(id).orElseThrow(
                 ()->new CategoryNotFoundException("Category with id: "+id+" Not found.")
         );
+    }
+
+    private BrandResponse convertBrandToDto(Brand brand){
+        return new BrandResponse(brand.getId(), brand.getName(), brand.getDescription(), brand.getImageUrl(),brand.getActive());
     }
 }
