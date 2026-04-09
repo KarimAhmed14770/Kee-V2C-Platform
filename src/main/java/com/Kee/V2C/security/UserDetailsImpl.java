@@ -1,6 +1,7 @@
 package com.Kee.V2C.security;
 
 import com.Kee.V2C.entity.Credential;
+import com.Kee.V2C.enums.UserStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,12 +15,14 @@ public class UserDetailsImpl implements UserDetails {
         private final Long id; // This is the magic "slot" for your ID
         private final String username;
         private final String password;
+        private final UserStatus status;
         private final Collection<? extends GrantedAuthority> authorities;
 
         public UserDetailsImpl(Credential credential) {
             this.id = credential.getId();
             this.username = credential.getUserName();
             this.password = credential.getPassword();
+            this.status=credential.getUserStatus();
             this.authorities = Collections.singletonList(
                     new SimpleGrantedAuthority(credential.getRole().getRole().name())
             );
@@ -28,7 +31,7 @@ public class UserDetailsImpl implements UserDetails {
         public Long getId() {
             return id;
         }
-
+        public UserStatus getStatus(){return  status;}
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() { return authorities; }
         @Override
