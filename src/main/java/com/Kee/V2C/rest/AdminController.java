@@ -122,6 +122,10 @@ public class AdminController {
         return ResponseEntity.ok(adminService.searchCategory(name,description,active,page));
     }
 
+    @PatchMapping("/Categories/{id}")
+    public ResponseEntity<CategoryResponse> softDelete(@PathVariable("id") Long id){
+        return ResponseEntity.ok(adminService.softDeleteCategory(id));
+    }
 
 
 
