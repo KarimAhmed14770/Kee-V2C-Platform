@@ -73,6 +73,7 @@ CREATE TABLE `products` (
   `name` varchar(45) NOT NULL,
   `description` varchar(300) default Null,  -- for vendor specific specs ex:comes with a free screen protector
   `price`  DECIMAL(10,2) NOT NULL,
+  `image_url` varchar(1000) default null, -- specific image of the specific product 
   `created_at` datetime NOT NULL DEFAULT current_timestamp,
   `updated_at` datetime not null default current_timestamp on update current_timestamp,
   `active` boolean NOT NULL DEFAULT TRUE,
