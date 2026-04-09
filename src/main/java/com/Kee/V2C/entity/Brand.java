@@ -69,6 +69,22 @@ public class Brand {
         this.imageUrl = imageUrl;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public List<ProductModel> getProductModels() {
+        return productModels;
+    }
+
+    public void setProductModels(List<ProductModel> productModels) {
+        this.productModels = productModels;
+    }
+
     @Override
     public String toString() {
         return "Brand{" +
