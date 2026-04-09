@@ -1,11 +1,13 @@
 package com.Kee.V2C.service;
 
 import com.Kee.V2C.Repository.CategoryRepository;
+import com.Kee.V2C.Repository.SubCategoryRepository;
 import com.Kee.V2C.Repository.VendorRepository;
 import com.Kee.V2C.Repository.CustomerRepository;
 import com.Kee.V2C.dto.*;
 import com.Kee.V2C.entity.Category;
 import com.Kee.V2C.entity.Customer;
+import com.Kee.V2C.entity.SubCategory;
 import com.Kee.V2C.entity.Vendor;
 import com.Kee.V2C.enums.UserStatus;
 import com.Kee.V2C.exception.CategoryNotFoundException;
@@ -13,6 +15,7 @@ import com.Kee.V2C.exception.ResourceAlreadyExistsException;
 import com.Kee.V2C.exception.ResourceNotFoundException;
 import com.Kee.V2C.exception.UserNotFoundException;
 import com.Kee.V2C.mapper.CategoryMapper;
+import com.Kee.V2C.mapper.SubCategoryMapper;
 import com.Kee.V2C.specifications.CustomerSpecs;
 import com.Kee.V2C.specifications.VendorSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AdminServiceImpl implements AdminService {
     private final CustomerRepository customerRepository;
@@ -29,16 +35,21 @@ public class AdminServiceImpl implements AdminService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final CategoryService categoryService;
+    private final SubCategoryRepository subCategoryRepository;
+    private final SubCategoryMapper subCategoryMapper;
 
     @Autowired
     public AdminServiceImpl(CustomerRepository customerRepository, VendorRepository vendorRepository,
                             CategoryRepository categoryRepository,CategoryMapper categoryMapper,
-                            CategoryService categoryService){
+                            CategoryService categoryService,SubCategoryRepository subCategoryRepository
+                            ,SubCategoryMapper subCategoryMapper){
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
         this.categoryMapper=categoryMapper;
         this.categoryService=categoryService;
+        this.subCategoryRepository=subCategoryRepository;
+        this.subCategoryMapper=subCategoryMapper;
     }
 
     @Override
@@ -175,10 +186,64 @@ public class AdminServiceImpl implements AdminService {
         return convertCategoryToDto(category);
     }
 
+
+
     @Override
     public Page<CategoryResponse> searchCategory(String name,String description,Boolean active,Pageable page){
         return categoryService.getCategoryByAttribute(name,description,active,page);
     }
+
+
+    @Override
+    @Transactional
+    public SubCategoryResponse addSubCategory(Long parentId,SubCategoryRequest subCategoryRequest){
+        if(subCategoryRepository.existsByNameIgnoreCase(subCategoryRequest.name())){
+            throw new ResourceAlreadyExistsException("category Already exists ");
+        }
+
+        Category parentCategory=getCategoryById(parentId);
+        SubCategory subCategory=new SubCategory(
+                parentCategory,
+                subCategoryRequest.name(),
+                subCategoryRequest.description(),
+                subCategoryRequest.imageUrl(),
+                subCategoryRequest.active());
+        parentCategory.addSubcategory(subCategory);//linking parent to sub
+        subCategoryRepository.save(subCategory);
+        return convertSubCategoryToDto(subCategory);
+    }
+
+
+    @Override
+    public SubCategoryResponse getSubCategoryProfileById(Long id){
+        return convertSubCategoryToDto(getSubCategoryById(id));
+    }
+
+
+    @Override
+    public Page<SubCategoryResponse> getSubCategoriesOfParent(Long parentId,Pageable page){
+        Page<SubCategory> subCategories=subCategoryRepository.findByParentId(parentId,page);
+        return subCategories.map(this::convertSubCategoryToDto);
+    }
+
+    @Override
+    @Transactional
+    public SubCategoryResponse updateSubCategory(Long id, SubCategoryRequest subCategoryRequest){
+        SubCategory updatedCategory=getSubCategoryById(id);
+        subCategoryMapper.updateSubCategoryFromDto(subCategoryRequest,updatedCategory);
+        subCategoryRepository.save(updatedCategory);
+        return convertSubCategoryToDto(updatedCategory);
+    }
+    @Override
+    @Transactional
+    public SubCategoryResponse softDeleteSubCategory(Long id){
+        SubCategory updatedCategory=getSubCategoryById(id);
+        updatedCategory.setActive(false);
+        subCategoryRepository.save(updatedCategory);
+        return convertSubCategoryToDto(updatedCategory);
+    }
+
+
 
 
 
@@ -234,8 +299,24 @@ public class AdminServiceImpl implements AdminService {
         );
     }
 
+    private SubCategoryResponse convertSubCategoryToDto(SubCategory subCategory){
+        return new SubCategoryResponse(
+                subCategory.getParentCategory().getId(),
+                subCategory.getId(),
+                subCategory.getName(),
+                subCategory.getDescription(),
+                subCategory.getImageUrl(),
+                subCategory.isActive()
+        );
+    }
+
     private Category getCategoryById(Long id){
         return categoryRepository.findById(id).orElseThrow(
+                ()->new CategoryNotFoundException("Category with id: "+id+" Not found.")
+        );
+    }
+    private SubCategory getSubCategoryById(Long id){
+        return subCategoryRepository.findById(id).orElseThrow(
                 ()->new CategoryNotFoundException("Category with id: "+id+" Not found.")
         );
     }

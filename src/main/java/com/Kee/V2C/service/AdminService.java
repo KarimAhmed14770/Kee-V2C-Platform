@@ -25,12 +25,18 @@ public interface AdminService {
 
     CategoryResponse addCategory(CategoryRequest categoryRequest);
     CategoryResponse getCategoryProfileById(Long id);
-
-
     CategoryResponse updateCategory(Long id, CategoryUpdateRequest categoryRequest);
     CategoryResponse softDeleteCategory(Long id);
     Page<CategoryResponse> getAllCategories(Pageable page);
     Page<CategoryResponse> searchCategory(String name,String description,Boolean active,Pageable page);
+
+
+
+    SubCategoryResponse addSubCategory(Long parentId,SubCategoryRequest subCategoryRequest);
+    SubCategoryResponse getSubCategoryProfileById(Long id);
+    SubCategoryResponse updateSubCategory(Long id, SubCategoryRequest subCategoryRequest);
+    SubCategoryResponse softDeleteSubCategory(Long id);
+    Page<SubCategoryResponse> getSubCategoriesOfParent(Long parentId,Pageable page);
 
 
 }
