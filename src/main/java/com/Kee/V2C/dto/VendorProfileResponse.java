@@ -1,4 +1,7 @@
 package com.Kee.V2C.dto;
 
-public record VendorProfileResponse(String vendorName, String address, String image_url, float rating) {
+import com.Kee.V2C.enums.UserStatus;
+
+public record VendorProfileResponse(Long id,String name, String address, String image_url, float rating,
+                                    String status) {
 }

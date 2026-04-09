@@ -6,4 +6,5 @@ public record CustomerProfileResponse(Long id,
                                       String lastName,
                                       String phoneNumber,
                                       String imageUrl,
-                                      String shippingAddress) { }
+                                      String shippingAddress,
+                                      String status) { }
