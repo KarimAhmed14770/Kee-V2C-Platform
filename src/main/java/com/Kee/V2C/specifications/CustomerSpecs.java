@@ -4,6 +4,7 @@ import com.Kee.V2C.entity.Credential;
 import com.Kee.V2C.entity.Customer;
 import com.Kee.V2C.enums.UserStatus;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 public final class CustomerSpecs {//final keyword to prevent extending of this class
@@ -53,11 +54,21 @@ public final class CustomerSpecs {//final keyword to prevent extending of this c
     }
 
         public static Specification<Customer> hasStatus(UserStatus status) {
-        return (root, query, criteriaBuilder) -> {
-          if(status==null) return null;
-          Join<Customer,Credential> customerCredentialJoin= root.join("credential");
-          return criteriaBuilder.equal(customerCredentialJoin.get("status"),status);
-        };
+            return (root, query, criteriaBuilder) -> {
+                if (status == null) return null;
+                Join<Customer, Credential> customerCredentialJoin = root.join("credential");
+                return criteriaBuilder.equal(customerCredentialJoin.get("status"), status);
+            };
+        }
+        public static Specification<Customer> fetchCredential() {
+                return (root, query, criteriaBuilder) -> {
+
+                    Class<?> resultType=query.getResultType();
+                    if(resultType!=Long.class && resultType!=long.class){
+                        root.fetch("credential", JoinType.LEFT);
+                    }
+                    return null;
+                };
 
 }
 
