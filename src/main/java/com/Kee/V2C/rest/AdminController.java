@@ -57,6 +57,8 @@ public class AdminController {
         return adminService.modifyCustomerStatus(id,status);
     }
 
+
+
     @GetMapping("/vendors")
     public ResponseEntity<Page<VendorProfileResponse>> getAllVendors(Pageable page){
         return ResponseEntity.ok(adminService.getAllVendors(page));
@@ -85,29 +87,39 @@ public class AdminController {
         return adminService.modifyVendorStatus(id,status);
     }
 
-    @GetMapping("/Categories")
-    public ResponseEntity<Page<CategoryResponse>> getAllCategories(Pageable page){
-        return ResponseEntity.ok(categoryService.getAllCategories(page));
-    }
+
+
+
 
     @PostMapping("/Categories")
-    public ResponseEntity<CategoryResponse> addCategory(@RequestBody CategoryAddRequest categoryAddRequest){
-        return ResponseEntity.ok(categoryService.addCategory(categoryAddRequest));
+    public ResponseEntity<CategoryResponse> addCategory(@RequestBody CategoryRequest categoryRequest){
+        return ResponseEntity.ok(adminService.addCategory(categoryRequest));
+    }
+
+
+    @GetMapping("/Categories")
+    public ResponseEntity<Page<CategoryResponse>> getAllCategories(Pageable page){
+        return ResponseEntity.ok(adminService.getAllCategories(page));
+    }
+
+    @GetMapping("/Categories/{id}")
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(adminService.getCategoryProfileById(id));
     }
 
     @PatchMapping("/Categories/{id}")
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("id") Long id,
                                                            @RequestBody CategoryUpdateRequest categoryUpdateRequest){
-        return ResponseEntity.ok(categoryService.updateCategory(id,categoryUpdateRequest));
+        return ResponseEntity.ok(adminService.updateCategory(id,categoryUpdateRequest));
     }
 
-    @GetMapping("/Categories/id/{id}")
-    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("id") Long id){
-        return ResponseEntity.ok(categoryService.getCategoryById(id));
-    }
-    @GetMapping("/Categories/name/{name}")
-    public ResponseEntity<CategoryResponse> getCategoryByName(@PathVariable("name") String name){
-        return ResponseEntity.ok(categoryService.getCategoryByName(name));
+    @GetMapping("/Categories/search")
+    public ResponseEntity<Page<CategoryResponse>> getCategoryByAttribute(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) Boolean active,
+            Pageable page){
+        return ResponseEntity.ok(adminService.searchCategory(name,description,active,page));
     }
 
 
