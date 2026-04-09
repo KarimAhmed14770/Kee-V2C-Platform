@@ -1,15 +1,18 @@
 package com.Kee.V2C.service;
 
+import com.Kee.V2C.Repository.CategoryRepository;
 import com.Kee.V2C.Repository.VendorRepository;
 import com.Kee.V2C.Repository.CustomerRepository;
-import com.Kee.V2C.dto.CustomerProfileResponse;
-import com.Kee.V2C.dto.StatusUpdateDto;
-import com.Kee.V2C.dto.VendorProfileResponse;
+import com.Kee.V2C.dto.*;
+import com.Kee.V2C.entity.Category;
 import com.Kee.V2C.entity.Customer;
 import com.Kee.V2C.entity.Vendor;
 import com.Kee.V2C.enums.UserStatus;
+import com.Kee.V2C.exception.CategoryNotFoundException;
+import com.Kee.V2C.exception.ResourceAlreadyExistsException;
 import com.Kee.V2C.exception.ResourceNotFoundException;
 import com.Kee.V2C.exception.UserNotFoundException;
+import com.Kee.V2C.mapper.CategoryMapper;
 import com.Kee.V2C.specifications.CustomerSpecs;
 import com.Kee.V2C.specifications.VendorSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +26,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminServiceImpl implements AdminService {
     private final CustomerRepository customerRepository;
     private final VendorRepository vendorRepository;
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+    private final CategoryService categoryService;
 
     @Autowired
-    public AdminServiceImpl(CustomerRepository customerRepository, VendorRepository vendorRepository){
+    public AdminServiceImpl(CustomerRepository customerRepository, VendorRepository vendorRepository,
+                            CategoryRepository categoryRepository,CategoryMapper categoryMapper,
+                            CategoryService categoryService){
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
+        this.categoryRepository=categoryRepository;
+        this.categoryMapper=categoryMapper;
+        this.categoryService=categoryService;
     }
 
     @Override
@@ -120,6 +131,58 @@ public class AdminServiceImpl implements AdminService {
 
 
 
+    @Override
+    @Transactional
+    public CategoryResponse addCategory(CategoryRequest categoryRequest) {
+        if(categoryRepository.existsByNameIgnoreCase(categoryRequest.name())){
+            throw new ResourceAlreadyExistsException("category Already exists ");
+        }
+        Category category=new Category(categoryRequest.name(), categoryRequest.description(), categoryRequest.imageUrl(),
+                categoryRequest.active());
+        categoryRepository.save(category);
+
+        return convertCategoryToDto(category);
+    }
+
+    @Override
+    public CategoryResponse getCategoryProfileById(Long id){
+        return  convertCategoryToDto(categoryRepository.findById(id).orElseThrow(
+                ()->new CategoryNotFoundException("Category with id: "+id+" Not found."))
+        );
+    }
+
+    @Override
+    public Page<CategoryResponse> getAllCategories(Pageable page){
+        Page<Category> categories=categoryRepository.findAll(page);
+        return categories.map(this::convertCategoryToDto);
+    }
+    @Override
+    @Transactional
+    public CategoryResponse updateCategory(Long id, CategoryUpdateRequest categoryRequest){
+        Category updatedCategory=getCategoryById(id);
+        categoryMapper.updateCategoryFromDto(categoryRequest,updatedCategory);
+        categoryRepository.save(updatedCategory);
+
+        return convertCategoryToDto(updatedCategory);
+    }
+
+    @Override
+    @Transactional
+    public CategoryResponse softDeleteCategory(Long id){
+        Category category=getCategoryById(id);
+        category.setActive(false);
+        categoryRepository.save(category);
+        return convertCategoryToDto(category);
+    }
+
+    @Override
+    public Page<CategoryResponse> searchCategory(String name,String description,Boolean active,Pageable page){
+        return categoryService.getCategoryByAttribute(name,description,active,page);
+    }
+
+
+
+
     /*Helper methods*/
 
     private CustomerProfileResponse convertCustomerToDto(Customer customer) {
@@ -134,7 +197,6 @@ public class AdminServiceImpl implements AdminService {
         );
         return dto;
     }
-
     private VendorProfileResponse convertVendorToDto(Vendor vendor) {
         VendorProfileResponse dto = new VendorProfileResponse(
                 vendor.getId(),
@@ -160,5 +222,21 @@ public class AdminServiceImpl implements AdminService {
                 ()->new ResourceNotFoundException("customer with id: "+id+" not found.")
         );
         return customer;
+    }
+
+    private CategoryResponse convertCategoryToDto(Category category){
+        return new CategoryResponse(
+                category.getId(),
+                category.getName(),
+                category.getDescription(),
+                category.getImageUrl(),
+                category.isActive()
+        );
+    }
+
+    private Category getCategoryById(Long id){
+        return categoryRepository.findById(id).orElseThrow(
+                ()->new CategoryNotFoundException("Category with id: "+id+" Not found.")
+        );
     }
 }

@@ -1,8 +1,7 @@
 package com.Kee.V2C.service;
 
-import com.Kee.V2C.dto.CustomerProfileResponse;
-import com.Kee.V2C.dto.StatusUpdateDto;
-import com.Kee.V2C.dto.VendorProfileResponse;
+import com.Kee.V2C.dto.*;
+import com.Kee.V2C.entity.Category;
 import com.Kee.V2C.enums.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +21,16 @@ public interface AdminService {
     CustomerProfileResponse  modifyCustomerStatus(Long id, StatusUpdateDto status);
 
     VendorProfileResponse  modifyVendorStatus(Long id,StatusUpdateDto status);
+
+
+    CategoryResponse addCategory(CategoryRequest categoryRequest);
+    CategoryResponse getCategoryProfileById(Long id);
+
+
+    CategoryResponse updateCategory(Long id, CategoryUpdateRequest categoryRequest);
+    CategoryResponse softDeleteCategory(Long id);
+    Page<CategoryResponse> getAllCategories(Pageable page);
+    Page<CategoryResponse> searchCategory(String name,String description,Boolean active,Pageable page);
 
 
 }
