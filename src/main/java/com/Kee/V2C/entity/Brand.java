@@ -22,11 +22,20 @@ public class Brand {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "active")
+    private Boolean active;
+
     @OneToMany(mappedBy = "brand",fetch = FetchType.LAZY)
     private List<ProductModel> productModels=new ArrayList<>();
 
 
     public Brand(){}
+
+    public Brand(String name,String description,String imageUrl){
+        this.name=name;
+        this.description=description;
+        this.imageUrl=imageUrl;
+    }
 
     public Long getId() {
         return id;
