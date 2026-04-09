@@ -86,6 +86,10 @@ public class Brand {
         this.productModels = productModels;
     }
 
+    public void addProductModel(ProductModel productModel){
+        productModels.add(productModel);
+        productModel.setBrand(this);
+    }
     @Override
     public String toString() {
         return "Brand{" +
