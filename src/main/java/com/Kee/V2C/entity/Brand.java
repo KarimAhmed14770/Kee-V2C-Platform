@@ -31,10 +31,11 @@ public class Brand {
 
     public Brand(){}
 
-    public Brand(String name,String description,String imageUrl){
+    public Brand(String name,String description,String imageUrl,Boolean active){
         this.name=name;
         this.description=description;
         this.imageUrl=imageUrl;
+        this.active=active;
     }
 
     public Long getId() {
