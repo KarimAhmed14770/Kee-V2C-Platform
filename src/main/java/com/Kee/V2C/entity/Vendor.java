@@ -132,6 +132,14 @@ public class Vendor {
         this.shops = shops;
     }
 
+    public List<ProductModel> getProductModels() {
+        return productModels;
+    }
+
+    public void setProductModels(List<ProductModel> productModels) {
+        this.productModels = productModels;
+    }
+
     public void addProduct(Product product){
         products.add(product);
         product.setVendor(this);//the bi-directional link
@@ -142,13 +150,12 @@ public class Vendor {
         shop.setVendor(this);
     }
 
-    public List<ProductModel> getProductModels() {
-        return productModels;
+    public void addProductModel(ProductModel productModel){
+        productModels.add(productModel);
+        productModel.setVendor(this);
     }
 
-    public void setProductModels(List<ProductModel> productModels) {
-        this.productModels = productModels;
-    }
+
 
     @Override
     public String toString() {
