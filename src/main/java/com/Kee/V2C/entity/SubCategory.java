@@ -98,6 +98,11 @@ public class SubCategory {
         this.productModels = productModels;
     }
 
+    public void addProductModel(ProductModel productModel){
+        productModels.add(productModel);
+        productModel.setCategory(this);
+    }
+
     @Override
     public String toString() {
         return "SubCategory{" +
