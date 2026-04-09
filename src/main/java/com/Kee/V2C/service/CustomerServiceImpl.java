@@ -61,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerProfileResponse myProfile(){
         Customer customer=getCurrentCustomer();
         return new CustomerProfileResponse(customer.getId(), customer.getFirstName(),customer.getLastName(),customer.getPhoneNumber()
-                ,customer.getImageUrl(),customer.getShippingAddress());
+                ,customer.getImageUrl(),customer.getShippingAddress(),customer.getCredential().getUserStatus().name());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.save(customer);
         return new CustomerProfileResponse(customer.getId(),
                 customer.getFirstName(),customer.getLastName(),customer.getPhoneNumber(),customer.getImageUrl(),
-                customer.getShippingAddress()
+                customer.getShippingAddress(),customer.getCredential().getUserStatus().name()
         );
     }
 
@@ -186,7 +186,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setImageUrl(request.imageUrl());
         customerRepository.save(customer);
         return new CustomerProfileResponse(customer.getId(),customer.getFirstName(),customer.getLastName(),customer.getPhoneNumber()
-                ,customer.getImageUrl(),customer.getShippingAddress());
+                ,customer.getImageUrl(),customer.getShippingAddress(),customer.getCredential().getUserStatus().name());
     }
 
 
@@ -204,7 +204,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private Customer getCurrentCustomer(){
         Long id=securityUtil.getCurrentUserId();
-         return customerRepository.findById(id).
+         return customerRepository.findByIdWithCredentials(id).
                 orElseThrow(()->new UserNotFoundException("customer not found"));
     }
 

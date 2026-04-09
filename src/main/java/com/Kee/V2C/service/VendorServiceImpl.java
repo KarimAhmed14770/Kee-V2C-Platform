@@ -37,10 +37,14 @@ public class VendorServiceImpl implements VendorService {
         vendor.setImageUrl(vendorProfileRequest.imageUrl());
         vendor.setAddress(vendorProfileRequest.address());
         vendorRepository.save(vendor);
-        return new VendorProfileResponse(vendor.getName(),
+        return new VendorProfileResponse(
+                vendor.getId(),
+                vendor.getName(),
                 vendor.getAddress(),
                 vendor.getImageUrl(),
-                vendor.getRating());
+                vendor.getRating(),
+                vendor.getCredential().getUserStatus().name()
+                );
     }
 
     /*
@@ -105,10 +109,13 @@ public class VendorServiceImpl implements VendorService {
 */
     public VendorProfileResponse myProfile(){
         Vendor vendor=getCurrentVendor();
-        return new VendorProfileResponse(vendor.getName(),
+        return new VendorProfileResponse(
+                vendor.getId(),
+                vendor.getName(),
                 vendor.getAddress(),
                 vendor.getImageUrl(),
-                vendor.getRating());
+                vendor.getRating(),
+                vendor.getCredential().getUserStatus().name());
     }
 
     private Vendor getCurrentVendor(){
