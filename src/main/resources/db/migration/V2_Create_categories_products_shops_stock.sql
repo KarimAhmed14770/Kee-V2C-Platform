@@ -36,6 +36,7 @@ CREATE TABLE `brands` (
   `name` varchar(45) NOT NULL,
   `description` varchar(300) default Null,
   `image_url` varchar(1000) default Null, 
+  `active` boolean Not Null DEFAULT TRUE,
   PRIMARY KEY (`id`),
   constraint `unique_brand_name` UNIQUE (`name`),
   FULLTEXT idx_brand_description (`description`) -- The FTS index definition
