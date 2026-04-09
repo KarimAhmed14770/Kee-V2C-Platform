@@ -91,29 +91,29 @@ public class AdminController {
 
 
 
-    @PostMapping("/Categories")
+    @PostMapping("/categories")
     public ResponseEntity<CategoryResponse> addCategory(@RequestBody CategoryRequest categoryRequest){
         return ResponseEntity.ok(adminService.addCategory(categoryRequest));
     }
 
 
-    @GetMapping("/Categories")
+    @GetMapping("/categories")
     public ResponseEntity<Page<CategoryResponse>> getAllCategories(Pageable page){
         return ResponseEntity.ok(adminService.getAllCategories(page));
     }
 
-    @GetMapping("/Categories/{id}")
+    @GetMapping("/categories/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("id") Long id){
         return ResponseEntity.ok(adminService.getCategoryProfileById(id));
     }
 
-    @PatchMapping("/Categories/{id}")
+    @PatchMapping("/categories/{id}")
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("id") Long id,
                                                            @RequestBody CategoryUpdateRequest categoryUpdateRequest){
         return ResponseEntity.ok(adminService.updateCategory(id,categoryUpdateRequest));
     }
 
-    @GetMapping("/Categories/search")
+    @GetMapping("/categories/search")
     public ResponseEntity<Page<CategoryResponse>> getCategoryByAttribute(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String description,
@@ -122,10 +122,47 @@ public class AdminController {
         return ResponseEntity.ok(adminService.searchCategory(name,description,active,page));
     }
 
-    @PatchMapping("/Categories/{id}")
+    @PatchMapping("/categories/delete/{id}")
     public ResponseEntity<CategoryResponse> softDelete(@PathVariable("id") Long id){
         return ResponseEntity.ok(adminService.softDeleteCategory(id));
     }
+
+
+
+
+
+
+    @PostMapping("/categories/{id}/subcategories")
+    public ResponseEntity<SubCategoryResponse> addSubCategory(@PathVariable("id") Long id
+                                                    ,@RequestBody SubCategoryRequest subCategoryRequest){
+        return ResponseEntity.ok(adminService.addSubCategory(id,subCategoryRequest));
+    }
+
+    @GetMapping("/categories/{id}/subcategories")
+    public ResponseEntity<Page<SubCategoryResponse>> getSubCategoriesOfParent(@PathVariable("id") Long id,Pageable page){
+        return ResponseEntity.ok(adminService.getSubCategoriesOfParent(id,page));
+    }
+
+    @GetMapping("/categories/{parentId}/subcategories/{subCategoryId}")
+    public ResponseEntity<SubCategoryResponse> getSubCategoryById(@PathVariable("subCategoryId") Long subCategoryId){
+        return ResponseEntity.ok(adminService.getSubCategoryProfileById(subCategoryId));
+    }
+
+    @PatchMapping("/categories/{parentId}/subcategories/{subCategoryId}")
+    public ResponseEntity<SubCategoryResponse> updateSubCategory(@PathVariable("subCategoryId") Long subCategoryId,
+                                                                 @RequestBody SubCategoryRequest subCategoryRequest){
+        return ResponseEntity.ok(adminService.updateSubCategory(subCategoryId,subCategoryRequest));
+    }
+
+    @PatchMapping("/categories/{parentId}/subcategories/delete/{subCategoryId}")
+    public ResponseEntity<SubCategoryResponse> softDeleteSubCategory(@PathVariable("subCategoryId") Long subCategoryId){
+        return ResponseEntity.ok(adminService.softDeleteSubCategory(subCategoryId));
+    }
+
+
+
+
+
 
 
 
