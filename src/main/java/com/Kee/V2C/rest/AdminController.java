@@ -161,6 +161,33 @@ public class AdminController {
 
 
 
+    @PostMapping("/brands")
+    public BrandResponse addBrand(@RequestBody BrandRequest brandRequest){
+        return adminService.addBrand(brandRequest);
+    }
+
+    @GetMapping("/brands")
+    public Page<BrandResponse> getBrands(Pageable page){
+        return adminService.getAllBrands(page);
+    }
+
+    @GetMapping("/brands/{id}")
+    public BrandResponse getBrandById(@PathVariable("id") Long id){
+        return adminService.getBrandById(id);
+    }
+
+    @PatchMapping("/brands/{id}")
+    public BrandResponse updateBrand(@PathVariable("id") Long id,@RequestBody BrandRequest brandRequest){
+        return adminService.updateBrand(id,brandRequest);
+    }
+
+    @PatchMapping("/brands/delete/{id}")
+    public BrandResponse updateBrand(@PathVariable("id")Long id){
+        return adminService.softDeleteBrand(id);
+    }
+
+
+
 
 
 
