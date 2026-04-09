@@ -30,6 +30,9 @@ public class Product {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name="image_url")
+    private String imageUrl;
+
     @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
