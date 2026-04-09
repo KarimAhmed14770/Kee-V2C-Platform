@@ -48,6 +48,18 @@ public class ProductModel {
 
     public ProductModel(){}
 
+    public ProductModel(String name, String description, String imageUrl, Vendor vendor,
+                        boolean isGlobal, ProductModelStatus status, Brand brand, SubCategory category) {
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.vendor = vendor;
+        this.isGlobal = isGlobal;
+        this.status = status;
+        this.brand = brand;
+        this.category = category;
+    }
+
     public Long getId() {
         return id;
     }
