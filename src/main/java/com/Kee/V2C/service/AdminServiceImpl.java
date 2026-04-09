@@ -250,7 +250,8 @@ public class AdminServiceImpl implements AdminService {
         if(brandRepository.existsByNameIgnoreCase(brandRequest.name())){
             throw new ResourceAlreadyExistsException("Brand already exists");
         }
-        Brand brand=new Brand(brandRequest.name(),brandRequest.description(),brandRequest.imageUrl());
+        Brand brand=new Brand(brandRequest.name(),brandRequest.description()
+                ,brandRequest.imageUrl(),brandRequest.active());
         brandRepository.save(brand);
         return convertBrandToDto(brand);
     }
