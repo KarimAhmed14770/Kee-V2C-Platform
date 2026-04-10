@@ -175,7 +175,7 @@ public class AdminController {
                 .toUri();
         //returning also the url path to find the created source to make it available for the frontend
         //so they don't have to reconstruct it
-        return ResponseEntity.created(location).body(adminService.addBrand(brandRequest));
+        return ResponseEntity.created(location).body(brandResponse);
     }
 
     @GetMapping("/brands")
