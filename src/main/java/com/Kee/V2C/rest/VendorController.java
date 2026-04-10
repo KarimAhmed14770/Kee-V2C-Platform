@@ -9,20 +9,20 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/sellers")
-public class SellerController {
+public class VendorController {
 
-    private final VendorServiceImpl sellerService;
-
-
+    private final VendorServiceImpl vendorService;
 
 
-    public SellerController(VendorServiceImpl sellerService){
-        this.sellerService=sellerService;
+
+
+    public VendorController(VendorServiceImpl sellerService){
+        this.vendorService=sellerService;
     }
 
     @PutMapping("/update")
     public ResponseEntity<VendorProfileResponse> updateSeller(@RequestBody VendorProfileRequest vendorProfileRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(sellerService.updateSellerProfile(vendorProfileRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(vendorService.updateVendorProfile(vendorProfileRequest));
     }
 
 /*
@@ -38,6 +38,6 @@ public class SellerController {
 */
     @GetMapping("/my-profile")
     public ResponseEntity<VendorProfileResponse> myProfile(){
-        return ResponseEntity.status(HttpStatus.OK).body(sellerService.myProfile());
+        return ResponseEntity.status(HttpStatus.OK).body(vendorService.myProfile());
     }
 }

@@ -31,7 +31,7 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Transactional
-    public VendorProfileResponse updateSellerProfile(VendorProfileRequest vendorProfileRequest){
+    public VendorProfileResponse updateVendorProfile(VendorProfileRequest vendorProfileRequest){
         Vendor vendor=getCurrentVendor();
         vendor.setName(vendorProfileRequest.vendorName());
         vendor.setImageUrl(vendorProfileRequest.imageUrl());
