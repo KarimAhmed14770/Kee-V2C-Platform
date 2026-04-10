@@ -1,11 +1,11 @@
 package com.Kee.V2C.service;
 
-import com.Kee.V2C.Repository.CategoryRepository;
-import com.Kee.V2C.Repository.ShopRepository;
-import com.Kee.V2C.Repository.ProductRepository;
-import com.Kee.V2C.Repository.VendorRepository;
+import com.Kee.V2C.Repository.*;
 import com.Kee.V2C.dto.*;
-import com.Kee.V2C.entity.Vendor;
+import com.Kee.V2C.entity.*;
+import com.Kee.V2C.exception.ResourceAlreadyExistsException;
+import com.Kee.V2C.exception.ResourceNotFoundException;
+import com.Kee.V2C.mapper.ShopMapper;
 import com.Kee.V2C.utils.SecurityUtil;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -18,16 +18,23 @@ public class VendorServiceImpl implements VendorService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final ShopRepository shopRepository;
+    private final ProductModelRepository productModelRepository;
+    private final StockRepository stockRepository;
+    private final ShopMapper shopMapper;
 
 
     public VendorServiceImpl(SecurityUtil securityUtil, VendorRepository vendorRepository,
                              CategoryRepository categoryRepository, ProductRepository productRepository,
-                             ShopRepository shopRepository){
+                             ShopRepository shopRepository,ProductModelRepository productModelRepository,
+                             StockRepository stockRepository,ShopMapper shopMapper){
         this.securityUtil=securityUtil;
         this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
         this.productRepository=productRepository;
         this.shopRepository = shopRepository;
+        this.productModelRepository=productModelRepository;
+        this.stockRepository=stockRepository;
+        this.shopMapper=shopMapper;
     }
 
     @Transactional
@@ -47,66 +54,6 @@ public class VendorServiceImpl implements VendorService {
                 );
     }
 
-    /*
-    @Transactional
-    public ProductResponse addProduct(ProductRequest productRequest){
-        Product product=convertToProduct(productRequest);
-        productRepository.save(product);
-        return convertToDto(product);
-    }
-    */
-
-    /*
-    @Transactional
-    public InventoryResponse addShop(InventoryRequest inventoryRequest){
-        Inventory inventory=new Inventory(inventoryRequest.name(),inventoryRequest.location());
-        SellerProfile seller=getSellerProfile();
-        inventory.setSeller(seller);
-        shopRepository.save(inventory);
-        return new InventoryResponse(inventory.getName(),inventory.getLocation(),inventory.getCreatedAt());
-    }*/
-/*
-    private Product convertToProduct(ProductRequest productRequest){
-        Product product=new Product();
-        Shop shop= shopRepository.findById(productRequest.shopId())
-                .orElseThrow(()->new InventoryNotFoundException("wrong shop Id"));
-        Stock stock=new Stock(productRequest.stock(),product,shop);
-        product.setName(productRequest.name());
-        product.setDescription(productRequest.description());
-        product.setPrice(productRequest.price());
-        product.getStock().add(stock);
-        product.setImageUrl(productRequest.imageUrl());
-        product.setActive(productRequest.status());
-
-        SellerProfile sellerProfile=getSellerProfile();
-
-        product.setCategory(categoryRepository.findById(productRequest.categoryId())//bidirectional link
-                .orElseThrow(()->new CategoryNotFoundException("Category with id: "
-                        +productRequest.categoryId() +" Not Found")));
-        product.getCategory().addProduct(product);
-
-        sellerProfile.addProduct(product);//bi-directional link is handled inside
-        return product;
-    }
-    */
- /*
-
-    private ProductResponse convertToDto(Product product){
-        ProductResponse response=new ProductResponse(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getStock().stream().map(stock->stock.getQuantity()).toList(),
-                product.getImageUrl(),
-                product.getCategory().getName(),
-                product.getActive(),
-                product.getSellerProfile().getInventories().stream().
-                        map(Inventory::getName).toList()
-        );
-        return response;
-    }
-*/
     public VendorProfileResponse myProfile(){
         Vendor vendor=getCurrentVendor();
         return new VendorProfileResponse(
@@ -118,6 +65,91 @@ public class VendorServiceImpl implements VendorService {
                 vendor.getCredential().getUserStatus().name());
     }
 
+    @Override
+    @Transactional
+    public ShopResponse registerShop(ShopRequest shopRequest){
+        Vendor vendor=getCurrentVendor();
+        if(shopRepository.existsByVendorId(vendor.getId())){
+            throw new ResourceAlreadyExistsException("you already have a shop");
+        }
+        Shop shop=new Shop(shopRequest.name(),shopRequest.address(),shopRequest.active(),vendor);
+        vendor.setShop(shop);
+        shopRepository.save(shop);
+
+        return convertShopToDto(shop);
+    }
+
+    @Override
+    @Transactional
+    public ShopResponse updateShopInfo(Long id,ShopRequest shopRequest){
+        Shop shop=shopRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("Shop with id: "+id+" not found.")
+        );
+        shopMapper.updateShopFromDto(shopRequest,shop);
+        shopRepository.save(shop);
+        return convertShopToDto(shop);
+    }
+
+    @Override
+    @Transactional
+    public ShopResponse deactivateShop(Long id){
+        Shop shop=shopRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("Shop with id: "+id+" not found.")
+        );
+        shop.setActive(false);
+        shopRepository.save(shop);
+        return convertShopToDto(shop);
+    }
+
+    @Override
+    @Transactional
+    public ShopResponse activateShop(Long id){
+        Shop shop=shopRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("Shop with id: "+id+" not found.")
+        );
+        shop.setActive(true);
+        shopRepository.save(shop);
+        return convertShopToDto(shop);
+    }
+
+    @Override
+    @Transactional
+    public ProductResponse addNewGlobalProductToStock(GlobalProductAddToStockRequest globalProductAddToStockRequest){
+
+        ProductModel productModel=getProductModelById(globalProductAddToStockRequest.productModelId());
+        Product product=addProductToStockFromProductModel(productModel,globalProductAddToStockRequest);
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public ProductResponse addNewLocalProductToStock(GlobalProductAddToStockRequest globalProductAddToStockRequest){
+
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public ProductResponse updateProductStock(GlobalProductAddToStockRequest globalProductAddToStockRequest) {
+
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public ProductResponse hideProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest){
+
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public ProductResponse showProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest){
+
+        return null;
+    }
+
+
     private Vendor getCurrentVendor(){
         Long userId=securityUtil.getCurrentUserId();
         Vendor vendor= vendorRepository.findById(userId)
@@ -125,4 +157,45 @@ public class VendorServiceImpl implements VendorService {
                         +userId+"does not exist"));
         return vendor;
     }
+
+    private ShopResponse convertShopToDto(Shop shop){
+        return new ShopResponse(shop.getId(), shop.getName(), shop.getAddress(), shop.isActive());
+    }
+    private ProductModel getProductModelById(Long id){
+        return productModelRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("porduct model with id: "+id+" not found.")
+        );
+    }
+    private Product addProductToStockFromProductModel(ProductModel productModel,GlobalProductAddToStockRequest productAddToStockRequest){
+            Vendor vendor=getCurrentVendor();
+
+        Stock stock=new Stock();
+            /*
+            Product(Vendor vendor,ProductModel productModel ,Stock stock,String name, String description,
+                   BigDecimal price,String imageUrl)
+             */
+
+        return null;
+    }
+
+
 }
+ /*
+     public Product(Vendor vendor, String name, String description, BigDecimal price,String imageUrl) {
+        this.vendor = vendor;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imageUrl=imageUrl;
+    }
+
+        Long productModelId,
+        Long vendorId,
+        Long shopId,
+        String name,
+        String description,
+        BigDecimal price ,
+        Integer stock,
+        String imageUrl,
+        Boolean status
+         */
