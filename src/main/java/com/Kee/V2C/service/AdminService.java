@@ -2,6 +2,7 @@ package com.Kee.V2C.service;
 
 import com.Kee.V2C.dto.*;
 import com.Kee.V2C.entity.Category;
+import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,4 +48,15 @@ public interface AdminService {
 
 
     ProductModelResponse addProductModel(ProductModelRequest productModelRequest);
+    ProductModelResponse getProductModelById(Long id);
+    Page<ProductModelResponse> getAllProductModels(Pageable page);
+    Page<ProductModelResponse> getProductModelsByAttributes(String name, String description,
+                                                            Long ownerId, Long subCategoryId, Long brandId,
+                                                            Boolean isGlobal, ProductModelStatus status,
+                                                            Pageable page);
+    ProductModelResponse updateProductModel(Long id,ProductModelRequest productModelRequest);
+    ProductModelResponse softDeleteProductModel(Long id);
+
+
+
 }

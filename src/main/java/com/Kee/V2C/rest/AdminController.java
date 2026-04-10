@@ -1,6 +1,7 @@
 package com.Kee.V2C.rest;
 
 import com.Kee.V2C.dto.*;
+import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.UserStatus;
 import com.Kee.V2C.service.AdminService;
 import com.Kee.V2C.service.CategoryService;
@@ -206,6 +207,40 @@ public class AdminController {
         return ResponseEntity.created(location).body(response);
     }
 
+    @GetMapping("/product-models")
+    public ResponseEntity<Page<ProductModelResponse>> getAllProductModels(Pageable page){
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllProductModels(page));
+    }
+
+    @GetMapping("/product-models/{id}")
+    public ResponseEntity<ProductModelResponse> getProductModelById(@PathVariable("id") Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getProductModelById(id));
+    }
+
+    @GetMapping("/product-models/search")
+    public ResponseEntity<Page<ProductModelResponse>> getProductModelByAttribute(
+            @RequestBody(required = false) String name,
+            @RequestBody(required = false) String description,
+            @RequestBody(required = false) Long ownerId,
+            @RequestBody(required = false) Long subCategoryId,
+            @RequestBody(required = false) Long brandId,
+            @RequestBody(required = false) Boolean isGlobal,
+            @RequestBody(required = false) ProductModelStatus status,
+            Pageable page){
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.getProductModelsByAttributes
+                (name,description,ownerId,subCategoryId,brandId,isGlobal,status,page));
+    }
+
+    @PatchMapping("/product-models/{id}")
+    public ResponseEntity<ProductModelResponse> updateProductModel(@PathVariable("id") Long id,
+                                                                   @RequestBody ProductModelRequest productModelRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.updateProductModel(id,productModelRequest));
+    }
+
+    @PatchMapping("/product-models/delete/{id}")
+    public ResponseEntity<ProductModelResponse> softDeleteProductModel(@PathVariable("id") Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.softDeleteProductModel(id));
+    }
 
 
 

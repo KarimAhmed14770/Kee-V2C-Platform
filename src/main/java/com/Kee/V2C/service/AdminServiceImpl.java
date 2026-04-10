@@ -11,8 +11,10 @@ import com.Kee.V2C.exception.ResourceNotFoundException;
 import com.Kee.V2C.exception.UserNotFoundException;
 import com.Kee.V2C.mapper.BrandMapper;
 import com.Kee.V2C.mapper.CategoryMapper;
+import com.Kee.V2C.mapper.ProductModelMapper;
 import com.Kee.V2C.mapper.SubCategoryMapper;
 import com.Kee.V2C.specifications.CustomerSpecs;
+import com.Kee.V2C.specifications.ProductModelSpecs;
 import com.Kee.V2C.specifications.VendorSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +38,7 @@ public class AdminServiceImpl implements AdminService {
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
     private final ProductModelRepository productModelRepository;
+    private final ProductModelMapper productModelMapper;
 
 
 
@@ -44,7 +47,8 @@ public class AdminServiceImpl implements AdminService {
                             CategoryRepository categoryRepository,CategoryMapper categoryMapper,
                             CategoryService categoryService,SubCategoryRepository subCategoryRepository
                             ,SubCategoryMapper subCategoryMapper,BrandRepository brandRepository,
-                            BrandMapper brandMapper,ProductModelRepository productModelRepository){
+                            BrandMapper brandMapper,ProductModelRepository productModelRepository,
+                            ProductModelMapper productModelMapper){
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
@@ -55,6 +59,7 @@ public class AdminServiceImpl implements AdminService {
         this.brandRepository=brandRepository;
         this.brandMapper=brandMapper;
         this.productModelRepository=productModelRepository;
+        this.productModelMapper=productModelMapper;
     }
 
     @Override
@@ -301,6 +306,65 @@ public class AdminServiceImpl implements AdminService {
         return convertProductModelToDto(productModel);
     }
 
+    @Override
+    public ProductModelResponse getProductModelById(Long id) {
+        return convertProductModelToDto(productModelRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("product model with id: "+id+" not found")));
+    }
+
+    @Override
+    public Page<ProductModelResponse> getAllProductModels(Pageable page){
+        Page<ProductModel> productModels=productModelRepository.findAll(page);
+        return productModels.map(this::convertProductModelToDto);
+
+    }
+
+    @Override
+    public Page<ProductModelResponse> getProductModelsByAttributes(String name, String description,
+                                                                   Long ownerId,Long subCategoryId,Long brandId,
+                                                                   Boolean isGlobal,ProductModelStatus status,
+                                                                   Pageable page){
+        Specification<ProductModel> spec=Specification
+                .where((root, query, cb) -> cb.conjunction() );
+
+        if(name!=null && !(name.isEmpty()))spec=spec.and(ProductModelSpecs.hasName(name));
+        if(description!=null && !(description.isEmpty()))spec=spec.and(ProductModelSpecs.hasDescription(description));
+        if(ownerId!=null)spec=spec.and(ProductModelSpecs.hasVendor(ownerId));
+        if(subCategoryId!=null)spec=spec.and(ProductModelSpecs.hasSubCategory(subCategoryId));
+        if(brandId!=null)spec=spec.and(ProductModelSpecs.hasBrand(brandId));
+        if(isGlobal!=null)spec=spec.and(ProductModelSpecs.isGlobal(isGlobal));
+        if(status!=null)spec=spec.and(ProductModelSpecs.hasStatus(status));
+
+        Page<ProductModel> productModels=productModelRepository.findAll(spec,page);
+
+        return productModels.map(this::convertProductModelToDto);
+    }
+
+    @Override
+    @Transactional
+    public ProductModelResponse updateProductModel(Long id,ProductModelRequest productModelRequest){
+        ProductModel productModel=productModelRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Product Model with id: "+id+" not found"));
+
+        productModelMapper.updateProductModelFromDto(productModelRequest,productModel);
+        productModelRepository.save(productModel);
+
+        return convertProductModelToDto(productModel);
+    }
+
+    @Override
+    @Transactional
+    public ProductModelResponse softDeleteProductModel(Long id){
+        ProductModel productModel=productModelRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Product Model with id: "+id+" not found"));
+
+       productModel.setStatus(ProductModelStatus.DISABLED);
+        productModelRepository.save(productModel);
+
+        return convertProductModelToDto(productModel);
+
+    }
+
 
 
 
@@ -403,7 +467,7 @@ public class AdminServiceImpl implements AdminService {
                 productModelRequest.imageUrl(),
                 vendor,
                 productModelRequest.isGlobal(),
-                ProductModelStatus.ACTIVE,
+                productModelRequest.status(),
                 brand,
                 category
         );
@@ -419,7 +483,7 @@ public class AdminServiceImpl implements AdminService {
         return new ProductModelResponse(
                 productModel.getId(),
                 productModel.getBrand().getId(),
-                productModel.getCategory().getId(),
+                productModel.getSubCategory().getId(),
                 (productModel.getVendor()==null)?null:productModel.getVendor().getId(),
                 productModel.isGlobal(),
                 productModel.getName(),
