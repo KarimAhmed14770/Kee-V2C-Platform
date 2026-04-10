@@ -26,7 +26,7 @@ public class ProductModel {
 
     @ManyToOne
     @JoinColumn(name = "owner_vendor_id")
-    private Vendor vendor;
+    private Vendor owner;
 
     @Column(name = "is_global")
     private boolean isGlobal;
@@ -41,23 +41,23 @@ public class ProductModel {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private SubCategory category;
+    private SubCategory subCategory;
 
     @OneToMany(mappedBy = "productModel")
     private List<Product> products=new ArrayList<>();
 
     public ProductModel(){}
 
-    public ProductModel(String name, String description, String imageUrl, Vendor vendor,
-                        boolean isGlobal, ProductModelStatus status, Brand brand, SubCategory category) {
+    public ProductModel(String name, String description, String imageUrl, Vendor owner,
+                        boolean isGlobal, ProductModelStatus status, Brand brand, SubCategory subCategory) {
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
-        this.vendor = vendor;
+        this.owner = owner;
         this.isGlobal = isGlobal;
         this.status = status;
         this.brand = brand;
-        this.category = category;
+        this.subCategory = subCategory;
     }
 
     public Long getId() {
@@ -93,11 +93,11 @@ public class ProductModel {
     }
 
     public Vendor getVendor() {
-        return vendor;
+        return owner;
     }
 
     public void setVendor(Vendor vendor) {
-        this.vendor = vendor;
+        this.owner = vendor;
     }
 
     public boolean isGlobal() {
@@ -124,12 +124,12 @@ public class ProductModel {
         this.brand = brand;
     }
 
-    public SubCategory getCategory() {
-        return category;
+    public SubCategory getSubCategory() {
+        return subCategory;
     }
 
-    public void setCategory(SubCategory category) {
-        this.category = category;
+    public void setSubCategory(SubCategory category) {
+        this.subCategory = category;
     }
 
     public List<Product> getProducts() {

@@ -29,7 +29,7 @@ public class SubCategory {
     @JoinColumn(name = "parent_category_id")
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "subCategory")
     private List<ProductModel> productModels;
 
     public SubCategory(){}
@@ -100,7 +100,7 @@ public class SubCategory {
 
     public void addProductModel(ProductModel productModel){
         productModels.add(productModel);
-        productModel.setCategory(this);
+        productModel.setSubCategory(this);
     }
 
     @Override

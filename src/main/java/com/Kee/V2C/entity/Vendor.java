@@ -41,7 +41,7 @@ public class Vendor {
     @OneToMany(mappedBy = "vendor",fetch = FetchType.LAZY)
     private List<Shop> shops=new ArrayList<>();
 
-    @OneToMany(mappedBy = "vendor",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
     private List<ProductModel> productModels=new ArrayList<>();//for products created by this vendor
 
     public Vendor(){}
