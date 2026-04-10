@@ -91,6 +91,13 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
+    public ShopResponse viewShop(){
+        Long id=getCurrentVendor().getId();
+        Shop shop=shopRepository.findByVendorId(id)
+                .orElseThrow(()->new ResourceNotFoundException("there are no shops for vendor with id: "+id+"."));
+        return convertShopToDto(shop);
+    }
+    @Override
     @Transactional
     public ShopResponse deactivateShop(Long id){
         Shop shop=shopRepository.findById(id).orElseThrow(

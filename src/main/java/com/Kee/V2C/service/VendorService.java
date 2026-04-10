@@ -9,6 +9,7 @@ interface VendorService {
     ShopResponse updateShopInfo(Long id,ShopRequest shopRequest);
     ShopResponse deactivateShop(Long id);
     ShopResponse activateShop(Long id);
+    ShopResponse viewShop();
     ProductResponse addNewGlobalProductToStock(GlobalProductAddToStockRequest globalProductAddToStockRequest);
     ProductResponse addNewLocalProductToStock(GlobalProductAddToStockRequest globalProductAddToStockRequest);
     ProductResponse updateProductStock(GlobalProductAddToStockRequest globalProductAddToStockRequest) ;
