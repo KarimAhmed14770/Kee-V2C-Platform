@@ -219,7 +219,7 @@ public class CustomerServiceImpl implements CustomerService {
             //in future updates there will be multiple inventories and the inventory choice will
             //be dependent on user location ,aldo is stock isn't sufficient at one inventory we can
             //use the stock from another inventory
-            if(requiredQuantity<=product.getStock().get(0).getQuantity()){
+            if(requiredQuantity<=product.getStock().getQuantity()){
                 cartItem.setQuantity(requiredQuantity);
                 cartItemRepository.save(cartItem);
             }
@@ -228,7 +228,7 @@ public class CustomerServiceImpl implements CustomerService {
                         product.getId() +" ." +
                         "Requested quantity= "+requiredQuantity+
                         "          Available Stock= "
-                        +product.getStock().get(0).getQuantity());
+                        +product.getStock().getQuantity());
             }
         }
         else{
@@ -273,7 +273,7 @@ public class CustomerServiceImpl implements CustomerService {
         for(CartItem cartItem:cart){
             rowsUpdated= stockRepository.decrementProductStock(cartItem.getQuantity(),
                     cartItem.getProduct().getId(),
-                    cartItem.getProduct().getVendor().getShops().get(0).getId());
+                    cartItem.getProduct().getVendor().getShop().getId());
             if(rowsUpdated==0){
                 throw new InsufficientStockException("Product with id: "+cartItem.getProduct().getId()+
                         " is out of stock");
