@@ -21,7 +21,7 @@ public final class ProductModelSpecs {
     public static Specification<ProductModel> hasDescription(String description){
         return (root,query,cb)->{
             if(description==null ||description.isEmpty())return null;
-            return cb.like(cb.lower(root.get("name")),"%"+description+"%");
+            return cb.like(cb.lower(root.get("description")),"%"+description+"%");
         };
     }
     public static Specification<ProductModel> isGlobal(Boolean isGlobal){
