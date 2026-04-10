@@ -30,7 +30,7 @@ public class Stock {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
 

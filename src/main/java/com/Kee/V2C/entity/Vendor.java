@@ -38,8 +38,8 @@ public class Vendor {
     private List<Product> products=new ArrayList<>();
 
     //when searching for a vendor we don't want the list of shops unless stated
-    @OneToMany(mappedBy = "vendor",fetch = FetchType.LAZY)
-    private List<Shop> shops=new ArrayList<>();
+    @OneToOne(mappedBy = "vendor",fetch = FetchType.LAZY)
+    private Shop shop;
 
     @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
     private List<ProductModel> productModels=new ArrayList<>();//for products created by this vendor
@@ -95,8 +95,8 @@ public class Vendor {
         this.credential = credential;
     }
 
-    public void setShops(List<Shop> shops) {
-        this.shops = shops;
+    public void setShop(Shop shops) {
+        this.shop = shops;
     }
 
     public float getRating() {
@@ -124,13 +124,7 @@ public class Vendor {
     }
 
 
-    public List<Shop> getShops() {
-        return shops;
-    }
-
-    public void setInventories(List<Shop> shops) {
-        this.shops = shops;
-    }
+    public Shop getShop() {return shop;}
 
     public List<ProductModel> getProductModels() {
         return productModels;
@@ -143,11 +137,6 @@ public class Vendor {
     public void addProduct(Product product){
         products.add(product);
         product.setVendor(this);//the bi-directional link
-    }
-
-    public void addShop(Shop shop){
-        shops.add(shop);
-        shop.setVendor(this);
     }
 
     public void addProductModel(ProductModel productModel){
