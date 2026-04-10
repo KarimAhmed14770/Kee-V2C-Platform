@@ -219,13 +219,13 @@ public class AdminController {
 
     @GetMapping("/product-models/search")
     public ResponseEntity<Page<ProductModelResponse>> getProductModelByAttribute(
-            @RequestBody(required = false) String name,
-            @RequestBody(required = false) String description,
-            @RequestBody(required = false) Long ownerId,
-            @RequestBody(required = false) Long subCategoryId,
-            @RequestBody(required = false) Long brandId,
-            @RequestBody(required = false) Boolean isGlobal,
-            @RequestBody(required = false) ProductModelStatus status,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) Long ownerId,
+            @RequestParam(required = false) Long subCategoryId,
+            @RequestParam(required = false) Long brandId,
+            @RequestParam(required = false) Boolean isGlobal,
+            @RequestParam(required = false) ProductModelStatus status,
             Pageable page){
         return ResponseEntity.status(HttpStatus.OK).body(adminService.getProductModelsByAttributes
                 (name,description,ownerId,subCategoryId,brandId,isGlobal,status,page));
