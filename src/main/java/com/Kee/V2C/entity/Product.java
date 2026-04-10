@@ -56,8 +56,8 @@ public class Product {
 
     //removing or saving a product we want to save stock too so cascade all same for removal
     //each product might have different stocks upon different inventories
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-    private List<Stock> stock=new ArrayList<>();
+    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL)
+    private Stock stock;
 
     @OneToOne(mappedBy = "product",fetch = FetchType.LAZY)
     private CartItem cartItem;
@@ -67,11 +67,15 @@ public class Product {
 
     public Product(){}
 
-    public Product(Vendor vendor, String name, String description, BigDecimal price) {
+    public Product(Vendor vendor,ProductModel productModel ,Stock stock,String name, String description,
+                   BigDecimal price,String imageUrl) {
         this.vendor = vendor;
+        this.productModel=productModel;
+        this.stock=stock;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.imageUrl=imageUrl;
     }
 
     public Long getId() {
@@ -174,6 +178,14 @@ public class Product {
 
     public void setProductModel(ProductModel productModel) {
         this.productModel = productModel;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override

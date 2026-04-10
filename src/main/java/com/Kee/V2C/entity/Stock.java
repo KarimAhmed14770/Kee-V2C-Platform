@@ -26,7 +26,7 @@ public class Stock {
     @Column(name = "active")
     private boolean active;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
