@@ -7,7 +7,7 @@ CREATE TABLE `add_product_model_requests` (
     `vendor_id` int not null,
     `name` varchar(200)NOT NULL,
     `description` varchar(500) NOT NULL, 
-    `imageUrl` varchar(1000) NOT NULL, 
+    `image_url` varchar(1000) NOT NULL, 
     `is_global` Boolean default true not null,
     `status` varchar(20) default 'PENDING',  -- APPROVED,PENDING,REJECTED
     `added_at` datetime Not null default current_timestamp On update current_timestamp,
