@@ -45,7 +45,7 @@ CREATE TABLE `brands` (
 Drop table if exists `product_models`;
 CREATE TABLE `product_models` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `Brand_id` int not null,
+  `brand_id` int,
   `category_id` int NOT NULL,-- will point to a subcategory
   `name` varchar(45) NOT NULL,
   `description` varchar(300) default Null,-- for official factory specs
@@ -59,7 +59,6 @@ CREATE TABLE `product_models` (
    CONSTRAINT fk_model_owner FOREIGN KEY (owner_vendor_id) REFERENCES vendors(id),
    FULLTEXT idx_model_description (`description`) -- The FTS index definition
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
 
 
 
