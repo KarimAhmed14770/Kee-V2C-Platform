@@ -62,6 +62,11 @@ public class VendorController {
         return ResponseEntity.ok(vendorService.activateShop());
     }
 
+    @PostMapping("/product-requests")
+    public ResponseEntity<ProductRequestResponse> requestNewProduct(NewProductRequest newProductRequest){
+        return ResponseEntity.status(HttpStatus.CREATED).body(vendorService.requestNewProduct(newProductRequest));
+    }
+
      /*
         ShopResponse registerShop(ShopRequest shopRequest);
         ShopResponse updateShopInfo(Long id,ShopRequest shopRequest);

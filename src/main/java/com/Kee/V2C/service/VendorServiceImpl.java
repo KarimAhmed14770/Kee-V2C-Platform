@@ -139,8 +139,6 @@ public class VendorServiceImpl implements VendorService {
                 newProductRequest.imageUrl(), productRequest.getGlobal(),productRequest.getStatus()
         );
 
-
-
     }
 /*
     @Override
