@@ -37,12 +37,15 @@ public class Vendor {
     @OneToMany(mappedBy = "vendor",fetch = FetchType.LAZY)
     private List<Product> products=new ArrayList<>();
 
-    //when searching for a vendor we don't want the list of shops unless stated
+    //
     @OneToOne(mappedBy = "vendor",fetch = FetchType.LAZY)
     private Shop shop;
 
     @OneToMany(mappedBy = "owner",fetch = FetchType.LAZY)
     private List<ProductModel> productModels=new ArrayList<>();//for products created by this vendor
+
+    @OneToMany(mappedBy = "vendor")
+    private List<ProductRequest> productRequests;
 
     public Vendor(){}
 
@@ -95,8 +98,8 @@ public class Vendor {
         this.credential = credential;
     }
 
-    public void setShop(Shop shops) {
-        this.shop = shops;
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public float getRating() {
