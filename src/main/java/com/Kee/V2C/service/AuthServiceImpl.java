@@ -90,18 +90,6 @@ public class AuthServiceImpl implements AuthService{
         return convertVendorToDto(vendor);
     }
 
-    private Vendor convertToVendor(VendorRegistrationDto vendorRegistrationDto) {
-        Vendor registeredVendor=new Vendor(vendorRegistrationDto.name(), vendorRegistrationDto.description(),
-                vendorRegistrationDto.imageUrl(), vendorRegistrationDto.address());
-        Credential credential=new Credential(vendorRegistrationDto.userName(), vendorRegistrationDto.password(), vendorRegistrationDto.email(),
-                UserStatus.INACTIVE);//admins must manually confirm vendors first
-        registeredVendor.setCredential(credential);
-        Role vendorRole=new Role(UserRoles.ROLE_SELLER);
-        credential.setRole(vendorRole );
-        vendorRole.setCredential(credential);
-        return registeredVendor;
-    }
-
     @Override
     public AuthenticationResponse logIn(LoginRequest loginRequest) {
         //first we create an unauthenticated token based on request body
@@ -121,6 +109,22 @@ public class AuthServiceImpl implements AuthService{
 
         return new AuthenticationResponse(jwt, isProfileComplete);
     }
+
+
+
+    private Vendor convertToVendor(VendorRegistrationDto vendorRegistrationDto) {
+        Vendor registeredVendor=new Vendor(vendorRegistrationDto.name(), vendorRegistrationDto.description(),
+                vendorRegistrationDto.imageUrl(), vendorRegistrationDto.address());
+        Credential credential=new Credential(vendorRegistrationDto.userName(), vendorRegistrationDto.password(), vendorRegistrationDto.email(),
+                UserStatus.INACTIVE);//admins must manually confirm vendors first
+        registeredVendor.setCredential(credential);
+        Role vendorRole=new Role(UserRoles.ROLE_SELLER);
+        credential.setRole(vendorRole );
+        vendorRole.setCredential(credential);
+        return registeredVendor;
+    }
+
+
     private CustomerRegistrationResponse convertCustomerToDto(Customer customer){
         CustomerRegistrationResponse responseDTO=new CustomerRegistrationResponse(
                 customer.getId(),
@@ -173,7 +177,9 @@ public class AuthServiceImpl implements AuthService{
         if(role.getRole().equals(UserRoles.ROLE_SELLER)) {
             Vendor vendor = vendorRepository.findByCredentialUserName(userName)
                     .orElseThrow(() -> new UserNotFoundException("user not found"));
-            isProfileComplete=true;//hardcoded true currently
+            if(vendor.getShop()==null ||vendor.getShop().getName()==null ||vendor.getShop().getAddress()==null){
+                isProfileComplete=false;//vendor must register shop or update shop info
+            }
         }
         return isProfileComplete;
     }
