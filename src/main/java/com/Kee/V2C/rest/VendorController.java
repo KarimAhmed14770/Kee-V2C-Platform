@@ -6,9 +6,12 @@ import com.Kee.V2C.service.VendorServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
-@RequestMapping("/api/sellers")
+@RequestMapping("/api/vendors")
 public class VendorController {
 
     private final VendorServiceImpl vendorService;
@@ -20,24 +23,50 @@ public class VendorController {
         this.vendorService=sellerService;
     }
 
-    @PutMapping("/update")
+    @PatchMapping("/my-profile/update")
     public ResponseEntity<VendorProfileResponse> updateSeller(@RequestBody VendorProfileRequest vendorProfileRequest){
         return ResponseEntity.status(HttpStatus.OK).body(vendorService.updateVendorProfile(vendorProfileRequest));
     }
 
-/*
-    @PostMapping("/product")
-    public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest){
-        return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.addProduct(productRequest));
-    }
-
-    @PostMapping("/inventory")
-    public ResponseEntity<InventoryResponse> addInventory(@RequestBody InventoryRequest inventoryRequest){
-        return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.addInventory(inventoryRequest));
-    }
-*/
     @GetMapping("/my-profile")
     public ResponseEntity<VendorProfileResponse> myProfile(){
         return ResponseEntity.status(HttpStatus.OK).body(vendorService.myProfile());
     }
+
+    @PostMapping("/my-shop")
+    public ResponseEntity<ShopResponse> registerShop(ShopRequest shopRequest){
+        ShopResponse response=vendorService.registerShop(shopRequest);
+        URI location= ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(response.id())
+                .toUri();
+        return ResponseEntity.created(location).body(response);
+    }
+
+    @PatchMapping("/my-shop")
+    public ResponseEntity<ShopResponse> updateShop(ShopRequest shopRequest){
+        return ResponseEntity.ok(vendorService.updateShopInfo(shopRequest));
+    }
+
+    @GetMapping("/my-shop")
+    public ResponseEntity<ShopResponse> viewShop(){
+        return ResponseEntity.ok(vendorService.viewShop());
+    }
+
+    @PatchMapping("/my-shop/deactivate")
+    public ResponseEntity<ShopResponse> deactivateShop(){
+        return ResponseEntity.ok(vendorService.deactivateShop());
+    }
+
+    @PatchMapping("/my-shop/activate")
+    public ResponseEntity<ShopResponse> activateShop(){
+        return ResponseEntity.ok(vendorService.activateShop());
+    }
+
+     /*
+        ShopResponse registerShop(ShopRequest shopRequest);
+        ShopResponse updateShopInfo(Long id,ShopRequest shopRequest);
+        ShopResponse deactivateShop(Long id);
+        ShopResponse activateShop(Long id);
+        ShopResponse viewShop();
+        */
 }

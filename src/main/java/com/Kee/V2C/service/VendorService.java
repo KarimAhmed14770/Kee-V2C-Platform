@@ -6,13 +6,17 @@ interface VendorService {
     VendorProfileResponse updateVendorProfile(VendorProfileRequest vendorProfileRequest);
     VendorProfileResponse myProfile();
     ShopResponse registerShop(ShopRequest shopRequest);
-    ShopResponse updateShopInfo(Long id,ShopRequest shopRequest);
-    ShopResponse deactivateShop(Long id);
-    ShopResponse activateShop(Long id);
+    ShopResponse updateShopInfo(ShopRequest shopRequest);
+    ShopResponse deactivateShop();
+    ShopResponse activateShop();
     ShopResponse viewShop();
-    ProductResponse addNewGlobalProductToStock(GlobalProductAddToStockRequest globalProductAddToStockRequest);
-    ProductResponse addNewLocalProductToStock(GlobalProductAddToStockRequest globalProductAddToStockRequest);
+    ProductRequestResponse requestNewProduct(NewProductRequest newProductRequest);
+    /*
+    ProductResponse requestNewLocalProduct(LocalProductAddToStockRequest globalProductAddToStockRequest);
+    ProductResponse addNewProductToStock(GlobalProductAddToStockRequest globalProductAddToStockRequest);
     ProductResponse updateProductStock(GlobalProductAddToStockRequest globalProductAddToStockRequest) ;
     ProductResponse hideProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest);
     ProductResponse showProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest);
+
+     */
 }
