@@ -39,9 +39,11 @@ public class Shop {
 
     public Shop(){}
 
-    public Shop(String name, String address) {
+    public Shop(String name, String address,Boolean active,Vendor vendor) {
         this.name = name;
         this.address = address;
+        this.active=active;
+        this.vendor=vendor;
     }
 
     public Long getId() {
