@@ -1,7 +1,7 @@
 package com.Kee.V2C.mapper;
 
 
-import com.Kee.V2C.dto.VendorProfileRequest;
+import com.Kee.V2C.dto.vendor.VendorProfileRequest;
 import com.Kee.V2C.entity.Vendor;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

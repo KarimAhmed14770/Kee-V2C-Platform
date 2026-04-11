@@ -1,7 +1,12 @@
 package com.Kee.V2C.rest;
 
 
-import com.Kee.V2C.dto.*;
+import com.Kee.V2C.dto.Authentication.AuthenticationResponse;
+import com.Kee.V2C.dto.Authentication.LoginRequest;
+import com.Kee.V2C.dto.customer.CustomerRegistrationDTO;
+import com.Kee.V2C.dto.customer.CustomerRegistrationResponse;
+import com.Kee.V2C.dto.vendor.VendorRegistrationDto;
+import com.Kee.V2C.dto.vendor.VendorRegistrationResponse;
 import com.Kee.V2C.service.AuthService;
 import com.Kee.V2C.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;

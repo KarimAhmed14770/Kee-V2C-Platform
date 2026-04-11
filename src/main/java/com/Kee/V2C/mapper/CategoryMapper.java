@@ -1,6 +1,6 @@
 package com.Kee.V2C.mapper;
 
-import com.Kee.V2C.dto.CategoryUpdateRequest;
+import com.Kee.V2C.dto.category.CategoryUpdateRequest;
 import com.Kee.V2C.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

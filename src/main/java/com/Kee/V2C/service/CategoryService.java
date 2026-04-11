@@ -1,6 +1,6 @@
 package com.Kee.V2C.service;
 
-import com.Kee.V2C.dto.CategoryResponse;
+import com.Kee.V2C.dto.category.CategoryResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

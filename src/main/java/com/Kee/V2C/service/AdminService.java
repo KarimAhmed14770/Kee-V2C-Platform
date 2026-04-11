@@ -1,7 +1,14 @@
 package com.Kee.V2C.service;
 
 import com.Kee.V2C.dto.*;
-import com.Kee.V2C.entity.Category;
+import com.Kee.V2C.dto.brand.BrandRequest;
+import com.Kee.V2C.dto.brand.BrandResponse;
+import com.Kee.V2C.dto.category.*;
+import com.Kee.V2C.dto.customer.CustomerProfileResponse;
+import com.Kee.V2C.dto.product.ProductModelRequest;
+import com.Kee.V2C.dto.product.ProductModelResponse;
+import com.Kee.V2C.dto.product.ProductRequestResponse;
+import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.UserStatus;
 import org.springframework.data.domain.Page;
@@ -33,7 +40,7 @@ public interface AdminService {
 
 
 
-    SubCategoryResponse addSubCategory(Long parentId,SubCategoryRequest subCategoryRequest);
+    SubCategoryResponse addSubCategory(Long parentId, SubCategoryRequest subCategoryRequest);
     SubCategoryResponse getSubCategoryProfileById(Long id);
     SubCategoryResponse updateSubCategory(Long id, SubCategoryRequest subCategoryRequest);
     SubCategoryResponse softDeleteSubCategory(Long id);

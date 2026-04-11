@@ -2,6 +2,14 @@ package com.Kee.V2C.service;
 
 import com.Kee.V2C.Repository.*;
 import com.Kee.V2C.dto.*;
+import com.Kee.V2C.dto.brand.BrandRequest;
+import com.Kee.V2C.dto.brand.BrandResponse;
+import com.Kee.V2C.dto.category.*;
+import com.Kee.V2C.dto.customer.CustomerProfileResponse;
+import com.Kee.V2C.dto.product.ProductModelRequest;
+import com.Kee.V2C.dto.product.ProductModelResponse;
+import com.Kee.V2C.dto.product.ProductRequestResponse;
+import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.entity.*;
 import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.ProductRequestStatus;
@@ -24,9 +32,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -107,7 +112,7 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public Page<VendorProfileResponse> getAllVendors( Pageable page){
+    public Page<VendorProfileResponse> getAllVendors(Pageable page){
         Page<Vendor> vendors= vendorRepository.findAll(page);
         return vendors.map(this::convertVendorToDto);
     }
@@ -213,7 +218,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public SubCategoryResponse addSubCategory(Long parentId,SubCategoryRequest subCategoryRequest){
+    public SubCategoryResponse addSubCategory(Long parentId, SubCategoryRequest subCategoryRequest){
         if(subCategoryRepository.existsByNameIgnoreCase(subCategoryRequest.name())){
             throw new ResourceAlreadyExistsException("category Already exists ");
         }
@@ -311,7 +316,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public  ProductModelResponse addProductModel(ProductModelRequest productModelRequest){
+    public ProductModelResponse addProductModel(ProductModelRequest productModelRequest){
         ProductModel productModel=convertProductModelRequestToProductModel(productModelRequest);
         productModelRepository.save(productModel);
         return convertProductModelToDto(productModel);

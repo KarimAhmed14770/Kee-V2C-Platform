@@ -1,7 +1,7 @@
 package com.Kee.V2C.service;
 
 import com.Kee.V2C.Repository.ProductRepository;
-import com.Kee.V2C.dto.ProductViewResponse;
+import com.Kee.V2C.dto.product.ProductViewResponse;
 import com.Kee.V2C.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

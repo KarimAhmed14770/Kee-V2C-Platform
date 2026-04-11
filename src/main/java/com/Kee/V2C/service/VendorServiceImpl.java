@@ -1,7 +1,13 @@
 package com.Kee.V2C.service;
 
 import com.Kee.V2C.Repository.*;
-import com.Kee.V2C.dto.*;
+import com.Kee.V2C.dto.product.NewProductRequest;
+import com.Kee.V2C.dto.product.ProductRequestResponse;
+import com.Kee.V2C.dto.product.ProductResponse;
+import com.Kee.V2C.dto.vendor.ShopRequest;
+import com.Kee.V2C.dto.vendor.ShopResponse;
+import com.Kee.V2C.dto.vendor.VendorProfileRequest;
+import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.entity.*;
 import com.Kee.V2C.enums.ProductRequestStatus;
 import com.Kee.V2C.exception.ResourceAlreadyExistsException;

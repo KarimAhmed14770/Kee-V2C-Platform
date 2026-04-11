@@ -1,9 +1,8 @@
 package com.Kee.V2C.service;
 
 import com.Kee.V2C.Repository.CategoryRepository;
-import com.Kee.V2C.dto.CategoryResponse;
+import com.Kee.V2C.dto.category.CategoryResponse;
 import com.Kee.V2C.entity.Category;
-import com.Kee.V2C.exception.CategoryNotFoundException;
 import com.Kee.V2C.mapper.CategoryMapper;
 import com.Kee.V2C.specifications.CategorySpecs;
 import org.springframework.beans.factory.annotation.Autowired;

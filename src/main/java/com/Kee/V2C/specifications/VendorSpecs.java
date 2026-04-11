@@ -1,6 +1,5 @@
 package com.Kee.V2C.specifications;
 
-import com.Kee.V2C.dto.VendorProfileResponse;
 import com.Kee.V2C.entity.Credential;
 import com.Kee.V2C.entity.Vendor;
 import com.Kee.V2C.enums.UserStatus;
