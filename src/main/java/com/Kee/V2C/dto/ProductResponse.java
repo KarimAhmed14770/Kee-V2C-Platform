@@ -4,12 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record ProductResponse(Long id,
+                              Long ProductModelId,
+                              Long CategoryId,
+                              Long shopId,
                               String name,
                               String description,
                               BigDecimal price,
-                              List<Integer> stocks
+                              Integer stock
                             , String imageUrl,
-                              String Category,
-                              Boolean active,
-                              List<String> inventoryNames
+                              Boolean active
                               ) { }

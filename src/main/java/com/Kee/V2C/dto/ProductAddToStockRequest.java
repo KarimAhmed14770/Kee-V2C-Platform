@@ -2,13 +2,14 @@ package com.Kee.V2C.dto;
 
 import java.math.BigDecimal;
 
-public record ProductRequest(
+public record ProductAddToStockRequest(
+        Long productModelId,
+        Long vendorId,
+        Long shopId,
         String name,
         String description,
         BigDecimal price ,
         Integer stock,
-        Long shopId,
         String imageUrl,
-        Boolean status,
-        Long categoryId
+        Boolean status
 ) {}

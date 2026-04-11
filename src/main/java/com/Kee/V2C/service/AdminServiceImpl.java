@@ -17,6 +17,7 @@ import com.Kee.V2C.mapper.SubCategoryMapper;
 import com.Kee.V2C.specifications.CustomerSpecs;
 import com.Kee.V2C.specifications.ProductModelSpecs;
 import com.Kee.V2C.specifications.VendorSpecs;
+import com.Kee.V2C.utils.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,7 @@ public class AdminServiceImpl implements AdminService {
     private final ProductModelRepository productModelRepository;
     private final ProductModelMapper productModelMapper;
     private final ProductRequestRepository productRequestRepository;
+    private final ImageUtil imageUtil;
 
 
 
@@ -50,7 +52,8 @@ public class AdminServiceImpl implements AdminService {
                             CategoryService categoryService,SubCategoryRepository subCategoryRepository
                             ,SubCategoryMapper subCategoryMapper,BrandRepository brandRepository,
                             BrandMapper brandMapper,ProductModelRepository productModelRepository,
-                            ProductModelMapper productModelMapper,ProductRequestRepository productRequestRepository){
+                            ProductModelMapper productModelMapper,ProductRequestRepository productRequestRepository,
+                            ImageUtil imageUtil){
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
@@ -63,6 +66,7 @@ public class AdminServiceImpl implements AdminService {
         this.productModelRepository=productModelRepository;
         this.productModelMapper=productModelMapper;
         this.productRequestRepository=productRequestRepository;
+        this.imageUtil=imageUtil;
     }
 
     @Override
@@ -380,11 +384,48 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ProductModelResponse processProductAddRequest(Long requestId){
-
-        return null;
+    public ProductRequestResponse viewProductAddRequest(Long id){
+        ProductRequest productRequest=productRequestRepository.findById(id).
+                orElseThrow(()->new ResourceNotFoundException("no product request with id: "+id));
+        return convertProductRequestToDto(productRequest);
+    }
+    @Override
+    public ProductRequestResponse rejectProductAddRequest(Long id){
+        ProductRequest productRequest=productRequestRepository.findById(id).
+                orElseThrow(()->new ResourceNotFoundException("no product request with id: "+id));
+        productRequest.setStatus(ProductRequestStatus.REJECTED);
+        productRequestRepository.save(productRequest);
+        return convertProductRequestToDto(productRequest);
     }
 
+    @Override
+    @Transactional
+    public ProductModelResponse processProductAddRequest(Long requestId,AdminAdditionOnProductRequest adminAdditionOnProductRequest){
+        ProductRequest request=productRequestRepository.findById(requestId).
+                orElseThrow(()->new ResourceNotFoundException("request with id: "+requestId+" not found"));
+
+        if(request.getStatus()==ProductRequestStatus.APPROVED || request.getStatus()==ProductRequestStatus.REJECTED) {
+            throw new ResourceAlreadyExistsException("request was already processed");
+        }
+
+            Vendor vendor=request.getVendor();
+            Brand brand=brandRepository.findById(adminAdditionOnProductRequest.brandId()).orElseThrow(
+                    ()-> new ResourceNotFoundException("Brand not found")
+            );
+            SubCategory subCategory=subCategoryRepository.findById(adminAdditionOnProductRequest.subcategoryId())
+                    .orElseThrow(()->new ResourceNotFoundException("subCategory not found"));
+
+            ProductModel productModel=new ProductModel(adminAdditionOnProductRequest.modifiedName(),
+                    adminAdditionOnProductRequest.modifiedDescription(), null,vendor,
+                    adminAdditionOnProductRequest.modifiedGlobal(),ProductModelStatus.PENDING_APPROVAL,brand,
+                    subCategory
+                    );
+
+            String imageJson= imageUtil.convertRelativeImageToBase64(request.getImageUrl());
+
+
+        return null;
+        }
 
 
 

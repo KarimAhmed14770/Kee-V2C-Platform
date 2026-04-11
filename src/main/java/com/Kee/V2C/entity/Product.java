@@ -67,11 +67,10 @@ public class Product {
 
     public Product(){}
 
-    public Product(Vendor vendor,ProductModel productModel ,Stock stock,String name, String description,
+    public Product(Vendor vendor,ProductModel productModel ,String name, String description,
                    BigDecimal price,String imageUrl) {
         this.vendor = vendor;
         this.productModel=productModel;
-        this.stock=stock;
         this.name = name;
         this.description = description;
         this.price = price;
@@ -136,11 +135,11 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    public List<Stock> getStock() {
+    public Stock getStock() {
         return stock;
     }
 
-    public void setStock(List<Stock> stock) {
+    public void setStock(Stock stock) {
         this.stock = stock;
     }
 

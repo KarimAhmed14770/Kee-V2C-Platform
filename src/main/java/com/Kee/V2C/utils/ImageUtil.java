@@ -1,12 +1,15 @@
 package com.Kee.V2C.utils;
 
 
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 
+@Component
 public class ImageUtil {
     //should be replaced with @value from application.properties
     private final String BASE_DIR = "D:/Studies/Programming/Java/projects/E-commerce/uploads/";
@@ -21,6 +24,7 @@ public class ImageUtil {
 
             // 3. Convert to bytes and then to Base64
             byte[] imageBytes = Files.readAllBytes(fullPath);
+            saveImageBytes(imageBytes,"savedImage.jpg");
             return Base64.getEncoder().encodeToString(imageBytes);
 
         } catch (Exception e) {
@@ -31,7 +35,7 @@ public class ImageUtil {
     public void saveImageBytes(byte[] imageBytes, String fileName) {
         try {
             // 1. Define where you want to save it
-            Path path = Paths.get("D:/Studies/Programming/Java/projects/E-commerce/uploads/outputs" + fileName);
+            Path path = Paths.get("D:/Studies/Programming/Java/projects/E-commerce/uploads/outputs/" + fileName);
 
             // 2. Create directories if they don't exist
             if (Files.notExists(path.getParent())) {

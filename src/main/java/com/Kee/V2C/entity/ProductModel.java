@@ -140,6 +140,11 @@ public class ProductModel {
         this.products = products;
     }
 
+    public void addProduct(Product product){
+        products.add(product);
+        product.setProductModel(this);
+    }
+
     @Override
     public String toString() {
         return "ProductModel{" +

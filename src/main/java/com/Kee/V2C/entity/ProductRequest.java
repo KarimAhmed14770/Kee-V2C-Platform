@@ -4,12 +4,14 @@ package com.Kee.V2C.entity;
 import com.Kee.V2C.enums.ProductRequestStatus;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "add_product_model_requests")
+@EntityListeners(AuditingEntityListener.class)
 public class ProductRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

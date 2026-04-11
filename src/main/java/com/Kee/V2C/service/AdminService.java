@@ -59,8 +59,10 @@ public interface AdminService {
 
 
     Page<ProductRequestResponse> getPendingVendorsProductsRequests(Pageable page);
+    ProductRequestResponse viewProductAddRequest(Long id);
+    ProductRequestResponse rejectProductAddRequest(Long id);
 
-    ProductModelResponse processProductAddRequest(Long requestId);
+    ProductModelResponse processProductAddRequest(Long requestId,AdminAdditionOnProductRequest adminAdditionOnProductRequest);
 
 
 
