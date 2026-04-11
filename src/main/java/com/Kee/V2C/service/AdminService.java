@@ -58,5 +58,10 @@ public interface AdminService {
     ProductModelResponse softDeleteProductModel(Long id);
 
 
+    Page<ProductRequestResponse> getPendingVendorsProductsRequests(Pageable page);
+
+    ProductModelResponse processProductAddRequest(Long requestId);
+
+
 
 }

@@ -244,6 +244,9 @@ public class AdminController {
 
 
 
-
+    @GetMapping("/product-requests")
+    public ResponseEntity<Page<ProductRequestResponse>> getPendingVendorsProductsRequests(Pageable page){
+        return ResponseEntity.ok(adminService.getPendingVendorsProductsRequests(page));
+    }
 
 }

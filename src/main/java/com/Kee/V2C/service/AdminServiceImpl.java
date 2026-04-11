@@ -4,6 +4,7 @@ import com.Kee.V2C.Repository.*;
 import com.Kee.V2C.dto.*;
 import com.Kee.V2C.entity.*;
 import com.Kee.V2C.enums.ProductModelStatus;
+import com.Kee.V2C.enums.ProductRequestStatus;
 import com.Kee.V2C.enums.UserStatus;
 import com.Kee.V2C.exception.CategoryNotFoundException;
 import com.Kee.V2C.exception.ResourceAlreadyExistsException;
@@ -39,6 +40,7 @@ public class AdminServiceImpl implements AdminService {
     private final BrandMapper brandMapper;
     private final ProductModelRepository productModelRepository;
     private final ProductModelMapper productModelMapper;
+    private final ProductRequestRepository productRequestRepository;
 
 
 
@@ -48,7 +50,7 @@ public class AdminServiceImpl implements AdminService {
                             CategoryService categoryService,SubCategoryRepository subCategoryRepository
                             ,SubCategoryMapper subCategoryMapper,BrandRepository brandRepository,
                             BrandMapper brandMapper,ProductModelRepository productModelRepository,
-                            ProductModelMapper productModelMapper){
+                            ProductModelMapper productModelMapper,ProductRequestRepository productRequestRepository){
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
@@ -60,6 +62,7 @@ public class AdminServiceImpl implements AdminService {
         this.brandMapper=brandMapper;
         this.productModelRepository=productModelRepository;
         this.productModelMapper=productModelMapper;
+        this.productRequestRepository=productRequestRepository;
     }
 
     @Override
@@ -244,6 +247,8 @@ public class AdminServiceImpl implements AdminService {
         subCategoryRepository.save(updatedCategory);
         return convertSubCategoryToDto(updatedCategory);
     }
+
+
     @Override
     @Transactional
     public SubCategoryResponse softDeleteSubCategory(Long id){
@@ -287,6 +292,8 @@ public class AdminServiceImpl implements AdminService {
         brandRepository.save(brand);
         return convertBrandToDto(brand);
     }
+
+
     @Override
     @Transactional
     public BrandResponse softDeleteBrand(Long id){
@@ -340,6 +347,7 @@ public class AdminServiceImpl implements AdminService {
         return productModels.map(this::convertProductModelToDto);
     }
 
+
     @Override
     @Transactional
     public ProductModelResponse updateProductModel(Long id,ProductModelRequest productModelRequest){
@@ -363,6 +371,18 @@ public class AdminServiceImpl implements AdminService {
 
         return convertProductModelToDto(productModel);
 
+    }
+
+    @Override
+    public Page<ProductRequestResponse> getPendingVendorsProductsRequests(Pageable page){
+        Page<ProductRequest> productRequests=productRequestRepository.findByStatus(ProductRequestStatus.PENDING,page);
+        return productRequests.map(this::convertProductRequestToDto);
+    }
+
+    @Override
+    public ProductModelResponse processProductAddRequest(Long requestId){
+
+        return null;
     }
 
 
@@ -445,7 +465,7 @@ public class AdminServiceImpl implements AdminService {
         return new BrandResponse(brand.getId(), brand.getName(), brand.getDescription(), brand.getImageUrl(),brand.getActive());
     }
 
-    ProductModel convertProductModelRequestToProductModel(ProductModelRequest productModelRequest){
+    private ProductModel convertProductModelRequestToProductModel(ProductModelRequest productModelRequest){
         Brand brand=brandRepository.findById(productModelRequest.brandId()).orElseThrow(
                 ()-> new ResourceNotFoundException("Brand with id: "+productModelRequest.brandId()+
                         " not found.")
@@ -490,6 +510,13 @@ public class AdminServiceImpl implements AdminService {
                 productModel.getDescription(),
                 productModel.getImageUrl(),
                 productModel.getStatus()
+        );
+    }
+
+    private ProductRequestResponse convertProductRequestToDto(ProductRequest productRequest){
+        return new ProductRequestResponse(
+                productRequest.getId(), productRequest.getName(), productRequest.getDescription(),
+                productRequest.getImageUrl(),productRequest.getGlobal(),productRequest.getStatus()
         );
     }
 }
