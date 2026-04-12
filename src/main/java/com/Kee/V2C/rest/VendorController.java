@@ -97,11 +97,26 @@ public class VendorController {
     }
 
 
+    @GetMapping("/products")
+    public ResponseEntity<Page<ProductResponse>> getMyProducts(Pageable page){
+        return ResponseEntity.ok(vendorService.showMyProducts(page));
+    }
+
+    @PatchMapping("/products/{id}")
+    public ResponseEntity<ProductResponse> addToStock(@PathVariable("id") Long id,int quantity){
+        return ResponseEntity.ok(vendorService.addStock(id,quantity));
+    }
+
+    @PatchMapping("/products/update/{id}")
+    public ResponseEntity<ProductResponse> addToStock(@PathVariable("id") Long id,ProductUpdateRequest productUpdateRequest){
+        return ResponseEntity.ok(vendorService.updateProductInfo(id,productUpdateRequest));
+    }
+
+
      /*
-        ShopResponse registerShop(ShopRequest shopRequest);
-        ShopResponse updateShopInfo(Long id,ShopRequest shopRequest);
-        ShopResponse deactivateShop(Long id);
-        ShopResponse activateShop(Long id);
-        ShopResponse viewShop();
+     ProductResponse updateProductInfo(Long id,ProductUpdateRequest productUpdateRequest);
+    ProductResponse AddStock(Long id,Integer quantity);
+
+
         */
 }
