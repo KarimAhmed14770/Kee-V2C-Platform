@@ -39,7 +39,7 @@ public class VendorController {
     }
 
     @PostMapping("/my-shop")
-    public ResponseEntity<ShopResponse> registerShop(ShopRequest shopRequest){
+    public ResponseEntity<ShopResponse> registerShop(@RequestBody ShopRequest shopRequest){
         ShopResponse response=vendorService.registerShop(shopRequest);
         URI location= ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(response.id())
@@ -48,7 +48,7 @@ public class VendorController {
     }
 
     @PatchMapping("/my-shop")
-    public ResponseEntity<ShopResponse> updateShop(ShopRequest shopRequest){
+    public ResponseEntity<ShopResponse> updateShop(@RequestBody ShopRequest shopRequest){
         return ResponseEntity.ok(vendorService.updateShopInfo(shopRequest));
     }
 
@@ -68,7 +68,7 @@ public class VendorController {
     }
 
     @PostMapping("/product-requests")
-    public ResponseEntity<ProductRequestResponse> requestNewProduct(NewProductRequest newProductRequest){
+    public ResponseEntity<ProductRequestResponse> requestNewProduct(@RequestBody NewProductRequest newProductRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(vendorService.requestNewProduct(newProductRequest));
     }
 
