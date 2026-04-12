@@ -4,6 +4,7 @@ public record AdminAdditionOnProductRequest(Long brandId,
                                             Long subcategoryId,
                                             String modifiedName,
                                             String modifiedDescription,
-                                            Boolean modifiedGlobal
+                                            Boolean modifiedGlobal,
+                                            String modifiedImageUrl
                                             ) {
 }
