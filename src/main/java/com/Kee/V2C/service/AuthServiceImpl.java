@@ -121,7 +121,7 @@ public class AuthServiceImpl implements AuthService{
         Vendor registeredVendor=new Vendor(vendorRegistrationDto.name(), vendorRegistrationDto.description(),
                 vendorRegistrationDto.imageUrl(), vendorRegistrationDto.address());
         Credential credential=new Credential(vendorRegistrationDto.userName(), vendorRegistrationDto.password(), vendorRegistrationDto.email(),
-                UserStatus.INACTIVE);//admins must manually confirm vendors first
+                UserStatus.VENDOR_APPROVAL_PENDING);//admins must manually confirm vendors first
         registeredVendor.setCredential(credential);
         Role vendorRole=new Role(UserRoles.ROLE_SELLER);
         credential.setRole(vendorRole );
