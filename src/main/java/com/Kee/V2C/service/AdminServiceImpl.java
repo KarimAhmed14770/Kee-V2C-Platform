@@ -383,6 +383,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
+    public Page<ProductRequestResponse> getAllProductsRequests(Pageable page){
+        Page<ProductRequest> productRequests=productRequestRepository.findAll(page);
+        return productRequests.map(this::convertProductRequestToDto);
+    }
+    @Override
     public Page<ProductRequestResponse> getPendingVendorsProductsRequests(Pageable page){
         Page<ProductRequest> productRequests=productRequestRepository.findByStatus(ProductRequestStatus.PENDING,page);
         return productRequests.map(this::convertProductRequestToDto);
@@ -421,15 +427,19 @@ public class AdminServiceImpl implements AdminService {
                     .orElseThrow(()->new ResourceNotFoundException("subCategory not found"));
 
             ProductModel productModel=new ProductModel(adminAdditionOnProductRequest.modifiedName(),
-                    adminAdditionOnProductRequest.modifiedDescription(), null,vendor,
-                    adminAdditionOnProductRequest.modifiedGlobal(),ProductModelStatus.PENDING_APPROVAL,brand,
+                    adminAdditionOnProductRequest.modifiedDescription(),
+                    adminAdditionOnProductRequest.modifiedImageUrl(), vendor,
+                    adminAdditionOnProductRequest.modifiedGlobal(),ProductModelStatus.ACTIVE,brand,
                     subCategory
                     );
+            subCategory.addProductModel(productModel);
+            if(adminAdditionOnProductRequest.modifiedGlobal()){
+                vendor.addProductModel(productModel);
+            }
+            request.setStatus(ProductRequestStatus.APPROVED);
+            productModelRepository.save(productModel);
 
-            String imageJson= imageUtil.convertRelativeImageToBase64(request.getImageUrl());
-
-
-        return null;
+        return convertProductModelToDto(productModel);
         }
 
 

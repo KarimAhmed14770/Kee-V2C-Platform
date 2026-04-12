@@ -251,10 +251,31 @@ public class AdminController {
     }
 
 
-
     @GetMapping("/product-requests")
+    public ResponseEntity<Page<ProductRequestResponse>> getAllProductsRequests(Pageable page){
+        return ResponseEntity.ok(adminService.getAllProductsRequests(page));
+    }
+
+    @GetMapping("/product-requests/pending")
     public ResponseEntity<Page<ProductRequestResponse>> getPendingVendorsProductsRequests(Pageable page){
         return ResponseEntity.ok(adminService.getPendingVendorsProductsRequests(page));
     }
+
+    @GetMapping("/product-requests/{id}")
+    public ResponseEntity<ProductRequestResponse> viewProductAddRequest(@PathVariable("id") Long id){
+        return ResponseEntity.ok(adminService.viewProductAddRequest(id));
+    }
+
+    @PatchMapping("/product-requests/reject/{id}")
+    public ResponseEntity<ProductRequestResponse> rejectProductRequest(@PathVariable("id") Long id){
+        return ResponseEntity.ok(adminService.rejectProductAddRequest(id));
+    }
+
+    @PostMapping("/product-requests/process/{id}")
+    public ResponseEntity<ProductModelResponse> processProductRequest(@PathVariable("id") Long id,
+                                                                        @RequestBody AdminAdditionOnProductRequest adminAdditionOnProductRequest){
+        return ResponseEntity.ok(adminService.processProductAddRequest(id,adminAdditionOnProductRequest));
+    }
+
 
 }
