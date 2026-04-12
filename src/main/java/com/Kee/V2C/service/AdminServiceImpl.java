@@ -420,9 +420,12 @@ public class AdminServiceImpl implements AdminService {
         }
 
             Vendor vendor=request.getVendor();
-            Brand brand=brandRepository.findById(adminAdditionOnProductRequest.brandId()).orElseThrow(
-                    ()-> new ResourceNotFoundException("Brand not found")
-            );
+            Brand brand=null;
+            if(adminAdditionOnProductRequest.brandId()!=null) {
+                brand = brandRepository.findById(adminAdditionOnProductRequest.brandId()).orElseThrow(
+                        () -> new ResourceNotFoundException("Brand not found")
+                );
+            }
             SubCategory subCategory=subCategoryRepository.findById(adminAdditionOnProductRequest.subcategoryId())
                     .orElseThrow(()->new ResourceNotFoundException("subCategory not found"));
 
@@ -433,10 +436,11 @@ public class AdminServiceImpl implements AdminService {
                     subCategory
                     );
             subCategory.addProductModel(productModel);
-            if(adminAdditionOnProductRequest.modifiedGlobal()){
+            if(!adminAdditionOnProductRequest.modifiedGlobal()){
                 vendor.addProductModel(productModel);
             }
             request.setStatus(ProductRequestStatus.APPROVED);
+            productRequestRepository.save(request);
             productModelRepository.save(productModel);
 
         return convertProductModelToDto(productModel);
@@ -558,7 +562,7 @@ public class AdminServiceImpl implements AdminService {
     private ProductModelResponse convertProductModelToDto(ProductModel productModel){
         return new ProductModelResponse(
                 productModel.getId(),
-                productModel.getBrand().getId(),
+                (productModel.getBrand()==null?null:productModel.getBrand().getId()),
                 productModel.getSubCategory().getId(),
                 (productModel.getVendor()==null)?null:productModel.getVendor().getId(),
                 productModel.isGlobal(),
