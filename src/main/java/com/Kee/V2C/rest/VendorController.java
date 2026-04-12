@@ -1,13 +1,14 @@
 package com.Kee.V2C.rest;
 
 
-import com.Kee.V2C.dto.product.NewProductRequest;
-import com.Kee.V2C.dto.product.ProductRequestResponse;
+import com.Kee.V2C.dto.product.*;
 import com.Kee.V2C.dto.vendor.ShopRequest;
 import com.Kee.V2C.dto.vendor.ShopResponse;
 import com.Kee.V2C.dto.vendor.VendorProfileRequest;
 import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.service.VendorServiceImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,25 @@ public class VendorController {
     public ResponseEntity<ProductRequestResponse> requestNewProduct(@RequestBody NewProductRequest newProductRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(vendorService.requestNewProduct(newProductRequest));
     }
+
+    @GetMapping("/product-models/search")
+    public ResponseEntity<Page<ProductModelResponse>> searchGlobalProductModels(
+            @RequestParam(required = false) Long brandId,
+            @RequestParam(required = false) Long subCategoryId,
+            @RequestParam(required = false) String description,
+            Pageable page){
+        return ResponseEntity.ok(vendorService.searchGlobalProductModel(brandId, subCategoryId, description, page));
+
+    }
+
+    @PostMapping("/products/add-to-stock")
+    public ResponseEntity<ProductResponse> addToStock(@RequestBody ProductAddToStockRequest productAddToStockRequest){
+        ProductResponse productResponse=vendorService.addProductToStock(productAddToStockRequest);
+        URI location=ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(productResponse.id()).toUri();
+        return ResponseEntity.created(location).body(productResponse);
+    }
+
 
      /*
         ShopResponse registerShop(ShopRequest shopRequest);
