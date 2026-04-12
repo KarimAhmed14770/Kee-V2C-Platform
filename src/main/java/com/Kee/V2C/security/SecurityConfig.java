@@ -59,15 +59,15 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html","/index.html","/shop.html", "/account.html",
-                                "/seller.html", "/admin.html", "/api.js","/uploads/**","/vendor.html",
+                                "/swagger-ui.html","/index.html","/shop.html", "/account.html"
+                                , "/admin.html", "/api.js","/app.css","/uploads/**","/vendor.html",
                                         "/").permitAll()// Make registration public
                         .requestMatchers("/api/test/securityDBhandShakeCustomer").hasAnyRole("CUSTOMER","ADMIN")
                         .requestMatchers("/api/test/securityDBhandShakeSeller").hasAnyRole("SELLER","ADMIN")
                         .requestMatchers("/api/test/securityDBhandShakeAdmin").hasRole("ADMIN")
                         .requestMatchers("/api/test/my-profile").hasRole("CUSTOMER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/sellers/**").hasRole("SELLER")
+                        .requestMatchers("/api/vendors/**").hasRole("SELLER")
                         .requestMatchers("/api/customers/**").hasRole("CUSTOMER")
                         .anyRequest().authenticated() //any request of those are protected
         ).sessionManagement(session->
