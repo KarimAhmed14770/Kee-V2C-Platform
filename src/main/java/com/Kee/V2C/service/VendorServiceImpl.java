@@ -204,6 +204,9 @@ public class VendorServiceImpl implements VendorService {
         );
 
         stockRepository.incrementProductStock(quantity,product.getId(),product.getStock().getShop().getId());
+        int current_qty=product.getStock().getQuantity();//manual sync because customized query doesn't sync the db
+        //with the pojo
+        product.getStock().setQuantity(quantity+current_qty);
         return convertProductToDto(product);
     }
 
