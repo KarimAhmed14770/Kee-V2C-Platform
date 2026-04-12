@@ -88,7 +88,7 @@ public class VendorController {
 
     }
 
-    @PostMapping("/products/add-to-stock")
+    @PostMapping("/products/add-to-shop")
     public ResponseEntity<ProductResponse> addToStock(@RequestBody ProductAddToStockRequest productAddToStockRequest){
         ProductResponse productResponse=vendorService.addProductToStock(productAddToStockRequest);
         URI location=ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -102,7 +102,7 @@ public class VendorController {
         return ResponseEntity.ok(vendorService.showMyProducts(page));
     }
 
-    @PatchMapping("/products/{id}")
+    @PatchMapping("/products/edit-product-stock/{id}")
     public ResponseEntity<ProductResponse> addToStock(@PathVariable("id") Long id,int quantity){
         return ResponseEntity.ok(vendorService.addStock(id,quantity));
     }
