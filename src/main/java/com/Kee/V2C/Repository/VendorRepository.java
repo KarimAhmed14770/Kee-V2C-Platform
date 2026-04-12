@@ -21,6 +21,12 @@ public interface VendorRepository extends JpaRepository<Vendor,Long>, JpaSpecifi
     +"WHERE v.id= :id")
     Optional<Vendor> findByIdWithCredentials(@Param("id")Long id);
 
+    @Query(value = "SELECT v from Vendor v "+
+            "LEFT JOIN FETCH v.shop s "
+            +"LEFT JOIN FETCH s.stocks "
+            +"WHERE v.id= :id")
+    Optional<Vendor> findByIdWithShopWithStock(@Param("id")Long id);
+
 
     Optional<Vendor> findByCredentialUserName(String userName);
     Optional<Vendor> findByCredentialEmail(String email);
