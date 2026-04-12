@@ -73,6 +73,11 @@ public class VendorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(vendorService.requestNewProduct(newProductRequest));
     }
 
+    @GetMapping("/product-models/my")
+    public ResponseEntity<Page<ProductModelResponse>> viewMyProductModels(Pageable page){
+        return ResponseEntity.ok(vendorService.myProductModels(page));
+
+    }
     @GetMapping("/product-models/search")
     public ResponseEntity<Page<ProductModelResponse>> searchGlobalProductModels(
             @RequestParam(required = false) Long brandId,
