@@ -104,7 +104,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CartResponse viewMyCart(){
-        List<CartItem> cartItems=cartItemRepository.findAllByUserId(getCurrentCustomer().getId());
+        Long id=securityUtil.getCurrentUserId();
+        List<CartItem> cartItems=cartItemRepository.findAllByCustomerId(id);
         if(cartItems.isEmpty()){
             throw new CartEmptyException("your shopping cart is currently empty");
         }

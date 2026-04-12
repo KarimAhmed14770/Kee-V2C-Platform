@@ -15,7 +15,7 @@ public interface CartItemRepository extends JpaRepository<CartItem,Long> {
 
     boolean existsByCustomerIdAndProductId(Long userId, Long productId);
 
-    List<CartItem> findAllByUserId(Long userId);
+    List<CartItem> findAllByCustomerId(Long userId);
 
     @Query("SELECT ci FROM CartItem ci " +
             "JOIN FETCH ci.product p " +
