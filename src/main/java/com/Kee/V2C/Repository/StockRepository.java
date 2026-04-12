@@ -26,4 +26,19 @@ public interface StockRepository extends JpaRepository<Stock,Long> {
             */
     )
     int decrementProductStock(int requiredQty,Long productId,Long shopId);
+
+    @Modifying // REQUIRED for UPDATE/DELETE queries
+    @Transactional // Ensures the update is committed correctly
+    @Query(value =
+            "UPDATE stock "+
+                    "SET quantity= quantity+ :requiredQty "+
+                    "WHERE  product_id= :productId "+
+                    "AND shop_id= :shopId",
+            nativeQuery = true /*basically it tells spring to use raw SQL
+            so that SQL uses table names (stock) and column names (product_id).
+            JPQL (default) uses Class names (Stock) and Variable names (productId).
+            For an atomic math operation like quantity = quantity - X, it's much safer to use Native SQL.
+            */
+    )
+    int incrementProductStock(int requiredQty,Long productId,Long shopId);
 }

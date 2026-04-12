@@ -179,12 +179,31 @@ public class VendorServiceImpl implements VendorService {
         return convertProductToDto(addProductFromRequest(productAddToStockRequest));
     }
     @Override
+    public Page<ProductResponse> showMyProducts(Pageable page){
+        Vendor vendor=getCurrentVendor();
+        Page<Product> products=productRepository.findAllByVendorId(vendor.getId(), page);
+        return products.map(this::convertProductToDto);
+    }
+
+
+    @Override
     @Transactional
-    public ProductResponse updateProduct(Long id,ProductUpdateRequest productUpdateRequest){
+    public ProductResponse updateProductInfo(Long id,ProductUpdateRequest productUpdateRequest){
         Product product=productRepository.findById(id).orElseThrow(
                 ()->new ResourceNotFoundException("no product with id: "+id)
         );
         productMapper.updateProductFromDto(productUpdateRequest,product);
+        return convertProductToDto(product);
+    }
+
+    @Override
+    @Transactional
+    public ProductResponse AddStock(Long id,Integer quantity){
+        Product product=productRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("no product with id: "+id)
+        );
+
+        stockRepository.incrementProductStock(quantity,product.getId(),product.getStock().getShop().getId());
         return convertProductToDto(product);
     }
 
