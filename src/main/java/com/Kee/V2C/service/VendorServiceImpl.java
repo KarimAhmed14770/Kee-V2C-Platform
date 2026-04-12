@@ -148,7 +148,12 @@ public class VendorServiceImpl implements VendorService {
         return productModels.map(this::convertProductModelToDto);
     }
 
-
+    @Override
+    public Page<ProductModelResponse> myProductModels(Pageable page) {
+        Long vendorId=getCurrentVendor().getId();
+        Page<ProductModel> productModels=productModelRepository.findByOwnerId(vendorId,page);
+        return productModels.map(this::convertProductModelToDto);
+    }
     @Override
     @Transactional
     public ProductRequestResponse requestNewProduct(NewProductRequest newProductRequest){
@@ -168,49 +173,7 @@ public class VendorServiceImpl implements VendorService {
     public ProductResponse addProductToStock(ProductAddToStockRequest productAddToStockRequest){
         return convertProductToDto(addProductFromRequest(productAddToStockRequest));
     }
-    /*
-    @Override
-    @Transactional
-    public ProductResponse requestNewLocalProduct(LocalProductAddToStockRequest globalProductAddToStockRequest){
 
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public ProductResponse addNewProductToStock(GlobalProductAddToStockRequest globalProductAddToStockRequest){
-
-        ProductModel productModel=getProductModelById(globalProductAddToStockRequest.productModelId());
-        Product product=addProductToStockFromProductModel(productModel,globalProductAddToStockRequest);
-        productRepository.save(product);
-        return convertProductToDto(product);
-    }
-
-
-    @Override
-    @Transactional
-    public ProductResponse updateProductStock(GlobalProductAddToStockRequest globalProductAddToStockRequest) {
-
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public ProductResponse hideProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest){
-
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public ProductResponse showProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest){
-
-        return null;
-    }
-
-
-
- */
     private Vendor getCurrentVendor(){
         Long userId=securityUtil.getCurrentUserId();
         Vendor vendor= vendorRepository.findById(userId)
@@ -227,24 +190,7 @@ public class VendorServiceImpl implements VendorService {
                 ()->new ResourceNotFoundException("porduct model with id: "+id+" not found.")
         );
     }
-    /*
-    private Product addProductToStockFromProductModel(ProductModel productModel,GlobalProductAddToStockRequest productAddToStockRequest){
-            Vendor vendor=getCurrentVendor();
-            Shop shop=shopRepository.findByVendorId(vendor.getId()).orElseThrow(
-                    ()->new ResourceNotFoundException("Shop with id: "+vendor.getId()+" not found.")
-            );
 
-            Product product=new Product(vendor,productModel,productAddToStockRequest.name(),
-                    productAddToStockRequest.description(),productAddToStockRequest.price(),
-                    productAddToStockRequest.imageUrl());
-
-            Stock stock=new Stock(productAddToStockRequest.stock(),product,shop);
-            product.setStock(stock);
-            vendor.addProduct(product);
-            productModel.addProduct(product);
-        return product;
-    }
-*/
     private ProductResponse convertProductToDto(Product product){
         return new ProductResponse(
                 product.getId(),

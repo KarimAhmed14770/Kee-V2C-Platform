@@ -17,12 +17,9 @@ interface VendorService {
     ShopResponse activateShop();
     ShopResponse viewShop();
     Page<ProductModelResponse> searchGlobalProductModel(Long brandId, Long subCategoryId, String description, Pageable page);
+    Page<ProductModelResponse> myProductModels(Pageable page) ;
     ProductRequestResponse requestNewProduct(NewProductRequest newProductRequest);
     ProductResponse addProductToStock(ProductAddToStockRequest productAddToStockRequest);
-        /*
-    ProductResponse updateProductStock(GlobalProductAddToStockRequest globalProductAddToStockRequest) ;
-    ProductResponse hideProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest);
-    ProductResponse showProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest);
 
-     */
+
 }
