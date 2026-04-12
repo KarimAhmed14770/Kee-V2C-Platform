@@ -20,6 +20,7 @@ interface VendorService {
     Page<ProductModelResponse> myProductModels(Pageable page) ;
     ProductRequestResponse requestNewProduct(NewProductRequest newProductRequest);
     ProductResponse addProductToStock(ProductAddToStockRequest productAddToStockRequest);
+    ProductResponse updateProduct(Long id,ProductUpdateRequest productUpdateRequest);
 
 
 }

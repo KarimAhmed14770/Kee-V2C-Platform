@@ -11,6 +11,8 @@ import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.ProductRequestStatus;
 import com.Kee.V2C.exception.ResourceAlreadyExistsException;
 import com.Kee.V2C.exception.ResourceNotFoundException;
+import com.Kee.V2C.mapper.ProductMapper;
+import com.Kee.V2C.mapper.ProductModelMapper;
 import com.Kee.V2C.mapper.ShopMapper;
 import com.Kee.V2C.mapper.VendorMapper;
 import com.Kee.V2C.specifications.ProductModelSpecs;
@@ -34,11 +36,13 @@ public class VendorServiceImpl implements VendorService {
     private final ShopMapper shopMapper;
     private final ProductRequestRepository productRequestRepository;
     private final VendorMapper vendorMapper;
+    private final ProductMapper productMapper;
     public VendorServiceImpl(SecurityUtil securityUtil, VendorRepository vendorRepository,
                              SubCategoryRepository subCategoryRepository, ProductRepository productRepository,
                              ShopRepository shopRepository,ProductModelRepository productModelRepository,
                              StockRepository stockRepository,ShopMapper shopMapper,
-                             ProductRequestRepository productRequestRepository,VendorMapper vendorMapper){
+                             ProductRequestRepository productRequestRepository,VendorMapper vendorMapper,
+                             ProductMapper productMapper){
         this.securityUtil=securityUtil;
         this.vendorRepository = vendorRepository;
         this.subCategoryRepository=subCategoryRepository;
@@ -49,6 +53,7 @@ public class VendorServiceImpl implements VendorService {
         this.shopMapper=shopMapper;
         this.productRequestRepository=productRequestRepository;
         this.vendorMapper=vendorMapper;
+        this.productMapper=productMapper;
     }
 
     @Transactional
@@ -172,6 +177,15 @@ public class VendorServiceImpl implements VendorService {
     @Transactional
     public ProductResponse addProductToStock(ProductAddToStockRequest productAddToStockRequest){
         return convertProductToDto(addProductFromRequest(productAddToStockRequest));
+    }
+    @Override
+    @Transactional
+    public ProductResponse updateProduct(Long id,ProductUpdateRequest productUpdateRequest){
+        Product product=productRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("no product with id: "+id)
+        );
+        productMapper.updateProductFromDto(productUpdateRequest,product);
+        return convertProductToDto(product);
     }
 
     private Vendor getCurrentVendor(){
