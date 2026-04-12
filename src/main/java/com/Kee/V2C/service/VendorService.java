@@ -22,7 +22,7 @@ interface VendorService {
     ProductResponse addProductToStock(ProductAddToStockRequest productAddToStockRequest);
     Page<ProductResponse> showMyProducts(Pageable page);
     ProductResponse updateProductInfo(Long id,ProductUpdateRequest productUpdateRequest);
-    ProductResponse AddStock(Long id,Integer quantity);
+    ProductResponse addStock(Long id,Integer quantity);
 
 
 }

@@ -198,7 +198,7 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     @Transactional
-    public ProductResponse AddStock(Long id,Integer quantity){
+    public ProductResponse addStock(Long id,Integer quantity){
         Product product=productRepository.findById(id).orElseThrow(
                 ()->new ResourceNotFoundException("no product with id: "+id)
         );
