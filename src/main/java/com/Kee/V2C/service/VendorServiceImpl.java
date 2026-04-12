@@ -1,20 +1,23 @@
 package com.Kee.V2C.service;
 
 import com.Kee.V2C.Repository.*;
-import com.Kee.V2C.dto.product.NewProductRequest;
-import com.Kee.V2C.dto.product.ProductRequestResponse;
-import com.Kee.V2C.dto.product.ProductResponse;
+import com.Kee.V2C.dto.product.*;
 import com.Kee.V2C.dto.vendor.ShopRequest;
 import com.Kee.V2C.dto.vendor.ShopResponse;
 import com.Kee.V2C.dto.vendor.VendorProfileRequest;
 import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.entity.*;
+import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.ProductRequestStatus;
 import com.Kee.V2C.exception.ResourceAlreadyExistsException;
 import com.Kee.V2C.exception.ResourceNotFoundException;
 import com.Kee.V2C.mapper.ShopMapper;
 import com.Kee.V2C.mapper.VendorMapper;
+import com.Kee.V2C.specifications.ProductModelSpecs;
 import com.Kee.V2C.utils.SecurityUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +34,6 @@ public class VendorServiceImpl implements VendorService {
     private final ShopMapper shopMapper;
     private final ProductRequestRepository productRequestRepository;
     private final VendorMapper vendorMapper;
-
-
     public VendorServiceImpl(SecurityUtil securityUtil, VendorRepository vendorRepository,
                              SubCategoryRepository subCategoryRepository, ProductRepository productRepository,
                              ShopRepository shopRepository,ProductModelRepository productModelRepository,
@@ -134,7 +135,22 @@ public class VendorServiceImpl implements VendorService {
     }
 
 
+
     @Override
+    public Page<ProductModelResponse> searchGlobalProductModel(Long brandId, Long subCategoryId, String description, Pageable page){
+        Specification<ProductModel> spec=Specification.where((from, cb) -> cb.conjunction() );
+        if(brandId!=null)spec=spec.and(ProductModelSpecs.hasBrand(brandId));
+        if(subCategoryId!=null)spec=spec.and(ProductModelSpecs.hasSubCategory(subCategoryId));
+        if(description!=null)spec=spec.and(ProductModelSpecs.hasDescription(description));
+        spec=spec.and(ProductModelSpecs.hasStatus(ProductModelStatus.ACTIVE));
+        spec=spec.and(ProductModelSpecs.isGlobal(true));
+        Page<ProductModel> productModels=productModelRepository.findAll(spec,page);
+        return productModels.map(this::convertProductModelToDto);
+    }
+
+
+    @Override
+    @Transactional
     public ProductRequestResponse requestNewProduct(NewProductRequest newProductRequest){
         Vendor vendor=getCurrentVendor();
         ProductRequest productRequest=new ProductRequest(newProductRequest.name(), newProductRequest.description(),
@@ -146,7 +162,13 @@ public class VendorServiceImpl implements VendorService {
         );
 
     }
-/*
+
+    @Override
+    @Transactional
+    public ProductResponse addProductToStock(ProductAddToStockRequest productAddToStockRequest){
+        return convertProductToDto(addProductFromRequest(productAddToStockRequest));
+    }
+    /*
     @Override
     @Transactional
     public ProductResponse requestNewLocalProduct(LocalProductAddToStockRequest globalProductAddToStockRequest){
@@ -238,5 +260,38 @@ public class VendorServiceImpl implements VendorService {
 
         );
     }
+
+    private Product addProductFromRequest(ProductAddToStockRequest productAddToStockRequest){
+        ProductModel productModel=productModelRepository.findById(productAddToStockRequest.modelId())
+                .orElseThrow(()->new ResourceNotFoundException("there is no model for this product"));
+        Long vendorId=securityUtil.getCurrentUserId();
+        Vendor vendor=vendorRepository.findByIdWithShopWithStock(vendorId).//getting the shop info to prevent n+1
+                orElseThrow(()->new ResourceNotFoundException("no vendor with id: "+vendorId));
+
+        Product product=new Product(vendor,productModel,productAddToStockRequest.name(), productAddToStockRequest.description(),
+                productAddToStockRequest.price(), productAddToStockRequest.imageUrl());
+        Stock stock=new Stock(productAddToStockRequest.stock(),product,vendor.getShop());
+        stock.setActive(true);
+        product.setStock(stock);
+        vendor.addProduct(product);
+        vendor.getShop().getStocks().add(stock);
+        product.setActive(productAddToStockRequest.status());
+        productRepository.save(product);
+        return product;
+    }
+    private ProductModelResponse convertProductModelToDto(ProductModel productModel){
+        return new ProductModelResponse(
+                productModel.getId(),
+                (productModel.getBrand()==null?null:productModel.getBrand().getId()),
+                productModel.getSubCategory().getId(),
+                (productModel.getVendor()==null)?null:productModel.getVendor().getId(),
+                productModel.isGlobal(),
+                productModel.getName(),
+                productModel.getDescription(),
+                productModel.getImageUrl(),
+                productModel.getStatus()
+        );
+    }
+
 
 }

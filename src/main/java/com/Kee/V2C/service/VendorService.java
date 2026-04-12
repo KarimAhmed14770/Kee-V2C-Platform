@@ -1,11 +1,12 @@
 package com.Kee.V2C.service;
 
-import com.Kee.V2C.dto.product.NewProductRequest;
-import com.Kee.V2C.dto.product.ProductRequestResponse;
+import com.Kee.V2C.dto.product.*;
 import com.Kee.V2C.dto.vendor.ShopRequest;
 import com.Kee.V2C.dto.vendor.ShopResponse;
 import com.Kee.V2C.dto.vendor.VendorProfileRequest;
 import com.Kee.V2C.dto.vendor.VendorProfileResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 interface VendorService {
     VendorProfileResponse updateVendorProfile(VendorProfileRequest vendorProfileRequest);
@@ -15,10 +16,10 @@ interface VendorService {
     ShopResponse deactivateShop();
     ShopResponse activateShop();
     ShopResponse viewShop();
+    Page<ProductModelResponse> searchGlobalProductModel(Long brandId, Long subCategoryId, String description, Pageable page);
     ProductRequestResponse requestNewProduct(NewProductRequest newProductRequest);
-    /*
-    ProductResponse requestNewLocalProduct(LocalProductAddToStockRequest globalProductAddToStockRequest);
-    ProductResponse addNewProductToStock(GlobalProductAddToStockRequest globalProductAddToStockRequest);
+    ProductResponse addProductToStock(ProductAddToStockRequest productAddToStockRequest);
+        /*
     ProductResponse updateProductStock(GlobalProductAddToStockRequest globalProductAddToStockRequest) ;
     ProductResponse hideProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest);
     ProductResponse showProduct(GlobalProductAddToStockRequest globalProductAddToStockRequest);
