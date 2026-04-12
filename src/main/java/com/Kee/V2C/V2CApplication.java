@@ -14,14 +14,16 @@ public class V2CApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(V2CApplication.class, args);
 	}
-
+/*
     @Bean
     public CommandLineRunner commandLineRunner(ImageUtil imageUtil) {
         return runner ->{
-            imageUtil.convertRelativeImageToBase64("ProductRequest/iphone 13.jpg");
+           System.out.println(imageUtil.convertRelativeImageToBase64("ProductRequest/iphone 13.jpg"));
 
     };
 
 
     }
+
+ */
 }
