@@ -1,27 +1,9 @@
 package com.Kee.V2C.dto.Authentication;
 
-public class LoginRequest {
-    private String userName;
-    private String password;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
-    public LoginRequest(String userName, String password) {
-        this.userName = userName;
-        this.password = password;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-}
+public record LoginRequest(@NotBlank(message = "user name is required")
+                            String userName,
+                            @NotBlank(message = "password is required")
+                            String password) { }
