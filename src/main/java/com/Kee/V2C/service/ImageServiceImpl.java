@@ -1,7 +1,5 @@
 package com.Kee.V2C.service;
 
-import com.Kee.V2C.dto.product.ProductModelRequest;
-import com.Kee.V2C.dto.product.ProductUpdateRequest;
 import com.Kee.V2C.enums.PathFolder;
 import com.Kee.V2C.exception.FileUploadException;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
