@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public record ProductModelRequest(
                                     @NotNull(message = "SubCategory ID is required")
@@ -19,7 +20,10 @@ public record ProductModelRequest(
                                   String name,
                                     @Size(max = 500)
                                   String description,
-                                  String imageUrl,
+
+                                    @NotNull(message = "you must provide product image")
+                                  MultipartFile image,
+
                                     @NotNull(message = "Status is required")
                                   Boolean isGlobal,
                                     @Positive(message = "SubCategory ID must be a positive integer")

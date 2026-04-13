@@ -3,6 +3,7 @@ package com.Kee.V2C.dto.product;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public record NewProductRequest(
                                 @NotBlank(message = "Product name is required")
@@ -11,6 +12,8 @@ public record NewProductRequest(
 
                                 @Size(max = 300, message = "Description cannot exceed 300 characters")
                                 String description,
-                                String imageUrl,
+
+                                @NotNull(message = "you must provide product image")
+                                MultipartFile imageFile,
                                 @NotNull(message = "Global status must be specified")
                                 Boolean isGlobal) {}

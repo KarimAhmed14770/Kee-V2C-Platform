@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public record VendorRegistrationDto(
                                 @NotBlank(message = "Name can't be empty")
@@ -23,7 +24,7 @@ public record VendorRegistrationDto(
                                     String address,
 
 
-                                    String imageUrl,
+                                    MultipartFile imageFile,
 
                                 @NotBlank(message = "email is required")
                                 @Email(message = "Please provide a valid email address")

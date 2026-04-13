@@ -2,6 +2,7 @@ package com.Kee.V2C.dto.category;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public record CategoryUpdateRequest(
                                     @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
@@ -10,6 +11,6 @@ public record CategoryUpdateRequest(
                                     @Size(max = 500, message = "Description cannot exceed 500 characters")
                                     String description,
 
-                                    String imageUrl,
+                                    MultipartFile imageFile,
                                     boolean active) {
 }
