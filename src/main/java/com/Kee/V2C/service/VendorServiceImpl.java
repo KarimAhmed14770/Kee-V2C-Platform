@@ -53,9 +53,9 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Transactional
-    public VendorProfileResponse updateVendorProfile(VendorProfileRequest vendorProfileRequest){
+    public VendorProfileResponse updateVendorProfile(VendorUpdateProfileRequest vendorUpdateProfileRequest){
         Vendor vendor=getCurrentVendor();
-        vendorMapper.updateVendorFromDto(vendorProfileRequest,vendor);
+        vendorMapper.updateVendorFromDto(vendorUpdateProfileRequest,vendor);
         vendorRepository.save(vendor);
         return new VendorProfileResponse(
                 vendor.getId(),

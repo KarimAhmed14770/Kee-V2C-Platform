@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 interface VendorService {
-    VendorProfileResponse updateVendorProfile(VendorProfileRequest vendorProfileRequest);
+    VendorProfileResponse updateVendorProfile(VendorUpdateProfileRequest vendorUpdateProfileRequest);
     VendorProfileResponse myProfile();
     ShopResponse registerShop(ShopRegisterRequest shopRegisterRequest);
     ShopResponse updateShopInfo(ShopUpdateRequest shopRequest);

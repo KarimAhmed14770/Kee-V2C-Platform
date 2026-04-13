@@ -27,8 +27,8 @@ public class VendorController {
     }
 
     @PatchMapping("/my-profile/update")
-    public ResponseEntity<VendorProfileResponse> updateSeller(@RequestBody VendorProfileRequest vendorProfileRequest){
-        return ResponseEntity.status(HttpStatus.OK).body(vendorService.updateVendorProfile(vendorProfileRequest));
+    public ResponseEntity<VendorProfileResponse> updateSeller(@RequestBody VendorUpdateProfileRequest vendorUpdateProfileRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(vendorService.updateVendorProfile(vendorUpdateProfileRequest));
     }
 
     @GetMapping("/my-profile")
