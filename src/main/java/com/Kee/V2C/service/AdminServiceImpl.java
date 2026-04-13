@@ -11,6 +11,7 @@ import com.Kee.V2C.dto.product.ProductModelResponse;
 import com.Kee.V2C.dto.product.ProductRequestResponse;
 import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.entity.*;
+import com.Kee.V2C.enums.PathFolder;
 import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.ProductRequestStatus;
 import com.Kee.V2C.enums.UserStatus;
@@ -47,7 +48,7 @@ public class AdminServiceImpl implements AdminService {
     private final ProductModelRepository productModelRepository;
     private final ProductModelMapper productModelMapper;
     private final ProductRequestRepository productRequestRepository;
-    private final ImageUtil imageUtil;
+    private final ImageService imageService;
 
 
 
@@ -58,7 +59,7 @@ public class AdminServiceImpl implements AdminService {
                             ,SubCategoryMapper subCategoryMapper,BrandRepository brandRepository,
                             BrandMapper brandMapper,ProductModelRepository productModelRepository,
                             ProductModelMapper productModelMapper,ProductRequestRepository productRequestRepository,
-                            ImageUtil imageUtil){
+                            ImageService imageService){
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
@@ -71,7 +72,7 @@ public class AdminServiceImpl implements AdminService {
         this.productModelRepository=productModelRepository;
         this.productModelMapper=productModelMapper;
         this.productRequestRepository=productRequestRepository;
-        this.imageUtil=imageUtil;
+        this.imageService=imageService;
     }
 
     @Override
@@ -170,7 +171,8 @@ public class AdminServiceImpl implements AdminService {
         if(categoryRepository.existsByNameIgnoreCase(categoryRegisterRequest.name())){
             throw new ResourceAlreadyExistsException("category Already exists ");
         }
-        Category category=new Category(categoryRegisterRequest.name(), categoryRegisterRequest.description(), categoryRegisterRequest.imageUrl(),
+        Category category=new Category(categoryRegisterRequest.name(), categoryRegisterRequest.description(),
+                imageService.saveImage(categoryRegisterRequest.imageFile(),PathFolder.CATEGORIES),
                 categoryRegisterRequest.active());
         categoryRepository.save(category);
 
@@ -228,7 +230,7 @@ public class AdminServiceImpl implements AdminService {
                 parentCategory,
                 subCategoryRegisterRequest.name(),
                 subCategoryRegisterRequest.description(),
-                subCategoryRegisterRequest.imageUrl(),
+                imageService.saveImage(subCategoryRegisterRequest.imageFile(),PathFolder.SUBCATEGORIES),
                 subCategoryRegisterRequest.active());
         parentCategory.addSubcategory(subCategory);//linking parent to sub
         subCategoryRepository.save(subCategory);
@@ -274,7 +276,7 @@ public class AdminServiceImpl implements AdminService {
             throw new ResourceAlreadyExistsException("Brand already exists");
         }
         Brand brand=new Brand(brandRequest.name(),brandRequest.description()
-                ,brandRequest.imageUrl(),brandRequest.active());
+                ,imageService.saveImage(brandRequest.imageFile(),PathFolder.BRANDS),brandRequest.active());
         brandRepository.save(brand);
         return convertBrandToDto(brand);
     }
@@ -431,7 +433,7 @@ public class AdminServiceImpl implements AdminService {
 
             ProductModel productModel=new ProductModel(adminAdditionOnProductRequest.modifiedName(),
                     adminAdditionOnProductRequest.modifiedDescription(),
-                    adminAdditionOnProductRequest.modifiedImageUrl(), vendor,
+                    imageService.saveImage(adminAdditionOnProductRequest.modifiedImageFile(),PathFolder.MODELS), vendor,
                     adminAdditionOnProductRequest.modifiedGlobal(),ProductModelStatus.ACTIVE,brand,
                     subCategory
                     );
@@ -544,7 +546,7 @@ public class AdminServiceImpl implements AdminService {
         ProductModel productModel = new ProductModel(
                 productModelRequest.name(),
                 productModelRequest.description(),
-                productModelRequest.imageUrl(),
+                imageService.saveImage(productModelRequest.image(), PathFolder.MODELS),
                 vendor,
                 productModelRequest.isGlobal(),
                 productModelRequest.status(),
