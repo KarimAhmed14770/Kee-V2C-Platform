@@ -1,0 +1,11 @@
+package com.Kee.V2C.service;
+
+import com.Kee.V2C.dto.product.ProductModelRequest;
+import com.Kee.V2C.enums.PathFolder;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+public interface ImageService {
+    public String saveImage(MultipartFile img, PathFolder pathFolder);
+}
