@@ -1,12 +1,14 @@
 package com.Kee.V2C.service;
 
 import com.Kee.V2C.dto.*;
-import com.Kee.V2C.dto.brand.BrandRequest;
+import com.Kee.V2C.dto.brand.BrandRegisterRequest;
 import com.Kee.V2C.dto.brand.BrandResponse;
+import com.Kee.V2C.dto.brand.BrandUpdateRequest;
 import com.Kee.V2C.dto.category.*;
 import com.Kee.V2C.dto.customer.CustomerProfileResponse;
-import com.Kee.V2C.dto.product.ProductModelRequest;
+import com.Kee.V2C.dto.product.ProductModelRegisterRequest;
 import com.Kee.V2C.dto.product.ProductModelResponse;
+import com.Kee.V2C.dto.product.ProductModelUpdateRequest;
 import com.Kee.V2C.dto.product.ProductRequestResponse;
 import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.enums.ProductModelStatus;
@@ -47,21 +49,21 @@ public interface AdminService {
     Page<SubCategoryResponse> getSubCategoriesOfParent(Long parentId,Pageable page);
 
 
-    BrandResponse addBrand(BrandRequest brandRequest);
+    BrandResponse addBrand(BrandRegisterRequest brandRegisterRequest);
     BrandResponse getBrandById(Long id);
     Page<BrandResponse> getAllBrands(Pageable page);
-    BrandResponse updateBrand(Long id, BrandRequest brandRequest);
+    BrandResponse updateBrand(Long id, BrandUpdateRequest brandUpdateRequest);
     BrandResponse softDeleteBrand(Long id);
 
 
-    ProductModelResponse addProductModel(ProductModelRequest productModelRequest);
+    ProductModelResponse addProductModel(ProductModelRegisterRequest productModelRegisterRequest);
     ProductModelResponse getProductModelById(Long id);
     Page<ProductModelResponse> getAllProductModels(Pageable page);
     Page<ProductModelResponse> getProductModelsByAttributes(String name, String description,
                                                             Long ownerId, Long subCategoryId, Long brandId,
                                                             Boolean isGlobal, ProductModelStatus status,
                                                             Pageable page);
-    ProductModelResponse updateProductModel(Long id,ProductModelRequest productModelRequest);
+    ProductModelResponse updateProductModel(Long id, ProductModelUpdateRequest productModelUpdateRequest);
     ProductModelResponse softDeleteProductModel(Long id);
 
 

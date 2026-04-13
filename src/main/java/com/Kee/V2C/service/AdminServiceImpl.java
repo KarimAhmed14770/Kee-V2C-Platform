@@ -2,12 +2,14 @@ package com.Kee.V2C.service;
 
 import com.Kee.V2C.Repository.*;
 import com.Kee.V2C.dto.*;
-import com.Kee.V2C.dto.brand.BrandRequest;
+import com.Kee.V2C.dto.brand.BrandRegisterRequest;
 import com.Kee.V2C.dto.brand.BrandResponse;
+import com.Kee.V2C.dto.brand.BrandUpdateRequest;
 import com.Kee.V2C.dto.category.*;
 import com.Kee.V2C.dto.customer.CustomerProfileResponse;
-import com.Kee.V2C.dto.product.ProductModelRequest;
+import com.Kee.V2C.dto.product.ProductModelRegisterRequest;
 import com.Kee.V2C.dto.product.ProductModelResponse;
+import com.Kee.V2C.dto.product.ProductModelUpdateRequest;
 import com.Kee.V2C.dto.product.ProductRequestResponse;
 import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.entity.*;
@@ -26,7 +28,6 @@ import com.Kee.V2C.mapper.SubCategoryMapper;
 import com.Kee.V2C.specifications.CustomerSpecs;
 import com.Kee.V2C.specifications.ProductModelSpecs;
 import com.Kee.V2C.specifications.VendorSpecs;
-import com.Kee.V2C.utils.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -196,6 +197,10 @@ public class AdminServiceImpl implements AdminService {
     public CategoryResponse updateCategory(Long id, CategoryUpdateRequest categoryRequest){
         Category updatedCategory=getCategoryById(id);
         categoryMapper.updateCategoryFromDto(categoryRequest,updatedCategory);
+        if(categoryRequest.imageFile()!=null && !categoryRequest.imageFile().isEmpty()) {
+            String updated_img = imageService.saveImage(categoryRequest.imageFile(), PathFolder.CATEGORIES);
+            updatedCategory.setImageUrl(updated_img);
+        }
         categoryRepository.save(updatedCategory);
 
         return convertCategoryToDto(updatedCategory);
@@ -255,7 +260,12 @@ public class AdminServiceImpl implements AdminService {
     public SubCategoryResponse updateSubCategory(Long id, SubCategoryUpdateRequest subCategoryRequest){
         SubCategory updatedCategory=getSubCategoryById(id);
         subCategoryMapper.updateSubCategoryFromDto(subCategoryRequest,updatedCategory);
+        if(subCategoryRequest.imageFile()!=null && !subCategoryRequest.imageFile().isEmpty()) {
+            String updated_img = imageService.saveImage(subCategoryRequest.imageFile(), PathFolder.SUBCATEGORIES);
+            updatedCategory.setImageUrl(updated_img);
+        }
         subCategoryRepository.save(updatedCategory);
+
         return convertSubCategoryToDto(updatedCategory);
     }
 
@@ -271,12 +281,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public BrandResponse addBrand(BrandRequest brandRequest){
-        if(brandRepository.existsByNameIgnoreCase(brandRequest.name())){
+    public BrandResponse addBrand(BrandRegisterRequest brandRegisterRequest){
+        if(brandRepository.existsByNameIgnoreCase(brandRegisterRequest.name())){
             throw new ResourceAlreadyExistsException("Brand already exists");
         }
-        Brand brand=new Brand(brandRequest.name(),brandRequest.description()
-                ,imageService.saveImage(brandRequest.imageFile(),PathFolder.BRANDS),brandRequest.active());
+        Brand brand=new Brand(brandRegisterRequest.name(), brandRegisterRequest.description()
+                ,imageService.saveImage(brandRegisterRequest.imageFile(),PathFolder.BRANDS), brandRegisterRequest.active());
         brandRepository.save(brand);
         return convertBrandToDto(brand);
     }
@@ -295,11 +305,15 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public BrandResponse updateBrand(Long id, BrandRequest brandRequest){
+    public BrandResponse updateBrand(Long id, BrandUpdateRequest brandUpdateRequest){
         Brand brand=brandRepository.findById(id).orElseThrow(
                 ()->new ResourceNotFoundException("Brand not found")
         );
-        brandMapper.updateBrandFromDto(brandRequest,brand);
+        brandMapper.updateBrandFromDto(brandUpdateRequest,brand);
+        if(brandUpdateRequest.imageFile()!=null && !brandUpdateRequest.imageFile().isEmpty()) {
+            String updated_img = imageService.saveImage(brandUpdateRequest.imageFile(), PathFolder.BRANDS);
+            brand.setImageUrl(updated_img);
+        }
         brandRepository.save(brand);
         return convertBrandToDto(brand);
     }
@@ -318,8 +332,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public ProductModelResponse addProductModel(ProductModelRequest productModelRequest){
-        ProductModel productModel=convertProductModelRequestToProductModel(productModelRequest);
+    public ProductModelResponse addProductModel(ProductModelRegisterRequest productModelRegisterRequest){
+        ProductModel productModel=convertProductModelRequestToProductModel(productModelRegisterRequest);
         productModelRepository.save(productModel);
         return convertProductModelToDto(productModel);
     }
@@ -361,11 +375,15 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public ProductModelResponse updateProductModel(Long id,ProductModelRequest productModelRequest){
+    public ProductModelResponse updateProductModel(Long id, ProductModelUpdateRequest productModelUpdateRequest){
         ProductModel productModel=productModelRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Product Model with id: "+id+" not found"));
 
-        productModelMapper.updateProductModelFromDto(productModelRequest,productModel);
+        productModelMapper.updateProductModelFromDto(productModelUpdateRequest,productModel);
+        if(productModelUpdateRequest.image()!=null && !productModelUpdateRequest.image().isEmpty()) {
+            String updated_img = imageService.saveImage(productModelUpdateRequest.image(), PathFolder.MODELS);
+            productModel.setImageUrl(updated_img);
+        }
         productModelRepository.save(productModel);
 
         return convertProductModelToDto(productModel);
@@ -527,29 +545,29 @@ public class AdminServiceImpl implements AdminService {
         return new BrandResponse(brand.getId(), brand.getName(), brand.getDescription(), brand.getImageUrl(),brand.getActive());
     }
 
-    private ProductModel convertProductModelRequestToProductModel(ProductModelRequest productModelRequest){
-        Brand brand=brandRepository.findById(productModelRequest.brandId()).orElseThrow(
-                ()-> new ResourceNotFoundException("Brand with id: "+productModelRequest.brandId()+
+    private ProductModel convertProductModelRequestToProductModel(ProductModelRegisterRequest productModelRegisterRequest){
+        Brand brand=brandRepository.findById(productModelRegisterRequest.brandId()).orElseThrow(
+                ()-> new ResourceNotFoundException("Brand with id: "+ productModelRegisterRequest.brandId()+
                         " not found.")
         );
-        SubCategory category=subCategoryRepository.findById(productModelRequest.subCategoryId()).orElseThrow(
-                ()->new ResourceNotFoundException("category with id: "+productModelRequest.subCategoryId()+
+        SubCategory category=subCategoryRepository.findById(productModelRegisterRequest.subCategoryId()).orElseThrow(
+                ()->new ResourceNotFoundException("category with id: "+ productModelRegisterRequest.subCategoryId()+
                         " is not found.")
         );
         Vendor vendor=null;
-        if(!productModelRequest.isGlobal()){
-            vendor=vendorRepository.findById(productModelRequest.vendorId()).orElseThrow(
-                    ()->new ResourceNotFoundException("vendor with id: "+productModelRequest.vendorId()+
+        if(!productModelRegisterRequest.isGlobal()){
+            vendor=vendorRepository.findById(productModelRegisterRequest.vendorId()).orElseThrow(
+                    ()->new ResourceNotFoundException("vendor with id: "+ productModelRegisterRequest.vendorId()+
                             " is not found.")
             );
         }
         ProductModel productModel = new ProductModel(
-                productModelRequest.name(),
-                productModelRequest.description(),
-                imageService.saveImage(productModelRequest.image(), PathFolder.MODELS),
+                productModelRegisterRequest.name(),
+                productModelRegisterRequest.description(),
+                imageService.saveImage(productModelRegisterRequest.image(), PathFolder.MODELS),
                 vendor,
-                productModelRequest.isGlobal(),
-                productModelRequest.status(),
+                productModelRegisterRequest.isGlobal(),
+                productModelRegisterRequest.status(),
                 brand,
                 category
         );

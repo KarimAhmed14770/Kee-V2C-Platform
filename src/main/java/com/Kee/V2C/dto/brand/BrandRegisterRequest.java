@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
-public record BrandRequest(@NotBlank
+public record BrandRegisterRequest(@NotBlank
                             @Size(min=2,max=50)
                            String name,
-                           @Size(max=300) String description,
+                                   @Size(max=300) String description,
 
-                           @NotNull(message = "Brand image is required")
+                                   @NotNull(message = "Brand image is required")
                            MultipartFile imageFile,
-                           Boolean active) {
+                                   Boolean active) {
 }
