@@ -24,7 +24,7 @@ public class CustomerRestController {
         return ResponseEntity.status(HttpStatus.OK).body(customerService.myProfile());
     }
     @PatchMapping("/my-profile")
-    public ResponseEntity<CustomerProfileResponse> myProfileUpdate(@RequestBody CustomerProfileRequest updateRequest){
+    public ResponseEntity<CustomerProfileResponse> myProfileUpdate(@RequestBody CustomerUpdateProfileRequest updateRequest){
         return ResponseEntity.status(HttpStatus.OK).body(customerService.partialUpdateCustomerProfile(updateRequest));
     }
     @PostMapping("/cart")

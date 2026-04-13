@@ -69,7 +69,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public CustomerProfileResponse partialUpdateCustomerProfile(CustomerProfileRequest updateRequest){
+    public CustomerProfileResponse partialUpdateCustomerProfile(CustomerUpdateProfileRequest updateRequest){
         Customer customer=getCurrentCustomer();
         customerMapper.updateCustomerFromDto(updateRequest,customer);
         customerRepository.save(customer);
@@ -182,7 +182,7 @@ public class CustomerServiceImpl implements CustomerService {
         return registeredCustomer;
     }
 
-    private CustomerProfileResponse updateCustomer(CustomerProfileRequest request, Customer customer){
+    private CustomerProfileResponse updateCustomer(CustomerUpdateProfileRequest request, Customer customer){
         customer.setFirstName(request.firstName());
         customer.setLastName(request.lastName());
         customer.setPhoneNumber(request.phoneNumber());
