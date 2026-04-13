@@ -163,7 +163,7 @@ public class AdminController {
 
     @PatchMapping("/categories/{parentId}/subcategories/{subCategoryId}")
     public ResponseEntity<SubCategoryResponse> updateSubCategory(@PathVariable("subCategoryId") Long subCategoryId,
-                                                                 @RequestBody SubCategoryRegisterRequest subCategoryRequest){
+                                                                 @RequestBody SubCategoryUpdateRequest subCategoryRequest){
         return ResponseEntity.ok(adminService.updateSubCategory(subCategoryId,subCategoryRequest));
     }
 
