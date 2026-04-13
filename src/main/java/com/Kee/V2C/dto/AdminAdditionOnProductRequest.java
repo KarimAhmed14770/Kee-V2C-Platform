@@ -2,6 +2,7 @@ package com.Kee.V2C.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.web.multipart.MultipartFile;
 
 public record AdminAdditionOnProductRequest(
 
@@ -16,6 +17,7 @@ public record AdminAdditionOnProductRequest(
                                             String modifiedDescription,
                                             @NotNull
                                             Boolean modifiedGlobal,
-                                            String modifiedImageUrl
+
+                                            MultipartFile modifiedImageFile
                                             ) {
 }
