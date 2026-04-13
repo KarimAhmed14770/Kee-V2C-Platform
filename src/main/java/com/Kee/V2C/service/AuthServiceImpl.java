@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService{
     public AuthenticationResponse logIn(LoginRequest loginRequest) {
         //first we create an unauthenticated token based on request body
         UsernamePasswordAuthenticationToken unauthenticatedToken =
-                new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword());
+                new UsernamePasswordAuthenticationToken(loginRequest.userName(), loginRequest.password());
 
         //we call authentication manager to authenticate the login
         Authentication authentication = authenticationManager.authenticate(unauthenticatedToken);
@@ -110,7 +110,7 @@ public class AuthServiceImpl implements AuthService{
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         handleAccessBasedOnStatus(userDetails.getStatus());
         String jwt = jwtService.generateToken(userDetails);
-        boolean  isProfileComplete = isProfileComplete(loginRequest.getUserName());
+        boolean  isProfileComplete = isProfileComplete(loginRequest.userName());
 
         return new AuthenticationResponse(jwt, isProfileComplete);
     }
