@@ -182,6 +182,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException
+            (FileUploadException fileUploadException){
+        UserErrorResponse error=new UserErrorResponse();
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(fileUploadException.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
+    }
+
 
 
         @ExceptionHandler
