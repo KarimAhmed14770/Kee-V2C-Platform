@@ -147,8 +147,8 @@ public class AdminController {
 
     @PostMapping("/categories/{id}/subcategories")
     public ResponseEntity<SubCategoryResponse> addSubCategory(@PathVariable("id") Long id
-                                                    , @RequestBody SubCategoryRequest subCategoryRequest){
-        return ResponseEntity.ok(adminService.addSubCategory(id,subCategoryRequest));
+                                                    , @RequestBody SubCategoryRegisterRequest subCategoryRegisterRequest){
+        return ResponseEntity.ok(adminService.addSubCategory(id, subCategoryRegisterRequest));
     }
 
     @GetMapping("/categories/{id}/subcategories")
@@ -163,7 +163,7 @@ public class AdminController {
 
     @PatchMapping("/categories/{parentId}/subcategories/{subCategoryId}")
     public ResponseEntity<SubCategoryResponse> updateSubCategory(@PathVariable("subCategoryId") Long subCategoryId,
-                                                                 @RequestBody SubCategoryRequest subCategoryRequest){
+                                                                 @RequestBody SubCategoryRegisterRequest subCategoryRequest){
         return ResponseEntity.ok(adminService.updateSubCategory(subCategoryId,subCategoryRequest));
     }
 

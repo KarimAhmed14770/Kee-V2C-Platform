@@ -218,18 +218,18 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public SubCategoryResponse addSubCategory(Long parentId, SubCategoryRequest subCategoryRequest){
-        if(subCategoryRepository.existsByNameIgnoreCase(subCategoryRequest.name())){
+    public SubCategoryResponse addSubCategory(Long parentId, SubCategoryRegisterRequest subCategoryRegisterRequest){
+        if(subCategoryRepository.existsByNameIgnoreCase(subCategoryRegisterRequest.name())){
             throw new ResourceAlreadyExistsException("category Already exists ");
         }
 
         Category parentCategory=getCategoryById(parentId);
         SubCategory subCategory=new SubCategory(
                 parentCategory,
-                subCategoryRequest.name(),
-                subCategoryRequest.description(),
-                subCategoryRequest.imageUrl(),
-                subCategoryRequest.active());
+                subCategoryRegisterRequest.name(),
+                subCategoryRegisterRequest.description(),
+                subCategoryRegisterRequest.imageUrl(),
+                subCategoryRegisterRequest.active());
         parentCategory.addSubcategory(subCategory);//linking parent to sub
         subCategoryRepository.save(subCategory);
         return convertSubCategoryToDto(subCategory);
@@ -250,7 +250,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public SubCategoryResponse updateSubCategory(Long id, SubCategoryRequest subCategoryRequest){
+    public SubCategoryResponse updateSubCategory(Long id, SubCategoryUpdateRequest subCategoryRequest){
         SubCategory updatedCategory=getSubCategoryById(id);
         subCategoryMapper.updateSubCategoryFromDto(subCategoryRequest,updatedCategory);
         subCategoryRepository.save(updatedCategory);

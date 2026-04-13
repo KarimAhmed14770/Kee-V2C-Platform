@@ -40,9 +40,9 @@ public interface AdminService {
 
 
 
-    SubCategoryResponse addSubCategory(Long parentId, SubCategoryRequest subCategoryRequest);
+    SubCategoryResponse addSubCategory(Long parentId, SubCategoryRegisterRequest subCategoryRegisterRequest);
     SubCategoryResponse getSubCategoryProfileById(Long id);
-    SubCategoryResponse updateSubCategory(Long id, SubCategoryRequest subCategoryRequest);
+    SubCategoryResponse updateSubCategory(Long id, SubCategoryUpdateRequest subCategoryRequest);
     SubCategoryResponse softDeleteSubCategory(Long id);
     Page<SubCategoryResponse> getSubCategoriesOfParent(Long parentId,Pageable page);
 
