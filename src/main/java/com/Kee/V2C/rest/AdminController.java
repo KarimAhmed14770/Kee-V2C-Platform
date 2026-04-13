@@ -105,8 +105,8 @@ public class AdminController {
 
 
     @PostMapping("/categories")
-    public ResponseEntity<CategoryResponse> addCategory(@RequestBody CategoryRequest categoryRequest){
-        return ResponseEntity.ok(adminService.addCategory(categoryRequest));
+    public ResponseEntity<CategoryResponse> addCategory(@RequestBody CategoryRegisterRequest categoryRegisterRequest){
+        return ResponseEntity.ok(adminService.addCategory(categoryRegisterRequest));
     }
 
 

@@ -31,7 +31,7 @@ public interface AdminService {
     VendorProfileResponse  modifyVendorStatus(Long id,StatusUpdateDto status);
 
 
-    CategoryResponse addCategory(CategoryRequest categoryRequest);
+    CategoryResponse addCategory(CategoryRegisterRequest categoryRegisterRequest);
     CategoryResponse getCategoryProfileById(Long id);
     CategoryResponse updateCategory(Long id, CategoryUpdateRequest categoryRequest);
     CategoryResponse softDeleteCategory(Long id);

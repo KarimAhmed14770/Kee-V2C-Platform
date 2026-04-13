@@ -166,12 +166,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public CategoryResponse addCategory(CategoryRequest categoryRequest) {
-        if(categoryRepository.existsByNameIgnoreCase(categoryRequest.name())){
+    public CategoryResponse addCategory(CategoryRegisterRequest categoryRegisterRequest) {
+        if(categoryRepository.existsByNameIgnoreCase(categoryRegisterRequest.name())){
             throw new ResourceAlreadyExistsException("category Already exists ");
         }
-        Category category=new Category(categoryRequest.name(), categoryRequest.description(), categoryRequest.imageUrl(),
-                categoryRequest.active());
+        Category category=new Category(categoryRegisterRequest.name(), categoryRegisterRequest.description(), categoryRegisterRequest.imageUrl(),
+                categoryRegisterRequest.active());
         categoryRepository.save(category);
 
         return convertCategoryToDto(category);
