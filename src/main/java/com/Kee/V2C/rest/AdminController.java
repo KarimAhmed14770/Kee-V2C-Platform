@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -105,8 +106,8 @@ public class AdminController {
 
 
 
-    @PostMapping("/categories")
-    public ResponseEntity<CategoryResponse> addCategory(@RequestBody @Valid CategoryRegisterRequest categoryRegisterRequest){
+    @PostMapping(value = "/categories",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CategoryResponse> addCategory(@Valid @ModelAttribute CategoryRegisterRequest categoryRegisterRequest){
         return ResponseEntity.ok(adminService.addCategory(categoryRegisterRequest));
     }
 
@@ -146,9 +147,9 @@ public class AdminController {
 
 
 
-    @PostMapping("/categories/{id}/subcategories")
+    @PostMapping(value="/categories/{id}/subcategories",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SubCategoryResponse> addSubCategory(@PathVariable("id") Long id
-                                                    , @RequestBody @Valid SubCategoryRegisterRequest subCategoryRegisterRequest){
+                                                    , @Valid @ModelAttribute  SubCategoryRegisterRequest subCategoryRegisterRequest){
         return ResponseEntity.ok(adminService.addSubCategory(id, subCategoryRegisterRequest));
     }
 
@@ -175,8 +176,8 @@ public class AdminController {
 
 
 
-    @PostMapping("/brands")
-    public ResponseEntity<BrandResponse> addBrand(@RequestBody @Valid BrandRequest brandRequest){
+    @PostMapping(value="/brands",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BrandResponse> addBrand(@Valid @ModelAttribute BrandRequest brandRequest){
         BrandResponse brandResponse=adminService.addBrand(brandRequest);
 
         URI location= ServletUriComponentsBuilder.fromCurrentRequest()
@@ -208,8 +209,8 @@ public class AdminController {
     }
 
 
-    @PostMapping("/product-models")
-    public ResponseEntity<ProductModelResponse> addProductModel(@RequestBody @Valid ProductModelRequest productModelRequest){
+    @PostMapping(value="/product-models",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductModelResponse> addProductModel(@ModelAttribute @Valid ProductModelRequest productModelRequest){
         ProductModelResponse response=adminService.addProductModel(productModelRequest);
         URI location=ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(response.id()).toUri();

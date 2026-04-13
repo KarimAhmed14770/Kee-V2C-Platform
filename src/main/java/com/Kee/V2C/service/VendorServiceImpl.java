@@ -4,6 +4,7 @@ import com.Kee.V2C.Repository.*;
 import com.Kee.V2C.dto.product.*;
 import com.Kee.V2C.dto.vendor.*;
 import com.Kee.V2C.entity.*;
+import com.Kee.V2C.enums.PathFolder;
 import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.ProductRequestStatus;
 import com.Kee.V2C.exception.ResourceAlreadyExistsException;
@@ -33,12 +34,14 @@ public class VendorServiceImpl implements VendorService {
     private final ProductRequestRepository productRequestRepository;
     private final VendorMapper vendorMapper;
     private final ProductMapper productMapper;
+    private final ImageService imageService;
+
     public VendorServiceImpl(SecurityUtil securityUtil, VendorRepository vendorRepository,
                              SubCategoryRepository subCategoryRepository, ProductRepository productRepository,
                              ShopRepository shopRepository,ProductModelRepository productModelRepository,
                              StockRepository stockRepository,ShopMapper shopMapper,
                              ProductRequestRepository productRequestRepository,VendorMapper vendorMapper,
-                             ProductMapper productMapper){
+                             ProductMapper productMapper,ImageService imageService){
         this.securityUtil=securityUtil;
         this.vendorRepository = vendorRepository;
         this.subCategoryRepository=subCategoryRepository;
@@ -50,6 +53,7 @@ public class VendorServiceImpl implements VendorService {
         this.productRequestRepository=productRequestRepository;
         this.vendorMapper=vendorMapper;
         this.productMapper=productMapper;
+        this.imageService=imageService;
     }
 
     @Transactional
@@ -160,11 +164,11 @@ public class VendorServiceImpl implements VendorService {
     public ProductRequestResponse requestNewProduct(NewProductRequest newProductRequest){
         Vendor vendor=getCurrentVendor();
         ProductRequest productRequest=new ProductRequest(newProductRequest.name(), newProductRequest.description(),
-                newProductRequest.imageUrl(), newProductRequest.isGlobal(), ProductRequestStatus.PENDING,vendor);
+                imageService.saveImage(newProductRequest.imageFile(), PathFolder.PRODUCT_REQUESTS), newProductRequest.isGlobal(), ProductRequestStatus.PENDING,vendor);
         productRequestRepository.save(productRequest);
         return new ProductRequestResponse(
                 productRequest.getId(), productRequest.getName(), productRequest.getDescription(),
-                newProductRequest.imageUrl(), productRequest.getGlobal(),productRequest.getStatus()
+                productRequest.getImageUrl(), productRequest.getGlobal(),productRequest.getStatus()
         );
 
     }

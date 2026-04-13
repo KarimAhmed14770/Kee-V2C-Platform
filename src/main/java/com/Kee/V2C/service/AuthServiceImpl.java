@@ -11,6 +11,7 @@ import com.Kee.V2C.entity.Credential;
 import com.Kee.V2C.entity.Customer;
 import com.Kee.V2C.entity.Role;
 import com.Kee.V2C.entity.Vendor;
+import com.Kee.V2C.enums.PathFolder;
 import com.Kee.V2C.enums.UserRoles;
 import com.Kee.V2C.enums.UserStatus;
 import com.Kee.V2C.exception.RoleNotAvailableException;
@@ -34,11 +35,13 @@ public class AuthServiceImpl implements AuthService{
     private final JwtService jwtService;
     private final RoleRepository roleRepository;
     private final VendorRepository vendorRepository;
+    private final ImageService imageService;
+
 
     public AuthServiceImpl(PasswordEncoder passwordEncoder, CustomerRepository customerRepository
             , CredentialRepository credentialRepository, AuthenticationManager authenticationManager
             , JwtService jwtService,RoleRepository roleRepository,
-                           VendorRepository vendorRepository) {
+                           VendorRepository vendorRepository,ImageService imageService) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.credentialRepository = credentialRepository;
@@ -46,6 +49,7 @@ public class AuthServiceImpl implements AuthService{
         this.jwtService = jwtService;
         this.roleRepository=roleRepository;
         this.vendorRepository=vendorRepository;
+        this.imageService=imageService;
     }
 
     @Override
@@ -119,7 +123,7 @@ public class AuthServiceImpl implements AuthService{
 
     private Vendor convertToVendor(VendorRegistrationDto vendorRegistrationDto) {
         Vendor registeredVendor=new Vendor(vendorRegistrationDto.name(), vendorRegistrationDto.description(),
-                vendorRegistrationDto.imageUrl(), vendorRegistrationDto.address());
+                imageService.saveImage(vendorRegistrationDto.imageFile(), PathFolder.VENDORS), vendorRegistrationDto.address());
         Credential credential=new Credential(vendorRegistrationDto.userName(), vendorRegistrationDto.password(), vendorRegistrationDto.email(),
                 UserStatus.VENDOR_APPROVAL_PENDING);//admins must manually confirm vendors first
         registeredVendor.setCredential(credential);
