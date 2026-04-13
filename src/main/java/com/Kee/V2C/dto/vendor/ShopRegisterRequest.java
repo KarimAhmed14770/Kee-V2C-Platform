@@ -1,6 +1,7 @@
 package com.Kee.V2C.dto.vendor;
 
-public record ShopRequest(String name,
+public record ShopRegisterRequest(
+                         String name,
                           String address,
                           Boolean active) {
 }

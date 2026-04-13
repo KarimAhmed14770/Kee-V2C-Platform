@@ -2,17 +2,13 @@ package com.Kee.V2C.service;
 
 import com.Kee.V2C.Repository.*;
 import com.Kee.V2C.dto.product.*;
-import com.Kee.V2C.dto.vendor.ShopRequest;
-import com.Kee.V2C.dto.vendor.ShopResponse;
-import com.Kee.V2C.dto.vendor.VendorProfileRequest;
-import com.Kee.V2C.dto.vendor.VendorProfileResponse;
+import com.Kee.V2C.dto.vendor.*;
 import com.Kee.V2C.entity.*;
 import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.ProductRequestStatus;
 import com.Kee.V2C.exception.ResourceAlreadyExistsException;
 import com.Kee.V2C.exception.ResourceNotFoundException;
 import com.Kee.V2C.mapper.ProductMapper;
-import com.Kee.V2C.mapper.ProductModelMapper;
 import com.Kee.V2C.mapper.ShopMapper;
 import com.Kee.V2C.mapper.VendorMapper;
 import com.Kee.V2C.specifications.ProductModelSpecs;
@@ -84,12 +80,12 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     @Transactional
-    public ShopResponse registerShop(ShopRequest shopRequest){
+    public ShopResponse registerShop(ShopRegisterRequest shopRegisterRequest){
         Vendor vendor=getCurrentVendor();
         if(shopRepository.existsByVendorId(vendor.getId())){
             throw new ResourceAlreadyExistsException("you already have a shop");
         }
-        Shop shop=new Shop(shopRequest.name(),shopRequest.address(),shopRequest.active(),vendor);
+        Shop shop=new Shop(shopRegisterRequest.name(), shopRegisterRequest.address(), shopRegisterRequest.active(),vendor);
         vendor.setShop(shop);
         shopRepository.save(shop);
 
@@ -98,7 +94,7 @@ public class VendorServiceImpl implements VendorService {
 
     @Override
     @Transactional
-    public ShopResponse updateShopInfo(ShopRequest shopRequest){
+    public ShopResponse updateShopInfo(ShopUpdateRequest shopRequest){
         Long id=getCurrentVendor().getId();
         Shop shop=shopRepository.findByVendorId(id).orElseThrow(
                 ()->new ResourceNotFoundException("vendor with id: "+id+" didn't register a shop yet.")

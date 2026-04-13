@@ -2,10 +2,7 @@ package com.Kee.V2C.rest;
 
 
 import com.Kee.V2C.dto.product.*;
-import com.Kee.V2C.dto.vendor.ShopRequest;
-import com.Kee.V2C.dto.vendor.ShopResponse;
-import com.Kee.V2C.dto.vendor.VendorProfileRequest;
-import com.Kee.V2C.dto.vendor.VendorProfileResponse;
+import com.Kee.V2C.dto.vendor.*;
 import com.Kee.V2C.service.VendorServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,8 +37,8 @@ public class VendorController {
     }
 
     @PostMapping("/my-shop")
-    public ResponseEntity<ShopResponse> registerShop(@RequestBody ShopRequest shopRequest){
-        ShopResponse response=vendorService.registerShop(shopRequest);
+    public ResponseEntity<ShopResponse> registerShop(@RequestBody ShopRegisterRequest shopRegisterRequest){
+        ShopResponse response=vendorService.registerShop(shopRegisterRequest);
         URI location= ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(response.id())
                 .toUri();
@@ -49,7 +46,7 @@ public class VendorController {
     }
 
     @PatchMapping("/my-shop")
-    public ResponseEntity<ShopResponse> updateShop(@RequestBody ShopRequest shopRequest){
+    public ResponseEntity<ShopResponse> updateShop(@RequestBody ShopUpdateRequest shopRequest){
         return ResponseEntity.ok(vendorService.updateShopInfo(shopRequest));
     }
 
