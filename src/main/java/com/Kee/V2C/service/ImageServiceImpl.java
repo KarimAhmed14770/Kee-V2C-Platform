@@ -34,7 +34,7 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public String saveImage(MultipartFile img, PathFolder pathFolder){
-
+        if(img==null ||img.isEmpty() ) return null;
         try(InputStream is=img.getInputStream()){//holds the binary data of the image in a pipe
 
             String name=img.getOriginalFilename();//holds the original name of the file
