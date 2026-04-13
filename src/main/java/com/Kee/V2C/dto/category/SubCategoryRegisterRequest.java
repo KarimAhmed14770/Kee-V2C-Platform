@@ -1,8 +1,10 @@
 package com.Kee.V2C.dto.category;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public record SubCategoryRegisterRequest(
                                 @NotBlank(message = "Category name is required")
@@ -11,6 +13,8 @@ public record SubCategoryRegisterRequest(
                                  String name,
                                 @Size(max = 500, message = "Description cannot exceed 500 characters")
                                  String description,
-                                 String imageUrl,
+
+                                @NotNull(message = "SubCategory image is required")
+                                MultipartFile imageFile,
                                  boolean active) {
 }
