@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         /*fetch all userinfo from the db*/
         Credential credential=credentialRepository.findByUserName(userName)
-                .orElseThrow(()->new UserNotFoundException("user with username: "+userName+" not found."));
+                .orElseThrow(()->new UserNotFoundException("Invalid username/password"));
 
         /*return the user object that holds the info for spring security*/
         return new UserDetailsImpl(credential);

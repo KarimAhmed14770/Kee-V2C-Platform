@@ -3,6 +3,8 @@ package com.Kee.V2C.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,6 +27,29 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error,HttpStatus.CONFLICT);
     }
 
+
+    @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException
+            (InternalAuthenticationServiceException internalAuthenticationServiceException){
+        UserErrorResponse error=new UserErrorResponse();
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        error.setMessage(internalAuthenticationServiceException.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error,HttpStatus.UNAUTHORIZED);
+    }
+
+
+    @ExceptionHandler
+    public ResponseEntity<UserErrorResponse> handleException
+            (BadCredentialsException badCredentialsException){
+        UserErrorResponse error=new UserErrorResponse();
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        error.setMessage("Invalid user name or password");
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error,HttpStatus.UNAUTHORIZED);
+    }
     @ExceptionHandler
     public ResponseEntity<UserErrorResponse> handleException
             (UserNotFoundException userNotFoundException){
