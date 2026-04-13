@@ -1,6 +1,6 @@
 package com.Kee.V2C.dto.category;
 
-public record SubCategoryRequest(
+public record SubCategoryRegisterRequest(
                                  String name,
                                  String description,
                                  String imageUrl,
