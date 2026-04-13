@@ -47,7 +47,7 @@ CREATE TABLE `product_models` (
   `id` int NOT NULL AUTO_INCREMENT,
   `brand_id` int,
   `category_id` int NOT NULL,-- will point to a subcategory
-  `name` varchar(45) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `description` varchar(300) default Null,-- for official factory specs
   `image_url` varchar(1000) default Null, -- the clean image that will be shown to the user
   `is_global` BOOLEAN DEFAULT TRUE,
@@ -69,7 +69,7 @@ CREATE TABLE `products` (
   `id` int NOT NULL AUTO_INCREMENT,
   `model_id` int NOT NULL,
   `vendor_id` int NOT NULL,
-  `name` varchar(45) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `description` varchar(300) default Null,  -- for vendor specific specs ex:comes with a free screen protector
   `price`  DECIMAL(10,2) NOT NULL,
   `image_url` varchar(1000) default null, -- specific image of the specific product 
@@ -115,3 +115,4 @@ CREATE TABLE `stock` (
   Constraint `stock_shop_id_fk` Foreign key (`shop_id`) REFERENCES shops(`id`),
   INDEX idx_product_stock (quantity)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
