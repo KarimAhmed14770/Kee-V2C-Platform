@@ -13,6 +13,7 @@ import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.UserStatus;
 import com.Kee.V2C.service.AdminService;
 import com.Kee.V2C.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,7 +67,7 @@ public class AdminController {
 
     @PatchMapping("customers/modify-status/{id}")
     public CustomerProfileResponse modifyCustomerStatus(@PathVariable("id") Long id,
-                                                        @RequestBody StatusUpdateDto status){
+                                                        @RequestBody @Valid StatusUpdateDto status){
         return adminService.modifyCustomerStatus(id,status);
     }
 
@@ -96,7 +97,7 @@ public class AdminController {
 
     @PatchMapping("vendors/modify-status/{id}")
     public VendorProfileResponse modifyVendorStatus(@PathVariable("id") Long id,
-                                                        @RequestBody StatusUpdateDto status){
+                                                        @RequestBody @Valid StatusUpdateDto status){
         return adminService.modifyVendorStatus(id,status);
     }
 
@@ -105,7 +106,7 @@ public class AdminController {
 
 
     @PostMapping("/categories")
-    public ResponseEntity<CategoryResponse> addCategory(@RequestBody CategoryRegisterRequest categoryRegisterRequest){
+    public ResponseEntity<CategoryResponse> addCategory(@RequestBody @Valid CategoryRegisterRequest categoryRegisterRequest){
         return ResponseEntity.ok(adminService.addCategory(categoryRegisterRequest));
     }
 
@@ -122,7 +123,7 @@ public class AdminController {
 
     @PatchMapping("/categories/{id}")
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("id") Long id,
-                                                           @RequestBody CategoryUpdateRequest categoryUpdateRequest){
+                                                           @RequestBody @Valid CategoryUpdateRequest categoryUpdateRequest){
         return ResponseEntity.ok(adminService.updateCategory(id,categoryUpdateRequest));
     }
 
@@ -147,7 +148,7 @@ public class AdminController {
 
     @PostMapping("/categories/{id}/subcategories")
     public ResponseEntity<SubCategoryResponse> addSubCategory(@PathVariable("id") Long id
-                                                    , @RequestBody SubCategoryRegisterRequest subCategoryRegisterRequest){
+                                                    , @RequestBody @Valid SubCategoryRegisterRequest subCategoryRegisterRequest){
         return ResponseEntity.ok(adminService.addSubCategory(id, subCategoryRegisterRequest));
     }
 
@@ -163,7 +164,7 @@ public class AdminController {
 
     @PatchMapping("/categories/{parentId}/subcategories/{subCategoryId}")
     public ResponseEntity<SubCategoryResponse> updateSubCategory(@PathVariable("subCategoryId") Long subCategoryId,
-                                                                 @RequestBody SubCategoryUpdateRequest subCategoryRequest){
+                                                                 @RequestBody @Valid SubCategoryUpdateRequest subCategoryRequest){
         return ResponseEntity.ok(adminService.updateSubCategory(subCategoryId,subCategoryRequest));
     }
 
@@ -175,7 +176,7 @@ public class AdminController {
 
 
     @PostMapping("/brands")
-    public ResponseEntity<BrandResponse> addBrand(@RequestBody BrandRequest brandRequest){
+    public ResponseEntity<BrandResponse> addBrand(@RequestBody @Valid BrandRequest brandRequest){
         BrandResponse brandResponse=adminService.addBrand(brandRequest);
 
         URI location= ServletUriComponentsBuilder.fromCurrentRequest()
@@ -197,7 +198,7 @@ public class AdminController {
     }
 
     @PatchMapping("/brands/{id}")
-    public ResponseEntity<BrandResponse> updateBrand(@PathVariable("id") Long id,@RequestBody BrandRequest brandRequest){
+    public ResponseEntity<BrandResponse> updateBrand(@PathVariable("id") Long id,@RequestBody @Valid BrandRequest brandRequest){
         return ResponseEntity.ok(adminService.updateBrand(id,brandRequest));
     }
 
@@ -208,7 +209,7 @@ public class AdminController {
 
 
     @PostMapping("/product-models")
-    public ResponseEntity<ProductModelResponse> addProductModel(@RequestBody ProductModelRequest productModelRequest){
+    public ResponseEntity<ProductModelResponse> addProductModel(@RequestBody @Valid ProductModelRequest productModelRequest){
         ProductModelResponse response=adminService.addProductModel(productModelRequest);
         URI location=ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(response.id()).toUri();
@@ -241,7 +242,7 @@ public class AdminController {
 
     @PatchMapping("/product-models/{id}")
     public ResponseEntity<ProductModelResponse> updateProductModel(@PathVariable("id") Long id,
-                                                                   @RequestBody ProductModelRequest productModelRequest){
+                                                                   @RequestBody @Valid ProductModelRequest productModelRequest){
         return ResponseEntity.status(HttpStatus.OK).body(adminService.updateProductModel(id,productModelRequest));
     }
 
@@ -273,7 +274,7 @@ public class AdminController {
 
     @PostMapping("/product-requests/process/{id}")
     public ResponseEntity<ProductModelResponse> processProductRequest(@PathVariable("id") Long id,
-                                                                        @RequestBody AdminAdditionOnProductRequest adminAdditionOnProductRequest){
+                                                                        @RequestBody @Valid AdminAdditionOnProductRequest adminAdditionOnProductRequest){
         return ResponseEntity.ok(adminService.processProductAddRequest(id,adminAdditionOnProductRequest));
     }
 

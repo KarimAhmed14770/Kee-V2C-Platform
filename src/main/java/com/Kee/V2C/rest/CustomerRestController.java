@@ -4,6 +4,7 @@ import com.Kee.V2C.dto.cart.CartItemRequest;
 import com.Kee.V2C.dto.cart.CartResponse;
 import com.Kee.V2C.dto.customer.*;
 import com.Kee.V2C.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +25,11 @@ public class CustomerRestController {
         return ResponseEntity.status(HttpStatus.OK).body(customerService.myProfile());
     }
     @PatchMapping("/my-profile")
-    public ResponseEntity<CustomerProfileResponse> myProfileUpdate(@RequestBody CustomerUpdateProfileRequest updateRequest){
+    public ResponseEntity<CustomerProfileResponse> myProfileUpdate(@RequestBody @Valid CustomerUpdateProfileRequest updateRequest){
         return ResponseEntity.status(HttpStatus.OK).body(customerService.partialUpdateCustomerProfile(updateRequest));
     }
     @PostMapping("/cart")
-    public ResponseEntity<CartResponse> addToCart(@RequestBody CartItemRequest cartItemRequest){
+    public ResponseEntity<CartResponse> addToCart(@RequestBody @Valid CartItemRequest cartItemRequest){
         return ResponseEntity.status(HttpStatus.OK).body(customerService.addToCart(cartItemRequest));
     }
 
@@ -38,7 +39,7 @@ public class CustomerRestController {
     }
 
     @PostMapping("/cart/checkout")
-    public ResponseEntity<CheckoutResponse> checkout(@RequestBody CheckOutRequest checkOutRequest){
+    public ResponseEntity<CheckoutResponse> checkout(@RequestBody @Valid CheckOutRequest checkOutRequest){
         return ResponseEntity.status(HttpStatus.OK).body(customerService.checkOut(checkOutRequest));
     }
 

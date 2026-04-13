@@ -4,6 +4,7 @@ package com.Kee.V2C.rest;
 import com.Kee.V2C.dto.product.*;
 import com.Kee.V2C.dto.vendor.*;
 import com.Kee.V2C.service.VendorServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class VendorController {
     }
 
     @PatchMapping("/my-profile/update")
-    public ResponseEntity<VendorProfileResponse> updateSeller(@RequestBody VendorUpdateProfileRequest vendorUpdateProfileRequest){
+    public ResponseEntity<VendorProfileResponse> updateSeller(@RequestBody @Valid VendorUpdateProfileRequest vendorUpdateProfileRequest){
         return ResponseEntity.status(HttpStatus.OK).body(vendorService.updateVendorProfile(vendorUpdateProfileRequest));
     }
 
@@ -37,7 +38,7 @@ public class VendorController {
     }
 
     @PostMapping("/my-shop")
-    public ResponseEntity<ShopResponse> registerShop(@RequestBody ShopRegisterRequest shopRegisterRequest){
+    public ResponseEntity<ShopResponse> registerShop(@RequestBody @Valid ShopRegisterRequest shopRegisterRequest){
         ShopResponse response=vendorService.registerShop(shopRegisterRequest);
         URI location= ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(response.id())
@@ -46,7 +47,7 @@ public class VendorController {
     }
 
     @PatchMapping("/my-shop")
-    public ResponseEntity<ShopResponse> updateShop(@RequestBody ShopUpdateRequest shopRequest){
+    public ResponseEntity<ShopResponse> updateShop(@RequestBody @Valid ShopUpdateRequest shopRequest){
         return ResponseEntity.ok(vendorService.updateShopInfo(shopRequest));
     }
 
@@ -66,7 +67,7 @@ public class VendorController {
     }
 
     @PostMapping("/product-requests")
-    public ResponseEntity<ProductRequestResponse> requestNewProduct(@RequestBody NewProductRequest newProductRequest){
+    public ResponseEntity<ProductRequestResponse> requestNewProduct(@RequestBody @Valid NewProductRequest newProductRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(vendorService.requestNewProduct(newProductRequest));
     }
 
@@ -86,7 +87,7 @@ public class VendorController {
     }
 
     @PostMapping("/products/add-to-shop")
-    public ResponseEntity<ProductResponse> addToStock(@RequestBody ProductAddToStockRequest productAddToStockRequest){
+    public ResponseEntity<ProductResponse> addToStock(@RequestBody @Valid ProductAddToStockRequest productAddToStockRequest){
         ProductResponse productResponse=vendorService.addProductToStock(productAddToStockRequest);
         URI location=ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(productResponse.id()).toUri();
@@ -105,7 +106,7 @@ public class VendorController {
     }
 
     @PatchMapping("/products/update/{id}")
-    public ResponseEntity<ProductResponse> addToStock(@PathVariable("id") Long id,ProductUpdateRequest productUpdateRequest){
+    public ResponseEntity<ProductResponse> addToStock(@PathVariable("id") Long id,@Valid ProductUpdateRequest productUpdateRequest){
         return ResponseEntity.ok(vendorService.updateProductInfo(id,productUpdateRequest));
     }
 
