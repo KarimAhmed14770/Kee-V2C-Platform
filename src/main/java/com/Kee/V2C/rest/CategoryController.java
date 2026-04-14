@@ -27,7 +27,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("id") Long id){
-        return ResponseEntity.ok(categoryService.convertCategoryToDto(categoryService.getCategoryProfileById(id)));
+        return ResponseEntity.ok(categoryService.convertCategoryToDto(categoryService.getCategoryById(id)));
     }
 
     @GetMapping("/search")
