@@ -49,6 +49,11 @@ public class Order {
     @OneToMany(mappedBy = "order",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     List<OrderItem> orderItems=new ArrayList<>();
 
+    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    List<SubOrder> subOrders=new ArrayList<>();
+
+
+
 
     public Order(){}
 

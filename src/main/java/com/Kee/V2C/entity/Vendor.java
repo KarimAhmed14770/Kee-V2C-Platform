@@ -47,6 +47,9 @@ public class Vendor {
     @OneToMany(mappedBy = "vendor")
     private List<ProductRequest> productRequests;
 
+    @OneToMany(mappedBy = "vendor",fetch = FetchType.LAZY)
+    private List<SubOrder> orders;
+
     public Vendor(){}
 
     public Vendor(String name,String description, String imageUrl, String address) {
