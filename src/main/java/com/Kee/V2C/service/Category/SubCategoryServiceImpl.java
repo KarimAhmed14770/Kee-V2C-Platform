@@ -27,7 +27,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
-    public Page<SubCategory> getSubCategoriesOfParent(Long parentId, Pageable page){
+    public Page<SubCategory> getActiveSubCategoriesOfParent(Long parentId, Pageable page){
         return subCategoryRepository.findByParentIdAndActiveTrue(parentId,page);
     }
 

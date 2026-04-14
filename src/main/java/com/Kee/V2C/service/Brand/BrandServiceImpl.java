@@ -25,7 +25,7 @@ public class BrandServiceImpl implements BrandService{
     }
 
     @Override
-    public Page<Brand> getAllBrands(Pageable page){
+    public Page<Brand> getActiveBrands(Pageable page){
         return brandRepository.findByActiveTrue(page);
     }
 

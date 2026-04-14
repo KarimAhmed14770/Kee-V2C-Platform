@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface BrandService {
     Brand getBrandById(Long id);
-    Page<Brand> getAllBrands(Pageable page);
+    Page<Brand> getActiveBrands(Pageable page);
     BrandResponse convertBrandToDto(Brand brand);
 
 }

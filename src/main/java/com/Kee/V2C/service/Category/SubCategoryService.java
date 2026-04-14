@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface SubCategoryService {
     SubCategory getSubCategoryById(Long id);
-    Page<SubCategory> getSubCategoriesOfParent(Long parentId, Pageable page);
+    Page<SubCategory> getActiveSubCategoriesOfParent(Long parentId, Pageable page);
     SubCategoryResponse convertSubCategoryToDto(SubCategory subCategory);
 
 }
