@@ -1,16 +1,13 @@
 package com.Kee.V2C.service.Admin;
 
 import com.Kee.V2C.Repository.*;
-import com.Kee.V2C.dto.*;
+import com.Kee.V2C.dto.Authentication.StatusUpdateDto;
 import com.Kee.V2C.dto.brand.BrandRegisterRequest;
 import com.Kee.V2C.dto.brand.BrandResponse;
 import com.Kee.V2C.dto.brand.BrandUpdateRequest;
 import com.Kee.V2C.dto.category.*;
 import com.Kee.V2C.dto.customer.CustomerProfileResponse;
-import com.Kee.V2C.dto.product.ProductModelRegisterRequest;
-import com.Kee.V2C.dto.product.ProductModelResponse;
-import com.Kee.V2C.dto.product.ProductModelUpdateRequest;
-import com.Kee.V2C.dto.product.ProductRequestResponse;
+import com.Kee.V2C.dto.product.*;
 import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.entity.*;
 import com.Kee.V2C.enums.PathFolder;
@@ -30,7 +27,6 @@ import com.Kee.V2C.service.Image.ImageService;
 import com.Kee.V2C.service.Category.SubCategoryService;
 import com.Kee.V2C.service.ProductModel.ProductModelService;
 import com.Kee.V2C.specifications.CustomerSpecs;
-import com.Kee.V2C.specifications.ProductModelSpecs;
 import com.Kee.V2C.specifications.VendorSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,7 +34,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -380,7 +375,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public ProductModelResponse processProductAddRequest(Long requestId,AdminAdditionOnProductRequest adminAdditionOnProductRequest){
+    public ProductModelResponse processProductAddRequest(Long requestId, AdminAdditionOnProductRequest adminAdditionOnProductRequest){
         ProductRequest request=productRequestRepository.findById(requestId).
                 orElseThrow(()->new ResourceNotFoundException("request with id: "+requestId+" not found"));
 

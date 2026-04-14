@@ -1,15 +1,12 @@
 package com.Kee.V2C.rest;
 
-import com.Kee.V2C.dto.*;
+import com.Kee.V2C.dto.Authentication.StatusUpdateDto;
 import com.Kee.V2C.dto.brand.BrandRegisterRequest;
 import com.Kee.V2C.dto.brand.BrandResponse;
 import com.Kee.V2C.dto.brand.BrandUpdateRequest;
 import com.Kee.V2C.dto.category.*;
 import com.Kee.V2C.dto.customer.CustomerProfileResponse;
-import com.Kee.V2C.dto.product.ProductModelRegisterRequest;
-import com.Kee.V2C.dto.product.ProductModelResponse;
-import com.Kee.V2C.dto.product.ProductModelUpdateRequest;
-import com.Kee.V2C.dto.product.ProductRequestResponse;
+import com.Kee.V2C.dto.product.*;
 import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.UserStatus;

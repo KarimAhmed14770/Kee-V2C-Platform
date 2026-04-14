@@ -1,4 +1,4 @@
-package com.Kee.V2C.dto;
+package com.Kee.V2C.dto.Authentication;
 
 import com.Kee.V2C.enums.UserStatus;
 import jakarta.validation.constraints.NotNull;

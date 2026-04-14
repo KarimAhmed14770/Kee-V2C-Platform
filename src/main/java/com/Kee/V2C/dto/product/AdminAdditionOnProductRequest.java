@@ -1,4 +1,4 @@
-package com.Kee.V2C.dto;
+package com.Kee.V2C.dto.product;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
