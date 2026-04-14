@@ -136,15 +136,6 @@ public class AdminController {
         return ResponseEntity.ok(adminService.addSubCategory(id, subCategoryRegisterRequest));
     }
 
-    @GetMapping("/categories/{id}/subcategories")
-    public ResponseEntity<Page<SubCategoryResponse>> getSubCategoriesOfParent(@PathVariable("id") Long id,Pageable page){
-        return ResponseEntity.ok(adminService.getSubCategoriesOfParent(id,page));
-    }
-
-    @GetMapping("/categories/{parentId}/subcategories/{subCategoryId}")
-    public ResponseEntity<SubCategoryResponse> getSubCategoryById(@PathVariable("subCategoryId") Long subCategoryId){
-        return ResponseEntity.ok(adminService.getSubCategoryProfileById(subCategoryId));
-    }
 
     @PatchMapping(value = "/categories/{parentId}/subcategories/{subCategoryId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SubCategoryResponse> updateSubCategory(@PathVariable("subCategoryId") Long subCategoryId,
