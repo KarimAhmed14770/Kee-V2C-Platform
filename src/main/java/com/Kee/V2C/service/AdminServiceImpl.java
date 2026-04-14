@@ -42,6 +42,7 @@ public class AdminServiceImpl implements AdminService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final CategoryService categoryService;
+    private final SubCategoryService subCategoryService;
     private final SubCategoryRepository subCategoryRepository;
     private final SubCategoryMapper subCategoryMapper;
     private final BrandRepository brandRepository;
@@ -56,7 +57,8 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     public AdminServiceImpl(CustomerRepository customerRepository, VendorRepository vendorRepository,
                             CategoryRepository categoryRepository,CategoryMapper categoryMapper,
-                            CategoryService categoryService,SubCategoryRepository subCategoryRepository
+                            CategoryService categoryService,SubCategoryService subCategoryService,
+                            SubCategoryRepository subCategoryRepository
                             ,SubCategoryMapper subCategoryMapper,BrandRepository brandRepository,
                             BrandMapper brandMapper,ProductModelRepository productModelRepository,
                             ProductModelMapper productModelMapper,ProductRequestRepository productRequestRepository,
@@ -66,6 +68,7 @@ public class AdminServiceImpl implements AdminService {
         this.categoryRepository=categoryRepository;
         this.categoryMapper=categoryMapper;
         this.categoryService=categoryService;
+        this.subCategoryService=subCategoryService;
         this.subCategoryRepository=subCategoryRepository;
         this.subCategoryMapper=subCategoryMapper;
         this.brandRepository=brandRepository;
@@ -226,26 +229,14 @@ public class AdminServiceImpl implements AdminService {
                 subCategoryRegisterRequest.active());
         parentCategory.addSubcategory(subCategory);//linking parent to sub
         subCategoryRepository.save(subCategory);
-        return convertSubCategoryToDto(subCategory);
+        return subCategoryService.convertSubCategoryToDto(subCategory);
     }
 
-
-    @Override
-    public SubCategoryResponse getSubCategoryProfileById(Long id){
-        return convertSubCategoryToDto(getSubCategoryById(id));
-    }
-
-
-    @Override
-    public Page<SubCategoryResponse> getSubCategoriesOfParent(Long parentId,Pageable page){
-        Page<SubCategory> subCategories=subCategoryRepository.findByParentId(parentId,page);
-        return subCategories.map(this::convertSubCategoryToDto);
-    }
 
     @Override
     @Transactional
     public SubCategoryResponse updateSubCategory(Long id, SubCategoryUpdateRequest subCategoryRequest){
-        SubCategory updatedCategory=getSubCategoryById(id);
+        SubCategory updatedCategory=subCategoryService.getSubCategoryById(id);
         subCategoryMapper.updateSubCategoryFromDto(subCategoryRequest,updatedCategory);
         if(subCategoryRequest.imageFile()!=null && !subCategoryRequest.imageFile().isEmpty()) {
             String updated_img = imageService.saveImage(subCategoryRequest.imageFile(), PathFolder.SUBCATEGORIES);
@@ -253,17 +244,17 @@ public class AdminServiceImpl implements AdminService {
         }
         subCategoryRepository.save(updatedCategory);
 
-        return convertSubCategoryToDto(updatedCategory);
+        return subCategoryService.convertSubCategoryToDto(updatedCategory);
     }
 
 
     @Override
     @Transactional
     public SubCategoryResponse softDeleteSubCategory(Long id){
-        SubCategory updatedCategory=getSubCategoryById(id);
+        SubCategory updatedCategory=subCategoryService.getSubCategoryById(id);
         updatedCategory.setActive(false);
         subCategoryRepository.save(updatedCategory);
-        return convertSubCategoryToDto(updatedCategory);
+        return subCategoryService.convertSubCategoryToDto(updatedCategory);
     }
 
     @Override
@@ -498,22 +489,6 @@ public class AdminServiceImpl implements AdminService {
 
 
 
-    private SubCategoryResponse convertSubCategoryToDto(SubCategory subCategory){
-        return new SubCategoryResponse(
-                subCategory.getParentCategory().getId(),
-                subCategory.getId(),
-                subCategory.getName(),
-                subCategory.getDescription(),
-                subCategory.getImageUrl(),
-                subCategory.isActive()
-        );
-    }
-
-    private SubCategory getSubCategoryById(Long id){
-        return subCategoryRepository.findById(id).orElseThrow(
-                ()->new CategoryNotFoundException("Category with id: "+id+" Not found.")
-        );
-    }
 
     private BrandResponse convertBrandToDto(Brand brand){
         return new BrandResponse(brand.getId(), brand.getName(), brand.getDescription(), brand.getImageUrl(),brand.getActive());
