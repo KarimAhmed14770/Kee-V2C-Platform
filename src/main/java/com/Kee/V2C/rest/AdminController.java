@@ -114,29 +114,10 @@ public class AdminController {
     }
 
 
-    @GetMapping("/categories")
-    public ResponseEntity<Page<CategoryResponse>> getAllCategories(Pageable page){
-        return ResponseEntity.ok(adminService.getAllCategories(page));
-    }
-
-    @GetMapping("/categories/{id}")
-    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("id") Long id){
-        return ResponseEntity.ok(adminService.getCategoryProfileById(id));
-    }
-
     @PatchMapping(value = "/categories/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("id") Long id,
                                                            @Valid @ModelAttribute CategoryUpdateRequest categoryUpdateRequest){
         return ResponseEntity.ok(adminService.updateCategory(id,categoryUpdateRequest));
-    }
-
-    @GetMapping("/categories/search")
-    public ResponseEntity<Page<CategoryResponse>> getCategoryByAttribute(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String description,
-            @RequestParam(required = false) Boolean active,
-            Pageable page){
-        return ResponseEntity.ok(adminService.searchCategory(name,description,active,page));
     }
 
     @PatchMapping("/categories/delete/{id}")
