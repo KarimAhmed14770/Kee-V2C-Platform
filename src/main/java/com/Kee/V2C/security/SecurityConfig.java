@@ -61,7 +61,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html","/index.html","/shop.html", "/account.html"
                                 , "/admin.html", "/api.js","/app.css","/uploads/**","/vendor.html","/api/products/**"
-                                ,"api/categories/**","/api/brands/**",
+                                ,"/api/categories/**","/api/brands/**",
                                         "/").permitAll()// Make registration public
                         .requestMatchers("/api/product-models").hasAnyRole("SELLER","ADMIN")
                         .requestMatchers("/api/test/securityDBhandShakeAdmin").hasRole("ADMIN")
