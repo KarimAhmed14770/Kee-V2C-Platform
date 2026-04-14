@@ -26,7 +26,7 @@ public class BrandServiceImpl implements BrandService{
 
     @Override
     public Page<Brand> getAllBrands(Pageable page){
-        return brandRepository.findAll(page);
+        return brandRepository.findByActiveTrue(page);
     }
 
     public BrandResponse convertBrandToDto(Brand brand){

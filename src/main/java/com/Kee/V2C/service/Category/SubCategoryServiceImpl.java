@@ -28,7 +28,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     @Override
     public Page<SubCategory> getSubCategoriesOfParent(Long parentId, Pageable page){
-        return subCategoryRepository.findByParentId(parentId,page);
+        return subCategoryRepository.findByParentIdAndActiveTrue(parentId,page);
     }
 
     public SubCategoryResponse convertSubCategoryToDto(SubCategory subCategory){

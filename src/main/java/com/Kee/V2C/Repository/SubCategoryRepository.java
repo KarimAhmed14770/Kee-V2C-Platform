@@ -16,7 +16,7 @@ public interface SubCategoryRepository extends JpaRepository<SubCategory,Long> {
     Optional<SubCategory> findById(Long id);
 
     @Query(value = "Select s from SubCategory s "
-    +"Where s.parentCategory.id= :id")
-    Page<SubCategory> findByParentId(@Param("id") Long id,Pageable page);
+    +"Where s.parentCategory.id= :id AND s.active=true")
+    Page<SubCategory> findByParentIdAndActiveTrue(@Param("id") Long id,Pageable page);
     boolean existsByNameIgnoreCase(String name);
 }

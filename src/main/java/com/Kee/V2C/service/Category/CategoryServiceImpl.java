@@ -45,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<Category> getAllCategories(Pageable page){
-        return categoryRepository.findAll(page);
+        return categoryRepository.findByActiveTrue(page);
 
     }
 
