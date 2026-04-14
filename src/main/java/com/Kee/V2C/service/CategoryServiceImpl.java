@@ -3,6 +3,7 @@ package com.Kee.V2C.service;
 import com.Kee.V2C.Repository.CategoryRepository;
 import com.Kee.V2C.dto.category.CategoryResponse;
 import com.Kee.V2C.entity.Category;
+import com.Kee.V2C.exception.CategoryNotFoundException;
 import com.Kee.V2C.mapper.CategoryMapper;
 import com.Kee.V2C.specifications.CategorySpecs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,22 @@ public class CategoryServiceImpl implements CategoryService {
         return  categories.map(this::convertCategoryToDto);
     }
 
+    @Override
+    public Category getCategoryProfileById(Long id){
+        return categoryRepository.findById(id).orElseThrow(
+                ()->new CategoryNotFoundException("Category with id: "+id+" Not found."));
+    }
 
-    private CategoryResponse convertCategoryToDto(Category category){
+    @Override
+    public Page<Category> getAllCategories(Pageable page){
+        return categoryRepository.findAll(page);
+
+    }
+
+
+
+
+    public CategoryResponse convertCategoryToDto(Category category){
         return new CategoryResponse(
                 category.getId(),
                 category.getName(),

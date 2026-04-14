@@ -82,12 +82,14 @@ public class AdminServiceImpl implements AdminService {
         return customerRepository.findAll(spec,page).map(this::convertCustomerToDto);
 
     }
+
     @Override
     public CustomerProfileResponse getCustomerProfileById(Long id){
         Customer customer= customerRepository.findByIdWithCredentials(id)
                 .orElseThrow(()->new UserNotFoundException("user with id: "+ id +" not  found"));
         return convertCustomerToDto(customer);
     }
+
 
     @Override
     public Page<CustomerProfileResponse> searchForCustomer(String userName, String email, String firstName,
@@ -177,21 +179,21 @@ public class AdminServiceImpl implements AdminService {
                 categoryRegisterRequest.active());
         categoryRepository.save(category);
 
-        return convertCategoryToDto(category);
+        return categoryService.convertCategoryToDto(category);
     }
 
     @Override
     public CategoryResponse getCategoryProfileById(Long id){
-        return  convertCategoryToDto(categoryRepository.findById(id).orElseThrow(
-                ()->new CategoryNotFoundException("Category with id: "+id+" Not found."))
-        );
+        return  categoryService.convertCategoryToDto(categoryService.getCategoryProfileById(id));
     }
 
     @Override
     public Page<CategoryResponse> getAllCategories(Pageable page){
-        Page<Category> categories=categoryRepository.findAll(page);
-        return categories.map(this::convertCategoryToDto);
+        Page<Category> categories=categoryService.getAllCategories(page);
+        return categories.map(categoryService::convertCategoryToDto);
     }
+
+
     @Override
     @Transactional
     public CategoryResponse updateCategory(Long id, CategoryUpdateRequest categoryRequest){
@@ -203,7 +205,7 @@ public class AdminServiceImpl implements AdminService {
         }
         categoryRepository.save(updatedCategory);
 
-        return convertCategoryToDto(updatedCategory);
+        return categoryService.convertCategoryToDto(updatedCategory);
     }
 
     @Override
@@ -212,7 +214,7 @@ public class AdminServiceImpl implements AdminService {
         Category category=getCategoryById(id);
         category.setActive(false);
         categoryRepository.save(category);
-        return convertCategoryToDto(category);
+        return categoryService.convertCategoryToDto(category);
     }
 
 
@@ -509,15 +511,7 @@ public class AdminServiceImpl implements AdminService {
         return customer;
     }
 
-    private CategoryResponse convertCategoryToDto(Category category){
-        return new CategoryResponse(
-                category.getId(),
-                category.getName(),
-                category.getDescription(),
-                category.getImageUrl(),
-                category.isActive()
-        );
-    }
+
 
     private SubCategoryResponse convertSubCategoryToDto(SubCategory subCategory){
         return new SubCategoryResponse(
