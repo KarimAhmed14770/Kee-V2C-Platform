@@ -181,15 +181,7 @@ public class AdminController {
         return ResponseEntity.created(location).body(response);
     }
 
-    @GetMapping("/product-models")
-    public ResponseEntity<Page<ProductModelResponse>> getAllProductModels(Pageable page){
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllProductModels(page));
-    }
 
-    @GetMapping("/product-models/{id}")
-    public ResponseEntity<ProductModelResponse> getProductModelById(@PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.getProductModelById(id));
-    }
 
     @GetMapping("/product-models/search")
     public ResponseEntity<Page<ProductModelResponse>> getProductModelByAttribute(
@@ -201,8 +193,8 @@ public class AdminController {
             @RequestParam(required = false) Boolean isGlobal,
             @RequestParam(required = false) ProductModelStatus status,
             Pageable page){
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.getProductModelsByAttributes
-                (name,description,ownerId,subCategoryId,brandId,isGlobal,status,page));
+        return ResponseEntity.status(HttpStatus.OK).body(adminService.searchProductModel(name, description,
+                ownerId, subCategoryId, brandId, isGlobal, status, page));
     }
 
     @PatchMapping(value = "/product-models/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

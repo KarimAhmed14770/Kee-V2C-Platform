@@ -50,21 +50,17 @@ public interface AdminService {
 
 
     ProductModelResponse addProductModel(ProductModelRegisterRequest productModelRegisterRequest);
-    ProductModelResponse getProductModelById(Long id);
-    Page<ProductModelResponse> getAllProductModels(Pageable page);
-    Page<ProductModelResponse> getProductModelsByAttributes(String name, String description,
-                                                            Long ownerId, Long subCategoryId, Long brandId,
-                                                            Boolean isGlobal, ProductModelStatus status,
-                                                            Pageable page);
     ProductModelResponse updateProductModel(Long id, ProductModelUpdateRequest productModelUpdateRequest);
     ProductModelResponse softDeleteProductModel(Long id);
+    Page<ProductModelResponse> searchProductModel(String name, String description, Long ownerId,
+                                                  Long subCategoryId, Long brandId, Boolean isGlobal,
+                                                  ProductModelStatus status, Pageable page);
 
 
     Page<ProductRequestResponse> getAllProductsRequests(Pageable page);
     Page<ProductRequestResponse> getPendingVendorsProductsRequests(Pageable page);
     ProductRequestResponse viewProductAddRequest(Long id);
     ProductRequestResponse rejectProductAddRequest(Long id);
-
     ProductModelResponse processProductAddRequest(Long requestId,AdminAdditionOnProductRequest adminAdditionOnProductRequest);
 
 

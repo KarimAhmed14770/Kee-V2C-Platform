@@ -28,6 +28,7 @@ import com.Kee.V2C.service.Brand.BrandService;
 import com.Kee.V2C.service.Category.CategoryService;
 import com.Kee.V2C.service.Image.ImageService;
 import com.Kee.V2C.service.Category.SubCategoryService;
+import com.Kee.V2C.service.ProductModel.ProductModelService;
 import com.Kee.V2C.specifications.CustomerSpecs;
 import com.Kee.V2C.specifications.ProductModelSpecs;
 import com.Kee.V2C.specifications.VendorSpecs;
@@ -37,6 +38,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -55,6 +57,7 @@ public class AdminServiceImpl implements AdminService {
     private final ProductRequestRepository productRequestRepository;
     private final ImageService imageService;
     private final BrandService brandService;
+    private final ProductModelService productModelService;
 
 
 
@@ -66,7 +69,7 @@ public class AdminServiceImpl implements AdminService {
                             ,SubCategoryMapper subCategoryMapper,BrandRepository brandRepository,
                             BrandMapper brandMapper,ProductModelRepository productModelRepository,
                             ProductModelMapper productModelMapper,ProductRequestRepository productRequestRepository,
-                            ImageService imageService){
+                            ImageService imageService,ProductModelService productModelService){
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
         this.categoryRepository=categoryRepository;
@@ -82,6 +85,7 @@ public class AdminServiceImpl implements AdminService {
         this.productRequestRepository=productRequestRepository;
         this.imageService=imageService;
         this.brandService=brandService;
+        this.productModelService=productModelService;
     }
 
     @Override
@@ -307,43 +311,8 @@ public class AdminServiceImpl implements AdminService {
     public ProductModelResponse addProductModel(ProductModelRegisterRequest productModelRegisterRequest){
         ProductModel productModel=convertProductModelRequestToProductModel(productModelRegisterRequest);
         productModelRepository.save(productModel);
-        return convertProductModelToDto(productModel);
+        return productModelService.convertProductModelToDto(productModel);
     }
-
-    @Override
-    public ProductModelResponse getProductModelById(Long id) {
-        return convertProductModelToDto(productModelRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("product model with id: "+id+" not found")));
-    }
-
-    @Override
-    public Page<ProductModelResponse> getAllProductModels(Pageable page){
-        Page<ProductModel> productModels=productModelRepository.findAll(page);
-        return productModels.map(this::convertProductModelToDto);
-
-    }
-
-    @Override
-    public Page<ProductModelResponse> getProductModelsByAttributes(String name, String description,
-                                                                   Long ownerId,Long subCategoryId,Long brandId,
-                                                                   Boolean isGlobal,ProductModelStatus status,
-                                                                   Pageable page){
-        Specification<ProductModel> spec=Specification
-                .where((root, query, cb) -> cb.conjunction() );
-
-        if(name!=null && !(name.isEmpty()))spec=spec.and(ProductModelSpecs.hasName(name));
-        if(description!=null && !(description.isEmpty()))spec=spec.and(ProductModelSpecs.hasDescription(description));
-        if(ownerId!=null)spec=spec.and(ProductModelSpecs.hasVendor(ownerId));
-        if(subCategoryId!=null)spec=spec.and(ProductModelSpecs.hasSubCategory(subCategoryId));
-        if(brandId!=null)spec=spec.and(ProductModelSpecs.hasBrand(brandId));
-        if(isGlobal!=null)spec=spec.and(ProductModelSpecs.isGlobal(isGlobal));
-        if(status!=null)spec=spec.and(ProductModelSpecs.hasStatus(status));
-
-        Page<ProductModel> productModels=productModelRepository.findAll(spec,page);
-
-        return productModels.map(this::convertProductModelToDto);
-    }
-
 
     @Override
     @Transactional
@@ -358,7 +327,7 @@ public class AdminServiceImpl implements AdminService {
         }
         productModelRepository.save(productModel);
 
-        return convertProductModelToDto(productModel);
+        return productModelService.convertProductModelToDto(productModel);
     }
 
     @Override
@@ -370,8 +339,16 @@ public class AdminServiceImpl implements AdminService {
        productModel.setStatus(ProductModelStatus.DISABLED);
         productModelRepository.save(productModel);
 
-        return convertProductModelToDto(productModel);
+        return productModelService.convertProductModelToDto(productModel);
 
+    }
+
+    public Page<ProductModelResponse> searchProductModel(String name, String description, Long ownerId,
+                                                         Long subCategoryId, Long brandId, Boolean isGlobal,
+                                                         ProductModelStatus status, Pageable page) {
+    Page<ProductModel> productModels=productModelService.getProductModelsByAttributes(name, description, ownerId,
+            subCategoryId, brandId, isGlobal, status, page);
+    return productModels.map(productModelService::convertProductModelToDto);
     }
 
     @Override
@@ -435,7 +412,7 @@ public class AdminServiceImpl implements AdminService {
             productRequestRepository.save(request);
             productModelRepository.save(productModel);
 
-        return convertProductModelToDto(productModel);
+        return productModelService.convertProductModelToDto(productModel);
         }
 
 
@@ -516,19 +493,7 @@ public class AdminServiceImpl implements AdminService {
         return productModel;
     }
 
-    private ProductModelResponse convertProductModelToDto(ProductModel productModel){
-        return new ProductModelResponse(
-                productModel.getId(),
-                (productModel.getBrand()==null?null:productModel.getBrand().getId()),
-                productModel.getSubCategory().getId(),
-                (productModel.getVendor()==null)?null:productModel.getVendor().getId(),
-                productModel.isGlobal(),
-                productModel.getName(),
-                productModel.getDescription(),
-                productModel.getImageUrl(),
-                productModel.getStatus()
-        );
-    }
+
 
     private ProductRequestResponse convertProductRequestToDto(ProductRequest productRequest){
         return new ProductRequestResponse(
