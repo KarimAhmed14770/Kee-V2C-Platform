@@ -67,8 +67,8 @@ public class VendorController {
         return ResponseEntity.ok(vendorService.activateShop());
     }
 
-    @PostMapping("/product-requests")
-    public ResponseEntity<ProductRequestResponse> requestNewProduct(@RequestBody @Valid NewProductRequest newProductRequest){
+    @PostMapping(value = "/product-requests",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductRequestResponse> requestNewProduct( @Valid @ModelAttribute NewProductRequest newProductRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(vendorService.requestNewProduct(newProductRequest));
     }
 
