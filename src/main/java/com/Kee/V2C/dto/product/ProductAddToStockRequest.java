@@ -1,6 +1,7 @@
 package com.Kee.V2C.dto.product;
 
 import jakarta.validation.constraints.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -24,7 +25,7 @@ public record ProductAddToStockRequest(
         @NotNull(message = "Stock quantity is required")
         @Min(value = 0, message = "Stock cannot be negative")
         Integer stock,
-        String imageUrl,
+        MultipartFile imageFile,
 
         @NotNull(message = "Status is required")
         Boolean status
