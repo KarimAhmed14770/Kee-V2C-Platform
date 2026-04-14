@@ -12,27 +12,14 @@ CREATE TABLE `orders` (
     `total_price` DECIMAL(10,2) NOT NULL,
     `ordered_at` datetime  not null default current_timestamp, 
     `delivered_at` datetime default null,
-    
 	PRIMARY KEY (`id`),
     Constraint `customer_order_fk` Foreign key (`customer_id`) REFERENCES customers(`id`),
 	INDEX idx_order_price (total_price)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-Drop table if exists `order_items`;
 
-
-CREATE TABLE `order_items` (
-  `id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
-  `order_id` int  NOT NULL,
-  `product_id` int NOT NULL,
-  `quantity` int not null,
-  `price` DECIMAL(10,2) NOT NULL,
-  PRIMARY KEY (`id`),
-  Constraint `orderitems_orderid_fk` Foreign key (`order_id`) REFERENCES orders(`id`),
-  Constraint `orderitems_product_fk` Foreign key (`product_id`) REFERENCES products(`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
+Drop table if exists `sub_orders`;
 
 CREATE TABLE `sub_orders` (
 	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
@@ -48,5 +35,23 @@ CREATE TABLE `sub_orders` (
 	INDEX idx_order_price (total_price)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+
+
+
+
+
+Drop table if exists `order_items`;
+
+
+CREATE TABLE `order_items` (
+  `id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
+  `sub_order_id` int  NOT NULL,
+  `product_id` int NOT NULL,
+  `quantity` int not null,
+  `price` DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  Constraint `orderitems_suborderid_fk` Foreign key (`sub_order_id`) REFERENCES sub_orders(`id`),
+  Constraint `orderitems_product_fk` Foreign key (`product_id`) REFERENCES products(`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
