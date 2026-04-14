@@ -12,7 +12,7 @@ interface VendorService {
     ShopResponse updateShopInfo(ShopUpdateRequest shopRequest);
     ShopResponse deactivateShop();
     ShopResponse activateShop();
-    ShopResponse viewShop();
+    ShopViewResponse viewShop(Pageable page);
     Page<ProductModelResponse> searchGlobalProductModel(Long brandId, Long subCategoryId, String description, Pageable page);
     Page<ProductModelResponse> myProductModels(Pageable page) ;
     ProductRequestResponse requestNewProduct(NewProductRequest newProductRequest);

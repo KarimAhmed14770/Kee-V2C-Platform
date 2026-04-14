@@ -109,11 +109,12 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public ShopResponse viewShop(){
-        Long id=getCurrentVendor().getId();
-        Shop shop=shopRepository.findByVendorId(id)
-                .orElseThrow(()->new ResourceNotFoundException("there are no shops for vendor with id: "+id+"."));
-        return convertShopToDto(shop);
+    public ShopViewResponse viewShop(Pageable page){
+        Vendor vendor=getCurrentVendor();
+        Shop shop=shopRepository.findByVendorId(vendor.getId())
+                .orElseThrow(()->new ResourceNotFoundException("there are no shops for vendor with id: "+vendor.getId()+"."));
+
+        return viewShop(vendor,shop,page);
     }
     @Override
     @Transactional
@@ -237,7 +238,7 @@ public class VendorServiceImpl implements VendorService {
                 product.getDescription(),
                 product.getPrice(),
                 product.getStock().getQuantity(),
-                product.getImageUrl(),
+                product.getProductModel().getImageUrl(),
                 product.getActive()
 
         );
@@ -251,7 +252,7 @@ public class VendorServiceImpl implements VendorService {
                 orElseThrow(()->new ResourceNotFoundException("no vendor with id: "+vendorId));
 
         Product product=new Product(vendor,productModel,productAddToStockRequest.name(), productAddToStockRequest.description(),
-                productAddToStockRequest.price(), productAddToStockRequest.imageUrl());
+                productAddToStockRequest.price(), imageService.saveImage(productAddToStockRequest.imageFile(), PathFolder.PRODUCTS));
         Stock stock=new Stock(productAddToStockRequest.stock(),product,vendor.getShop());
         stock.setActive(true);
         product.setStock(stock);
@@ -273,6 +274,14 @@ public class VendorServiceImpl implements VendorService {
                 productModel.getImageUrl(),
                 productModel.getStatus()
         );
+    }
+
+    private ShopViewResponse viewShop(Vendor vendor,Shop shop,Pageable page){
+        Page<Product> products=productRepository.findProductByStockShopId(shop.getId(),page);
+
+        return new ShopViewResponse(vendor.getImageUrl(),
+                convertShopToDto(shop),
+                products.map(this::convertProductToDto));
     }
 
 

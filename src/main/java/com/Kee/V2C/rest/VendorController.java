@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,8 +28,8 @@ public class VendorController {
         this.vendorService=sellerService;
     }
 
-    @PatchMapping("/my-profile/update")
-    public ResponseEntity<VendorProfileResponse> updateSeller(@RequestBody @Valid VendorUpdateProfileRequest vendorUpdateProfileRequest){
+    @PatchMapping(value = "/my-profile/update",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<VendorProfileResponse> updateSeller( @Valid @ModelAttribute VendorUpdateProfileRequest vendorUpdateProfileRequest){
         return ResponseEntity.status(HttpStatus.OK).body(vendorService.updateVendorProfile(vendorUpdateProfileRequest));
     }
 
@@ -52,8 +53,8 @@ public class VendorController {
     }
 
     @GetMapping("/my-shop")
-    public ResponseEntity<ShopResponse> viewShop(){
-        return ResponseEntity.ok(vendorService.viewShop());
+    public ResponseEntity<ShopViewResponse> viewShop(Pageable page){
+        return ResponseEntity.ok(vendorService.viewShop(page));
     }
 
     @PatchMapping("/my-shop/deactivate")
@@ -86,8 +87,8 @@ public class VendorController {
 
     }
 
-    @PostMapping("/products/add-to-shop")
-    public ResponseEntity<ProductResponse> addToStock(@RequestBody @Valid ProductAddToStockRequest productAddToStockRequest){
+    @PostMapping(value = "/products/add-to-shop",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponse> addToStock( @Valid @ModelAttribute ProductAddToStockRequest productAddToStockRequest){
         ProductResponse productResponse=vendorService.addProductToStock(productAddToStockRequest);
         URI location=ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(productResponse.id()).toUri();
@@ -101,12 +102,12 @@ public class VendorController {
     }
 
     @PatchMapping("/products/edit-product-stock/{id}")
-    public ResponseEntity<ProductResponse> addToStock(@PathVariable("id") Long id,int quantity){
+    public ResponseEntity<ProductResponse> editStock(@PathVariable("id") Long id, @RequestParam int quantity){
         return ResponseEntity.ok(vendorService.addStock(id,quantity));
     }
 
-    @PatchMapping("/products/update/{id}")
-    public ResponseEntity<ProductResponse> addToStock(@PathVariable("id") Long id,@Valid ProductUpdateRequest productUpdateRequest){
+    @PatchMapping(value = "/products/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable("id") Long id, @Valid @ModelAttribute ProductUpdateRequest productUpdateRequest){
         return ResponseEntity.ok(vendorService.updateProductInfo(id,productUpdateRequest));
     }
 
