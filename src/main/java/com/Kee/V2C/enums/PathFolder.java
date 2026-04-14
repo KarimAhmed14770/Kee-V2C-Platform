@@ -6,7 +6,9 @@ public enum PathFolder {
     CATEGORIES("Categories/"),
     SUBCATEGORIES("Subcategories/"),
     PRODUCT_REQUESTS("ProductRequests/"),
-    VENDORS("Vendors/");
+    VENDORS("Vendors/"),
+    PRODUCTS("Products/")
+    ;
 
 
     private final String path;
