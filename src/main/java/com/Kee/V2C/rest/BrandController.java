@@ -20,7 +20,7 @@ public class BrandController {
 
     @GetMapping("/")
     public ResponseEntity<Page<BrandResponse>> getBrands(Pageable page){
-        return ResponseEntity.status(HttpStatus.OK).body(brandService.getAllBrands(page).map(brandService::convertBrandToDto));
+        return ResponseEntity.status(HttpStatus.OK).body(brandService.getActiveBrands(page).map(brandService::convertBrandToDto));
     }
 
     @GetMapping("/{id}")

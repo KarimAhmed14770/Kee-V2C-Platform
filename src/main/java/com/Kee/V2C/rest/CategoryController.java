@@ -26,7 +26,7 @@ public class CategoryController {
 
     @GetMapping("/")
     public ResponseEntity<Page<CategoryResponse>> getAllCategories(Pageable page) {
-        return ResponseEntity.ok(categoryService.getAllCategories(page).map(categoryService::convertCategoryToDto));
+        return ResponseEntity.ok(categoryService.getActiveCategories(page).map(categoryService::convertCategoryToDto));
     }
 
     @GetMapping("/{id}")
@@ -45,7 +45,7 @@ public class CategoryController {
 
     @GetMapping("/{id}/subcategories")
     public ResponseEntity<Page<SubCategoryResponse>> getAllSubCategories(@PathVariable("id") Long id, Pageable page) {
-        return ResponseEntity.ok(subCategoryService.getSubCategoriesOfParent(id, page).map(subCategoryService::convertSubCategoryToDto));
+        return ResponseEntity.ok(subCategoryService.getActiveSubCategoriesOfParent(id, page).map(subCategoryService::convertSubCategoryToDto));
     }
 
     @GetMapping("/{id}/subcategories/{subCategoryId}")
