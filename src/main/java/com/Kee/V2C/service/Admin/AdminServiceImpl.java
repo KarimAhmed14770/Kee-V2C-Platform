@@ -395,7 +395,8 @@ public class AdminServiceImpl implements AdminService {
 
             ProductModel productModel=new ProductModel(adminAdditionOnProductRequest.modifiedName(),
                     adminAdditionOnProductRequest.modifiedDescription(),
-                    imageService.saveImage(adminAdditionOnProductRequest.modifiedImageFile(),PathFolder.MODELS), vendor,
+                    (adminAdditionOnProductRequest.modifiedImageFile()==null)?request.getImageUrl():imageService.saveImage(adminAdditionOnProductRequest.modifiedImageFile()
+                            ,PathFolder.MODELS), vendor,
                     adminAdditionOnProductRequest.modifiedGlobal(),ProductModelStatus.ACTIVE,brand,
                     subCategory
                     );
