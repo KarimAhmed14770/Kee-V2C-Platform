@@ -7,5 +7,6 @@ public record ProductViewResponse(Long id,
                                   String description,
                                   BigDecimal price,
                                   Integer stock,
-                                  String imageUrl,
+                                  String ProductModelImageUrl,
+                                  String ProductImageUrl,
                                   String Category) {}
