@@ -226,9 +226,9 @@ public class AdminController {
         return ResponseEntity.ok(adminService.rejectProductAddRequest(id));
     }
 
-    @PostMapping("/product-requests/process/{id}")
+    @PostMapping(value = "/product-requests/process/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductModelResponse> processProductRequest(@PathVariable("id") Long id,
-                                                                        @RequestBody @Valid AdminAdditionOnProductRequest adminAdditionOnProductRequest){
+                                                                         @Valid @ModelAttribute AdminAdditionOnProductRequest adminAdditionOnProductRequest){
         return ResponseEntity.ok(adminService.processProductAddRequest(id,adminAdditionOnProductRequest));
     }
 
