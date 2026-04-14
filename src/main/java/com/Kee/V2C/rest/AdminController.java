@@ -161,15 +161,6 @@ public class AdminController {
         return ResponseEntity.created(location).body(brandResponse);
     }
 
-    @GetMapping("/brands")
-    public ResponseEntity<Page<BrandResponse>> getBrands(Pageable page){
-        return ResponseEntity.status(HttpStatus.OK).body(adminService.getAllBrands(page));
-    }
-
-    @GetMapping("/brands/{id}")
-    public ResponseEntity<BrandResponse> getBrandById(@PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK).body( adminService.getBrandById(id));
-    }
 
     @PatchMapping(value="/brands/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BrandResponse> updateBrand(@PathVariable("id") Long id,@Valid @ModelAttribute BrandUpdateRequest brandUpdateRequest){

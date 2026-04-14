@@ -24,6 +24,7 @@ import com.Kee.V2C.mapper.BrandMapper;
 import com.Kee.V2C.mapper.CategoryMapper;
 import com.Kee.V2C.mapper.ProductModelMapper;
 import com.Kee.V2C.mapper.SubCategoryMapper;
+import com.Kee.V2C.service.Brand.BrandService;
 import com.Kee.V2C.service.Category.CategoryService;
 import com.Kee.V2C.service.Image.ImageService;
 import com.Kee.V2C.service.Category.SubCategoryService;
@@ -53,6 +54,7 @@ public class AdminServiceImpl implements AdminService {
     private final ProductModelMapper productModelMapper;
     private final ProductRequestRepository productRequestRepository;
     private final ImageService imageService;
+    private final BrandService brandService;
 
 
 
@@ -60,7 +62,7 @@ public class AdminServiceImpl implements AdminService {
     public AdminServiceImpl(CustomerRepository customerRepository, VendorRepository vendorRepository,
                             CategoryRepository categoryRepository,CategoryMapper categoryMapper,
                             CategoryService categoryService,SubCategoryService subCategoryService,
-                            SubCategoryRepository subCategoryRepository
+                            SubCategoryRepository subCategoryRepository,BrandService brandService
                             ,SubCategoryMapper subCategoryMapper,BrandRepository brandRepository,
                             BrandMapper brandMapper,ProductModelRepository productModelRepository,
                             ProductModelMapper productModelMapper,ProductRequestRepository productRequestRepository,
@@ -79,6 +81,7 @@ public class AdminServiceImpl implements AdminService {
         this.productModelMapper=productModelMapper;
         this.productRequestRepository=productRequestRepository;
         this.imageService=imageService;
+        this.brandService=brandService;
     }
 
     @Override
@@ -268,20 +271,9 @@ public class AdminServiceImpl implements AdminService {
         Brand brand=new Brand(brandRegisterRequest.name(), brandRegisterRequest.description()
                 ,imageService.saveImage(brandRegisterRequest.imageFile(),PathFolder.BRANDS), brandRegisterRequest.active());
         brandRepository.save(brand);
-        return convertBrandToDto(brand);
+        return brandService.convertBrandToDto(brand);
     }
 
-    @Override
-    public BrandResponse getBrandById(Long id){
-        return convertBrandToDto(brandRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Brand not found")));
-    }
-
-    @Override
-    public Page<BrandResponse> getAllBrands(Pageable page){
-        Page<Brand> brands=brandRepository.findAll(page);
-        return brands.map(this::convertBrandToDto);
-    }
 
     @Override
     @Transactional
@@ -295,7 +287,7 @@ public class AdminServiceImpl implements AdminService {
             brand.setImageUrl(updated_img);
         }
         brandRepository.save(brand);
-        return convertBrandToDto(brand);
+        return brandService.convertBrandToDto(brand);
     }
 
 
@@ -307,7 +299,7 @@ public class AdminServiceImpl implements AdminService {
         );
         brand.setActive(false);
         brandRepository.save(brand);
-        return convertBrandToDto(brand);
+        return brandService.convertBrandToDto(brand);
     }
 
     @Override
@@ -489,12 +481,6 @@ public class AdminServiceImpl implements AdminService {
         return customer;
     }
 
-
-
-
-    private BrandResponse convertBrandToDto(Brand brand){
-        return new BrandResponse(brand.getId(), brand.getName(), brand.getDescription(), brand.getImageUrl(),brand.getActive());
-    }
 
     private ProductModel convertProductModelRequestToProductModel(ProductModelRegisterRequest productModelRegisterRequest){
         Brand brand=brandRepository.findById(productModelRegisterRequest.brandId()).orElseThrow(

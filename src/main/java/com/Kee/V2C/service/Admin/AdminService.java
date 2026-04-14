@@ -45,8 +45,6 @@ public interface AdminService {
 
 
     BrandResponse addBrand(BrandRegisterRequest brandRegisterRequest);
-    BrandResponse getBrandById(Long id);
-    Page<BrandResponse> getAllBrands(Pageable page);
     BrandResponse updateBrand(Long id, BrandUpdateRequest brandUpdateRequest);
     BrandResponse softDeleteBrand(Long id);
 
