@@ -34,7 +34,19 @@ CREATE TABLE `order_items` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-
+CREATE TABLE `sub_orders` (
+	`id` int NOT NULL AUTO_INCREMENT,-- this id is the address for the database search
+    `order_id` int not null,
+	`vendor_id` int NOT NULL,
+    `status` varchar(20) default 'Pending',  -- CANCELED,PENDING,SHIPPED,DELIVERED
+    `total_price` DECIMAL(10,2) NOT NULL,
+    `ordered_at` datetime  not null default current_timestamp, 
+    `delivered_at` datetime default null,
+	PRIMARY KEY (`id`),
+	Constraint `sub_order_master_order_fk` Foreign key (`order_id`) REFERENCES orders(`id`),
+    Constraint `sub_order_vendor_fk` Foreign key (`vendor_id`) REFERENCES vendors(`id`),
+	INDEX idx_order_price (total_price)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
 
