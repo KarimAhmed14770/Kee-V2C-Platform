@@ -20,4 +20,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     +"WHERE p.vendor.id= :id")
     Page<Product> findAllByVendorId(@Param("id") Long id, Pageable page);
 
+    Page<Product> findProductByStockShopId(Long shopId,Pageable page);
+
 }
