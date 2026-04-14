@@ -1,6 +1,6 @@
 package com.Kee.V2C.security;
 
-import com.Kee.V2C.service.JwtService;
+import com.Kee.V2C.service.Authentication.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

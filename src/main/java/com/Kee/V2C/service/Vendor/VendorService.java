@@ -1,4 +1,4 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Vendor;
 
 import com.Kee.V2C.dto.product.*;
 import com.Kee.V2C.dto.vendor.*;

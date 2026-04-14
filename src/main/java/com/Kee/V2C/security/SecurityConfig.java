@@ -60,7 +60,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html","/index.html","/shop.html", "/account.html"
-                                , "/admin.html", "/api.js","/app.css","/uploads/**","/vendor.html",
+                                , "/admin.html", "/api.js","/app.css","/uploads/**","/vendor.html","/api/products/**",
                                         "/").permitAll()// Make registration public
                         .requestMatchers("/api/test/securityDBhandShakeCustomer").hasAnyRole("CUSTOMER","ADMIN")
                         .requestMatchers("/api/test/securityDBhandShakeSeller").hasAnyRole("SELLER","ADMIN")

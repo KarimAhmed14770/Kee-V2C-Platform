@@ -1,4 +1,4 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Product;
 
 import com.Kee.V2C.Repository.ProductRepository;
 import com.Kee.V2C.dto.product.ProductViewResponse;
@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 

@@ -13,8 +13,8 @@ import com.Kee.V2C.dto.product.ProductRequestResponse;
 import com.Kee.V2C.dto.vendor.VendorProfileResponse;
 import com.Kee.V2C.enums.ProductModelStatus;
 import com.Kee.V2C.enums.UserStatus;
-import com.Kee.V2C.service.AdminService;
-import com.Kee.V2C.service.CategoryService;
+import com.Kee.V2C.service.Admin.AdminService;
+import com.Kee.V2C.service.Category.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -147,7 +147,6 @@ public class AdminController {
     public ResponseEntity<SubCategoryResponse> softDeleteSubCategory(@PathVariable("subCategoryId") Long subCategoryId){
         return ResponseEntity.ok(adminService.softDeleteSubCategory(subCategoryId));
     }
-
 
 
     @PostMapping(value="/brands",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

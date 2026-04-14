@@ -1,4 +1,4 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Authentication;
 
 import com.Kee.V2C.Repository.*;
 import com.Kee.V2C.dto.Authentication.AuthenticationResponse;
@@ -19,6 +19,7 @@ import com.Kee.V2C.exception.UserAccessDeniedException;
 import com.Kee.V2C.exception.UserAlreadyExistsException;
 import com.Kee.V2C.exception.UserNotFoundException;
 import com.Kee.V2C.security.UserDetailsImpl;
+import com.Kee.V2C.service.Image.ImageService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final CredentialRepository credentialRepository;

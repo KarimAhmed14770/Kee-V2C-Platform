@@ -3,7 +3,7 @@ package com.Kee.V2C.rest;
 
 import com.Kee.V2C.dto.product.*;
 import com.Kee.V2C.dto.vendor.*;
-import com.Kee.V2C.service.VendorServiceImpl;
+import com.Kee.V2C.service.Vendor.VendorServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

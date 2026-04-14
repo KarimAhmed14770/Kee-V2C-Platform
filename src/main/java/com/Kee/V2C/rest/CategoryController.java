@@ -3,8 +3,8 @@ package com.Kee.V2C.rest;
 
 import com.Kee.V2C.dto.category.CategoryResponse;
 import com.Kee.V2C.dto.category.SubCategoryResponse;
-import com.Kee.V2C.service.CategoryService;
-import com.Kee.V2C.service.SubCategoryService;
+import com.Kee.V2C.service.Category.CategoryService;
+import com.Kee.V2C.service.Category.SubCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,6 +1,5 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Category;
 
-import com.Kee.V2C.dto.*;
 import com.Kee.V2C.dto.category.SubCategoryResponse;
 import com.Kee.V2C.entity.SubCategory;
 import org.springframework.data.domain.Page;

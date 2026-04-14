@@ -1,4 +1,4 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Authentication;
 
 import com.Kee.V2C.dto.Authentication.AuthenticationResponse;
 import com.Kee.V2C.dto.Authentication.LoginRequest;

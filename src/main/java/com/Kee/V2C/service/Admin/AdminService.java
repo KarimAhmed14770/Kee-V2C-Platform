@@ -1,4 +1,4 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Admin;
 
 import com.Kee.V2C.dto.*;
 import com.Kee.V2C.dto.brand.BrandRegisterRequest;

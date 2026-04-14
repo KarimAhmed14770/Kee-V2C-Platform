@@ -3,7 +3,7 @@ package com.Kee.V2C.rest;
 import com.Kee.V2C.dto.cart.CartItemRequest;
 import com.Kee.V2C.dto.cart.CartResponse;
 import com.Kee.V2C.dto.customer.*;
-import com.Kee.V2C.service.CustomerService;
+import com.Kee.V2C.service.Customer.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

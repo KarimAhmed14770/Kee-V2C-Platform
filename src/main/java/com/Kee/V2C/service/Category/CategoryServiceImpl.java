@@ -1,4 +1,4 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Category;
 
 import com.Kee.V2C.Repository.CategoryRepository;
 import com.Kee.V2C.dto.category.CategoryResponse;

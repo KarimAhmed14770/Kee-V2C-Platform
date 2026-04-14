@@ -2,7 +2,7 @@ package com.Kee.V2C.rest;
 
 
 import com.Kee.V2C.dto.product.ProductViewResponse;
-import com.Kee.V2C.service.ProductService;
+import com.Kee.V2C.service.Product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

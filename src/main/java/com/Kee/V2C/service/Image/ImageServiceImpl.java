@@ -1,4 +1,4 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Image;
 
 import com.Kee.V2C.enums.PathFolder;
 import com.Kee.V2C.exception.FileUploadException;
@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
-public class ImageServiceImpl implements ImageService{
+public class ImageServiceImpl implements ImageService {
     @Value("${uploads_directory}")
     private String uploadDir;
 

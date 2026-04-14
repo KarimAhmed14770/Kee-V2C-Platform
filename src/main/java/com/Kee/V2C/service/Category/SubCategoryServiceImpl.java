@@ -1,4 +1,4 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Category;
 
 import com.Kee.V2C.Repository.SubCategoryRepository;
 import com.Kee.V2C.dto.category.SubCategoryResponse;
@@ -7,8 +7,10 @@ import com.Kee.V2C.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
-public class SubCategoryServiceImpl implements SubCategoryService{
+@Service
+public class SubCategoryServiceImpl implements SubCategoryService {
 
     private final SubCategoryRepository subCategoryRepository;
 

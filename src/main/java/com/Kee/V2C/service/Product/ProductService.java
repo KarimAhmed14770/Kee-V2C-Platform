@@ -1,7 +1,6 @@
-package com.Kee.V2C.service;
+package com.Kee.V2C.service.Product;
 
 
-import com.Kee.V2C.dto.product.ProductResponse;
 import com.Kee.V2C.dto.product.ProductViewResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
