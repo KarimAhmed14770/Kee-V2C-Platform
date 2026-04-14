@@ -43,11 +43,6 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    //also when we search for an order we don't  want the order items unless stated
-    //when we save or delete an order we want order items to be saved or deleted automatically
-    //so cacade is all
-    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    List<OrderItem> orderItems=new ArrayList<>();
 
     @OneToMany(mappedBy = "order",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     List<SubOrder> subOrders=new ArrayList<>();
@@ -61,12 +56,11 @@ public class Order {
         ShippingAddress = shippingAddress;
         this.status = status;
     }
-    public Order(String shippingAddress, OrderStatus status, BigDecimal totalPrice, Customer customer, List<OrderItem> orderItems) {
+    public Order(String shippingAddress, OrderStatus status, BigDecimal totalPrice, Customer customer) {
         ShippingAddress = shippingAddress;
         this.status = status;
         this.totalPrice = totalPrice;
         this.customer = customer;
-        this.orderItems = orderItems;
     }
 
     public Long getId() {
@@ -125,17 +119,17 @@ public class Order {
         this.customer = customer;
     }
 
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
+    public List<SubOrder> getSubOrders() {
+        return subOrders;
     }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
+    public void setSubOrders(List<SubOrder> subOrders) {
+        this.subOrders = subOrders;
     }
 
-    public void addOrderItem(OrderItem orderItem){
-        this.orderItems.add(orderItem);
-        orderItem.setOrder(this);
+    public void addSubOrder(SubOrder subOrder){
+        this.subOrders.add(subOrder);
+        subOrder.setOrder(this);
     }
     @Override
     public String toString() {

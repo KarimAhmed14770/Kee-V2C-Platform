@@ -7,6 +7,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "sub_orders")
@@ -38,6 +40,12 @@ public class SubOrder {
     @ManyToOne
     @JoinColumn(name = "vendor_id")
     private Vendor vendor;
+
+    //also when we search for an order we don't  want the order items unless stated
+    //when we save or delete an order we want order items to be saved or deleted automatically
+    //so cacade is all
+    @OneToMany(mappedBy = "subOrder",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    List<OrderItem> orderItems=new ArrayList<>();
 
 
     public SubOrder(){}
@@ -96,5 +104,18 @@ public class SubOrder {
 
     public void setDelivered_at(LocalDateTime delivered_at) {
         this.delivered_at = delivered_at;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public void addOrderItem(OrderItem orderItem){
+        this.orderItems.add(orderItem);
+        orderItem.setSubOrder(this);
     }
 }

@@ -24,14 +24,14 @@ public class OrderItem {
 
     //if we search about an order item we don't want the whole order info unless stated
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @JoinColumn(name = "sub_order_id")
+    private SubOrder subOrder;
 
 
     public OrderItem(){}
 
-    public OrderItem(Order order, Product product, int quantity, BigDecimal priceAtPurchase) {
-        this.order = order;
+    public OrderItem(SubOrder subOrder, Product product, int quantity, BigDecimal priceAtPurchase) {
+        this.subOrder = subOrder;
         this.product = product;
         this.quantity = quantity;
         this.priceAtPurchase = priceAtPurchase;
@@ -45,12 +45,12 @@ public class OrderItem {
         this.id = id;
     }
 
-    public Order getOrder() {
-        return order;
+    public SubOrder getSubOrder() {
+        return subOrder;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setSubOrder(SubOrder subOrder) {
+        this.subOrder = subOrder;
     }
 
     public Product getProduct() {
@@ -75,6 +75,10 @@ public class OrderItem {
 
     public void setPriceAtPurchase(BigDecimal priceAtPurchase) {
         this.priceAtPurchase = priceAtPurchase;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     @Override
