@@ -151,10 +151,6 @@ public class Product {
         this.cartItem = cartItem;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
     public boolean getActive() {
         return active;
     }
