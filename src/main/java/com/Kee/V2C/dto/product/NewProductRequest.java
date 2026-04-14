@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public record NewProductRequest(
                                 @NotBlank(message = "Product name is required")
-                                @Size(min = 2, max = 45, message = "Name must be between 2 and 45 characters")
+                                @Size(min = 2, max = 100, message = "Name must be between 2 and 45 characters")
                                 String name,
 
                                 @Size(max = 300, message = "Description cannot exceed 300 characters")
