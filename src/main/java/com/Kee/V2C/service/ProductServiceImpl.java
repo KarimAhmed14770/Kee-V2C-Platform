@@ -3,6 +3,7 @@ package com.Kee.V2C.service;
 import com.Kee.V2C.Repository.ProductRepository;
 import com.Kee.V2C.dto.product.ProductViewResponse;
 import com.Kee.V2C.entity.Product;
+import com.Kee.V2C.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,14 @@ public class ProductServiceImpl implements ProductService{
         return products.map(this::convertToDto);
     }
 
+    @Override
+    public ProductViewResponse getProductById(Long id){
+        Product product=productRepository.findById(id).orElseThrow(()->
+                new ResourceNotFoundException("product with id: "+id+" not found."));
+        return convertToDto(product);
+    }
+
+
     private ProductViewResponse convertToDto(Product product){
         ProductViewResponse productViewResponse=new ProductViewResponse(
                 product.getId(),
@@ -33,6 +42,7 @@ public class ProductServiceImpl implements ProductService{
                 product.getPrice(),
                 product.getStock().getQuantity(),
                 product.getProductModel().getImageUrl(),
+                product.getImageUrl(),
                 product.getProductModel().getSubCategory().getName()
         );
         return productViewResponse;
