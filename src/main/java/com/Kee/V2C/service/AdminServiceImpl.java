@@ -182,22 +182,12 @@ public class AdminServiceImpl implements AdminService {
         return categoryService.convertCategoryToDto(category);
     }
 
-    @Override
-    public CategoryResponse getCategoryProfileById(Long id){
-        return  categoryService.convertCategoryToDto(categoryService.getCategoryProfileById(id));
-    }
-
-    @Override
-    public Page<CategoryResponse> getAllCategories(Pageable page){
-        Page<Category> categories=categoryService.getAllCategories(page);
-        return categories.map(categoryService::convertCategoryToDto);
-    }
 
 
     @Override
     @Transactional
     public CategoryResponse updateCategory(Long id, CategoryUpdateRequest categoryRequest){
-        Category updatedCategory=getCategoryById(id);
+        Category updatedCategory=categoryService.getCategoryById(id);
         categoryMapper.updateCategoryFromDto(categoryRequest,updatedCategory);
         if(categoryRequest.imageFile()!=null && !categoryRequest.imageFile().isEmpty()) {
             String updated_img = imageService.saveImage(categoryRequest.imageFile(), PathFolder.CATEGORIES);
@@ -211,18 +201,13 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public CategoryResponse softDeleteCategory(Long id){
-        Category category=getCategoryById(id);
+        Category category=categoryService.getCategoryById(id);
         category.setActive(false);
         categoryRepository.save(category);
         return categoryService.convertCategoryToDto(category);
     }
 
 
-
-    @Override
-    public Page<CategoryResponse> searchCategory(String name,String description,Boolean active,Pageable page){
-        return categoryService.getCategoryByAttribute(name,description,active,page);
-    }
 
 
     @Override
@@ -232,7 +217,7 @@ public class AdminServiceImpl implements AdminService {
             throw new ResourceAlreadyExistsException("category Already exists ");
         }
 
-        Category parentCategory=getCategoryById(parentId);
+        Category parentCategory=categoryService.getCategoryById(parentId);
         SubCategory subCategory=new SubCategory(
                 parentCategory,
                 subCategoryRegisterRequest.name(),
@@ -524,11 +509,6 @@ public class AdminServiceImpl implements AdminService {
         );
     }
 
-    private Category getCategoryById(Long id){
-        return categoryRepository.findById(id).orElseThrow(
-                ()->new CategoryNotFoundException("Category with id: "+id+" Not found.")
-        );
-    }
     private SubCategory getSubCategoryById(Long id){
         return subCategoryRepository.findById(id).orElseThrow(
                 ()->new CategoryNotFoundException("Category with id: "+id+" Not found.")

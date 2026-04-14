@@ -34,11 +34,8 @@ public interface AdminService {
 
 
     CategoryResponse addCategory(CategoryRegisterRequest categoryRegisterRequest);
-    CategoryResponse getCategoryProfileById(Long id);
     CategoryResponse updateCategory(Long id, CategoryUpdateRequest categoryRequest);
     CategoryResponse softDeleteCategory(Long id);
-    Page<CategoryResponse> getAllCategories(Pageable page);
-    Page<CategoryResponse> searchCategory(String name,String description,Boolean active,Pageable page);
 
 
 
